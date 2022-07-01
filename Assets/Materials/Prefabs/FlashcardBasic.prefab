@@ -278,7 +278,7 @@ GameObject:
   - component: {fileID: 7973375461007128974}
   - component: {fileID: 3499342730197198995}
   m_Layer: 5
-  m_Name: Flashcard_basic
+  m_Name: FlashcardBasic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

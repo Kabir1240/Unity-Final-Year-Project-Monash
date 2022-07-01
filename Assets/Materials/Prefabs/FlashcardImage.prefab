@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 2421532750174893440}
   - component: {fileID: 4185563774265727279}
   m_Layer: 5
-  m_Name: Flashcard_image
+  m_Name: FlashcardImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -106,7 +106,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8073010599964266253}
+  - {fileID: 6687223100594832818}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -207,12 +207,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6976723834782105796}
-  m_Father: {fileID: 8073010599964266253}
+  m_Father: {fileID: 6687223100594832818}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -28.20996, y: -100.410034}
+  m_AnchoredPosition: {x: -14, y: -100.410034}
   m_SizeDelta: {x: -305.24, y: -366.23}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7873676498427894560
@@ -266,7 +266,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
---- !u!1001 &5636625214542053051
+--- !u!1001 &7132999635460781060
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -275,7 +275,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 917816539271252757, guid: 29f797f3d2ec7004dbd25044cc31c308, type: 3}
       propertyPath: m_Name
-      value: Flashcard_basic
+      value: FlashcardBasic
       objectReference: {fileID: 0}
     - target: {fileID: 4481161457812943286, guid: 29f797f3d2ec7004dbd25044cc31c308, type: 3}
       propertyPath: m_Pivot.x
@@ -343,7 +343,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4481161457812943286, guid: 29f797f3d2ec7004dbd25044cc31c308, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 2
+      value: 24.74
       objectReference: {fileID: 0}
     - target: {fileID: 4481161457812943286, guid: 29f797f3d2ec7004dbd25044cc31c308, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -363,8 +363,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 29f797f3d2ec7004dbd25044cc31c308, type: 3}
---- !u!224 &8073010599964266253 stripped
+--- !u!224 &6687223100594832818 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4481161457812943286, guid: 29f797f3d2ec7004dbd25044cc31c308, type: 3}
-  m_PrefabInstance: {fileID: 5636625214542053051}
+  m_PrefabInstance: {fileID: 7132999635460781060}
   m_PrefabAsset: {fileID: 0}

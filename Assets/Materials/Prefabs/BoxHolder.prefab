@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3221476838422006339}
   - component: {fileID: 5616253969842550071}
   m_Layer: 5
-  m_Name: Achievement_title
+  m_Name: AchievementTitle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -275,7 +275,7 @@ GameObject:
   - component: {fileID: 7042332113856629939}
   - component: {fileID: 1201840758965512578}
   m_Layer: 5
-  m_Name: Three_dots
+  m_Name: ThreeDots
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -469,7 +469,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1380930335544195168}
   m_Layer: 5
-  m_Name: Box_holder
+  m_Name: BoxHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

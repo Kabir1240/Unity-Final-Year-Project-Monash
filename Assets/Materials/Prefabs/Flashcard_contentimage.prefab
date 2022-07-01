@@ -32,12 +32,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3953740194900712783}
-  m_Father: {fileID: 8791901957205634617}
+  m_Father: {fileID: 4211734123311394493}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 635.25, y: -70.467}
+  m_AnchoredPosition: {x: 718, y: -70.467}
   m_SizeDelta: {x: -1734.8, y: -477.43}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8314020784826274977
@@ -121,7 +121,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8791901957205634617}
+  - {fileID: 4211734123311394493}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -220,13 +220,13 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 8791901957205634617}
+  m_Father: {fileID: 4211734123311394493}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -624.25, y: 272.59}
-  m_SizeDelta: {x: 1147.43, y: 36.44}
+  m_AnchoredPosition: {x: -545.6785, y: 272.59}
+  m_SizeDelta: {x: 1267.0729, y: 36.44}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2371503123882087671
 CanvasRenderer:
@@ -404,7 +404,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1001 &4914364686730862479
+--- !u!1001 &307191747811827467
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -413,7 +413,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 917816539271252757, guid: 29f797f3d2ec7004dbd25044cc31c308, type: 3}
       propertyPath: m_Name
-      value: Flashcard_basic
+      value: FlashcardBasic
       objectReference: {fileID: 0}
     - target: {fileID: 4481161457812943286, guid: 29f797f3d2ec7004dbd25044cc31c308, type: 3}
       propertyPath: m_Pivot.x
@@ -481,7 +481,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4481161457812943286, guid: 29f797f3d2ec7004dbd25044cc31c308, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 2
+      value: 24.74
       objectReference: {fileID: 0}
     - target: {fileID: 4481161457812943286, guid: 29f797f3d2ec7004dbd25044cc31c308, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -501,8 +501,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 29f797f3d2ec7004dbd25044cc31c308, type: 3}
---- !u!224 &8791901957205634617 stripped
+--- !u!224 &4211734123311394493 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4481161457812943286, guid: 29f797f3d2ec7004dbd25044cc31c308, type: 3}
-  m_PrefabInstance: {fileID: 4914364686730862479}
+  m_PrefabInstance: {fileID: 307191747811827467}
   m_PrefabAsset: {fileID: 0}
