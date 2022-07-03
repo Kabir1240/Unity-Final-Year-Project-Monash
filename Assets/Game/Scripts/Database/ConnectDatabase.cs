@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Firebase;
 
-public class Connect_database : MonoBehaviour
+public class ConnectDatabase : MonoBehaviour
 {
     private FirebaseApp app;
     // Start is called before the first frame update
@@ -16,6 +16,7 @@ public class Connect_database : MonoBehaviour
                 // Create and hold a reference to your FirebaseApp,
                 // where app is a Firebase.FirebaseApp property of your application class.
                 app = Firebase.FirebaseApp.DefaultInstance;
+                Debug.Log("went here0");
 
                 // Set a flag here to indicate whether Firebase is ready to use by your app.
             }

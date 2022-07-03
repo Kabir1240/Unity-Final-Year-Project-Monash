@@ -8,7 +8,7 @@ using Firebase.Firestore;
 using Firebase.Extensions;
 using System;
 
-public class Prof_Btn : MonoBehaviour
+public class ProfPanel : MonoBehaviour
 {
     // taken from https://answers.unity.com/questions/600148/detect-swipe-in-four-directions-android.html
     // https://medium.com/developers-arena/creating-a-sliding-mobile-menu-in-unity-56940e44556e
@@ -29,6 +29,7 @@ public class Prof_Btn : MonoBehaviour
     //[SerializeField] private RectTransform menu;
     [SerializeField] private TextMeshProUGUI _usernameUI;
     [SerializeField] private ProgressBar _progress;
+    [SerializeField] private TextMeshProUGUI _reward;
 
 
     void Start()
@@ -40,18 +41,8 @@ public class Prof_Btn : MonoBehaviour
 
         _db = FirebaseFirestore.DefaultInstance;
         _progress.InitializeBar(_db, _currentUser);
-
-        // go to collection path
-        SetUserName();
-    }
-
-    private void SetUserName()
-    {
-        CollectionReference usersRef = _db.Collection("User");
-        DocumentReference userRef = _db.Collection("User").Document("mbrown123");
-        _usernameUI.text = userRef.Id;
-        //_usernameUI.text = _currentUser.UserName;
-        Debug.Log(userRef.Id);
+        _reward.text = _currentUser.Points.ToString();
+        _usernameUI.text = "@"+_currentUser.UserName;
     }
 
 
