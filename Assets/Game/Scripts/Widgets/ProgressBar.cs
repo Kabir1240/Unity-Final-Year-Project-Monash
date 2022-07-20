@@ -62,31 +62,6 @@ public class ProgressBar : MonoBehaviour
             }
         });
 
-        //Query lvlQuery = db.Collection("Level").WhereEqualTo("lvl"+_currentUser.Level, true);
-        //lvlQuery.GetSnapshotAsync().ContinueWithOnMainThread(task => {
-        //    Debug.Log("went here 2");
-        //    QuerySnapshot capitalQuerySnapshot = task.Result;
-        //    Debug.Log("went here 3");
-        //    foreach (DocumentSnapshot documentSnapshot in capitalQuerySnapshot.Documents)
-        //    {
-        //        Debug.Log(String.Format("Document data for {0} document:", documentSnapshot.Id));
-        //        Dictionary<string, object> dbData = documentSnapshot.ToDictionary();
-        //        _maxExp = (float)dbData["Max_Exp"];
-        //        Debug.Log("got max exp: " + _maxExp);
-        //        float length = (_progressBarContainer.size.x * 0.96f) * (_currentUser.Exp / _maxExp);
-        //        Debug.Log(length);
-        //        Debug.Log("user exp: " + _currentUser.Exp);
-        //        Debug.Log(_currentUser.Exp / _maxExp);
-        //        Debug.Log(_progressBarContainer.size.x * 0.96f);
-        //        Debug.Log(_progressBar.size.y);
-        //        _progressBar.size = new Vector2(length, _progressBar.size.y);
-
-        //        // Newline to separate entries
-        //        Debug.Log("");
-        //    };
-        //});
-
-        //_maxExp = 120f;
     }
 
     // Update is called once per frame

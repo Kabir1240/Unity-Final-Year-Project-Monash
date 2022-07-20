@@ -1637,6 +1637,7 @@ MonoBehaviour:
   _currentUser: {fileID: 11400000, guid: 69b7ef9e27dfbe74ea876387b8aa6af2, type: 2}
   _usernameUI: {fileID: 268274823}
   _progress: {fileID: 1987947687}
+  _reward: {fileID: 881083562}
 --- !u!1 &771551447
 GameObject:
   m_ObjectHideFlags: 0
