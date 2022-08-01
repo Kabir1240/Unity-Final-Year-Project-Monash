@@ -4,17 +4,14 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class Content : FlashcardInterface
+public class ContentImage : FlashcardInterface
 {
-
-    public Content() { }
+    public ContentImage() { }
 
     public GameObject setAllData(Dictionary<string, object> flashcard, string title, string subheading, int no)
     {
-        //_title.text = Convert.ToString(flashcard["Content"]);
-
         //instantiate the game object here to the scene
-        GameObject flashcardObject = (GameObject)FlashcardManager.LoadPrefabFromFile("FlashcardContent");
+        GameObject flashcardObject = (GameObject)FlashcardManager.LoadPrefabFromFile("FlashcardContentImage");
         Debug.Log(flashcardObject);
 
         //GameObject parent = flashcardObject.transform.Find("FlashcardBasic").gameObject;

@@ -5,6 +5,7 @@ using Firebase.Firestore;
 using Firebase.Extensions;
 using System;
 using System.IO;
+using UnityEditor;
 
 public class FlashcardManager: MonoBehaviour
 {
@@ -31,6 +32,7 @@ public class FlashcardManager: MonoBehaviour
         // initialize _types
         _types.Add("title", new Title());
         _types.Add("content", new Content());
+        _types.Add("content-img", new ContentImage());
 
         Debug.Log(_types);
 
@@ -80,7 +82,7 @@ public class FlashcardManager: MonoBehaviour
 
             // instantiate the first flashcard
             
-            InstantiateCard((Dictionary<string, object>)_flashcardsArray[1]);
+            InstantiateCard((Dictionary<string, object>)_flashcardsArray[2]);
         });
     }
 
@@ -100,6 +102,7 @@ public class FlashcardManager: MonoBehaviour
         GameObject currObject = _types[type].setAllData(flashcard, _lvlTitle, _subheading, _pointer);
         Debug.Log("even got here");
         Debug.Log(currObject);
+
         Instantiate(currObject, _parent.transform);
 
     }
