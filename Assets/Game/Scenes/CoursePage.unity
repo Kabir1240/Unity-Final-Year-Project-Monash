@@ -360,6 +360,7 @@ GameObject:
   - component: {fileID: 526795402}
   - component: {fileID: 526795401}
   - component: {fileID: 526795400}
+  - component: {fileID: 526795404}
   m_Layer: 5
   m_Name: CoursePage
   m_TagString: Untagged
@@ -453,6 +454,25 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &526795404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 526795399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2d6eab57b5c5fc42a9da01ac12d5b9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _initialPos: {fileID: 862998843}
+  _parent: {fileID: 526795399}
+--- !u!1 &862998843 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 917816539271252757, guid: 29f797f3d2ec7004dbd25044cc31c308, type: 3}
+  m_PrefabInstance: {fileID: 360131757}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1236380218
 GameObject:
   m_ObjectHideFlags: 0
