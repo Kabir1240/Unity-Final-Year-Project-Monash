@@ -100,15 +100,14 @@ public class FlashcardManager: MonoBehaviour
         // instantiate game object to the screen
         GameObject currObject = _types[type].setAllData(flashcard, _lvlTitle, _subheading, _pointer);
 
-        if (type == "content-bullet")
-        {
-            bullet(currObject, flashcard);
-        }
-
         Debug.Log("even got here");
         Debug.Log(currObject);
 
         Instantiate(currObject, _parent.transform);
+        if (type == "content-bullet")
+        {
+            bullet(currObject, flashcard);
+        }
 
     }
 
@@ -129,21 +128,32 @@ public class FlashcardManager: MonoBehaviour
         List<object> bullets = flashcard["Bullet"] as List<object>;
         Debug.Log("here: "+bullets);
 
-        TextMeshProUGUI contentObj = flashcardObject.transform.Find("Content").GetComponent<TextMeshProUGUI>();
-        contentObj.text = Convert.ToString(flashcard["Content"]);
-
         foreach (object bullet in bullets)
         {
             //Dictionary<string, object> bulletDictionary = bullet as Dictionary<string, object>;
 
             GameObject bulletObject = (GameObject)FlashcardManager.LoadPrefabFromFile("BulletContent");
-            TextMeshProUGUI bulletContentObj = bulletObject.transform.Find("Bullet (1)").GetComponent<TextMeshProUGUI>();
+            GameObject parent = bulletObject.transform.Find("Bullet").gameObject;
+            TextMeshProUGUI bulletContentObj = parent.transform.Find("Content").GetComponent<TextMeshProUGUI>();
             bulletContentObj.text = Convert.ToString(bullet); ;
-            bulletObject.transform.position = new Vector3(contentObj.transform.position.x + 10, contentObj.transform.position.y + contentObj.renderedHeight / 2 + 10, flashcardObject.transform.position.z);
+            //bulletObject.transform.position = new Vector3(contentObj.transform.position.x + 10, contentObj.transform.position.y + contentObj.renderedHeight / 2 + 10, flashcardObject.transform.position.z);
+            // setting the parent of the new prefab
+            //bulletObject.transform.SetParent(_parent.transform.Find("FlashcardContentBullet(Clone)").gameObject.transform.Find("BulletGroup").transform);
 
-            Debug.Log(bulletObject.transform.position);
-            Instantiate(bulletObject);
+            //Debug.Log(bulletObject.transform.position);
+            Instantiate(bulletObject, _parent.transform);
             //yPos = contentObj.renderedHeight / 2 + 10 + contentObj.transform.position.y;
+        }
+
+        Transform[] children = _parent.GetComponentsInChildren<Transform>();
+        foreach(Transform child in children)
+        {
+            Debug.Log(child.name);
+            if (child.name == "BulletContent(Clone)")
+            {
+                child.SetParent(_parent.transform.Find("FlashcardContentBullet(Clone)").gameObject.transform.Find("BulletGroup").transform);
+
+            }
         }
         return; 
     }
