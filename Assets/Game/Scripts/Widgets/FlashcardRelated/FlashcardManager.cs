@@ -6,6 +6,7 @@ using Firebase.Extensions;
 using System;
 using System.IO;
 using UnityEditor;
+using TMPro;
 
 public class FlashcardManager: MonoBehaviour
 {
@@ -21,10 +22,6 @@ public class FlashcardManager: MonoBehaviour
     {
         //initialize all the flashcard types in the inspector
 
-        // get the position of the template flashcard
-        //x = _initialPos.transform.position.x;
-        //y = _initialPos.transform.position.y;
-        //z = _initialPos.transform.position.z;
         _initialPos.SetActive(false);
         _db = FirebaseFirestore.DefaultInstance;
         Debug.Log("went here");
@@ -33,19 +30,20 @@ public class FlashcardManager: MonoBehaviour
         _types.Add("title", new Title());
         _types.Add("content", new Content());
         _types.Add("content-img", new ContentImage());
+        _types.Add("content-bullet", new ContentBullet());
 
         Debug.Log(_types);
 
         // try load data
-        CollectionReference flashcardsCol = _db.Collection("Module").Document("0005").Collection("Flashcards");
-        _db.Collection("Modules").Document("0005").GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        CollectionReference flashcardsCol = _db.Collection("Module").Document("0006").Collection("Flashcards");
+        _db.Collection("Modules").Document("0006").GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             DocumentSnapshot snapshot = task.Result;
             if (snapshot.Exists)
             {
                 Dictionary<string, object> currDoc = snapshot.ToDictionary();
                 Debug.Log(currDoc);
-                LoadData(_db.Collection("Modules").Document("0005").Collection("Flashcards"), Convert.ToString(currDoc["Title"]));
+                LoadData(_db.Collection("Modules").Document("0006").Collection("Flashcards"), Convert.ToString(currDoc["Title"]));
 
             }
         });
@@ -97,9 +95,16 @@ public class FlashcardManager: MonoBehaviour
         {
             _subheading = Convert.ToString(flashcard["Content"]);
         }
+
         Debug.Log(_subheading +" "+_lvlTitle);
         // instantiate game object to the screen
         GameObject currObject = _types[type].setAllData(flashcard, _lvlTitle, _subheading, _pointer);
+
+        if (type == "content-bullet")
+        {
+            bullet(currObject, flashcard);
+        }
+
         Debug.Log("even got here");
         Debug.Log(currObject);
 
@@ -117,5 +122,29 @@ public class FlashcardManager: MonoBehaviour
             throw new FileNotFoundException("...no file found - please check the configuration");
         }
         return loadedObject;
+    }
+
+    private void bullet(GameObject flashcardObject, Dictionary<string,object> flashcard)
+    {
+        List<object> bullets = flashcard["Bullet"] as List<object>;
+        Debug.Log("here: "+bullets);
+
+        TextMeshProUGUI contentObj = flashcardObject.transform.Find("Content").GetComponent<TextMeshProUGUI>();
+        contentObj.text = Convert.ToString(flashcard["Content"]);
+
+        foreach (object bullet in bullets)
+        {
+            //Dictionary<string, object> bulletDictionary = bullet as Dictionary<string, object>;
+
+            GameObject bulletObject = (GameObject)FlashcardManager.LoadPrefabFromFile("BulletContent");
+            TextMeshProUGUI bulletContentObj = bulletObject.transform.Find("Bullet (1)").GetComponent<TextMeshProUGUI>();
+            bulletContentObj.text = Convert.ToString(bullet); ;
+            bulletObject.transform.position = new Vector3(contentObj.transform.position.x + 10, contentObj.transform.position.y + contentObj.renderedHeight / 2 + 10, flashcardObject.transform.position.z);
+
+            Debug.Log(bulletObject.transform.position);
+            Instantiate(bulletObject);
+            //yPos = contentObj.renderedHeight / 2 + 10 + contentObj.transform.position.y;
+        }
+        return; 
     }
 }
