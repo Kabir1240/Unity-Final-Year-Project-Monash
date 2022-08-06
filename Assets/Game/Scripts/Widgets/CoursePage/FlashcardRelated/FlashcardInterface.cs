@@ -5,6 +5,6 @@ using UnityEngine;
 
 public interface FlashcardInterface
 {
-    GameObject setAllData(Dictionary<string, object> flashcard, string title, string subheading, int no);
+    GameObject setAllData(Dictionary<string, object> flashcard, string title, string subheading, int no, FlashcardManager manager);
 
 }

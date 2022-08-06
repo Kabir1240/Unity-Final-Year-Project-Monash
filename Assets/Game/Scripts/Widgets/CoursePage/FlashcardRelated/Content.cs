@@ -9,7 +9,7 @@ public class Content : FlashcardInterface
 
     public Content() { }
 
-    public GameObject setAllData(Dictionary<string, object> flashcard, string title, string subheading, int no)
+    public GameObject setAllData(Dictionary<string, object> flashcard, string title, string subheading, int no, FlashcardManager manager)
     {
         //_title.text = Convert.ToString(flashcard["Content"]);
 

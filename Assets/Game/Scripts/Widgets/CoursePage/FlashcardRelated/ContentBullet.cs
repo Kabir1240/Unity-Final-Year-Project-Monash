@@ -8,7 +8,7 @@ public class ContentBullet : FlashcardInterface
 {
     public ContentBullet() { }
 
-    public GameObject setAllData(Dictionary<string, object> flashcard, string title, string subheading, int no)
+    public GameObject setAllData(Dictionary<string, object> flashcard, string title, string subheading, int no, FlashcardManager manager)
     {
         //instantiate the game object here to the scene
         GameObject flashcardObject = (GameObject)FlashcardManager.LoadPrefabFromFile("FlashcardContentBullet");
@@ -33,7 +33,7 @@ public class ContentBullet : FlashcardInterface
         TextMeshProUGUI pageNoObj = flashcardObject.transform.Find("Circle").transform.Find("Number").GetComponent<TextMeshProUGUI>();
         pageNoObj.text = no.ToString();
 
-        TextMeshProUGUI contentObj = flashcardObject.transform.Find("Content").GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI contentObj = flashcardObject.transform.Find("BulletGroup").gameObject.transform.Find("Content").GetComponent<TextMeshProUGUI>();
         contentObj.text = Convert.ToString(flashcard["Content"]);
 
         // go through all the bullet points

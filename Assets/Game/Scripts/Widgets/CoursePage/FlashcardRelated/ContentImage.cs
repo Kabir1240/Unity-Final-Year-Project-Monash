@@ -1,3 +1,5 @@
+using Firebase.Extensions;
+using Firebase.Storage;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,7 +10,7 @@ public class ContentImage : FlashcardInterface
 {
     public ContentImage() { }
 
-    public GameObject setAllData(Dictionary<string, object> flashcard, string title, string subheading, int no)
+    public GameObject setAllData(Dictionary<string, object> flashcard, string title, string subheading, int no, FlashcardManager manager)
     {
         //instantiate the game object here to the scene
         GameObject flashcardObject = (GameObject)FlashcardManager.LoadPrefabFromFile("FlashcardContentImage");
@@ -35,6 +37,8 @@ public class ContentImage : FlashcardInterface
 
         TextMeshProUGUI contentObj = flashcardObject.transform.Find("Content").GetComponent<TextMeshProUGUI>();
         contentObj.text = Convert.ToString(flashcard["Content"]);
+
+        //manager.downloadImage(flashcardObject, flashcard);
 
         return flashcardObject;
     }
