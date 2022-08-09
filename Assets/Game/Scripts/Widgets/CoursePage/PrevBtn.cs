@@ -8,6 +8,7 @@ public class PrevBtn : MonoBehaviour
     [SerializeField] Button btn;
     [SerializeField] NextBtn next;
     [SerializeField] FlashcardManager manager;
+    [SerializeField] ProgressBarCourse slider;
     public bool firstClick;
 
     // Start is called before the first frame update
@@ -22,11 +23,16 @@ public class PrevBtn : MonoBehaviour
     {
         btn.interactable = true;
         firstClick = true;
+
+        // sets up the total flashcards
+        slider.setTotal();
+
         return firstClick;
     }
 
     void TaskOnClick()
     {
+        slider.Prev();
         if (!next.lastClick)
         {
             next.LastClick();

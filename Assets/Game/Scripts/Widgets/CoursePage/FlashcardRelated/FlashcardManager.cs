@@ -52,8 +52,23 @@ public class FlashcardManager : MonoBehaviour
 
         storage = FirebaseStorage.DefaultInstance;
         storageRef = storage.GetReferenceFromUrl("gs://fit3162-33646.appspot.com/");
+
+        _flashcardsArray = new List<Dictionary<string, object>>();
+        _flashcardObjectsArray = new List<GameObject>();
+
         LoadData();
 
+    }
+
+    public int totalFlashcards()
+    {
+        Debug.Log("total: " + _flashcardsArray.Count);
+        return _flashcardsArray.Count;
+    }
+
+    public int getPointer()
+    {
+        return _pointer;
     }
 
     public bool Next()
@@ -172,9 +187,6 @@ public class FlashcardManager : MonoBehaviour
         Debug.Log(flashcards);
 
         Debug.Log("sucessfully retrieved collection reference");
-
-        _flashcardsArray = new List<Dictionary<string, object>>();
-        _flashcardObjectsArray = new List<GameObject>();
 
         // getting the data from the collection and putting it to an arraylist
         flashcards.GetSnapshotAsync().ContinueWithOnMainThread(task =>
