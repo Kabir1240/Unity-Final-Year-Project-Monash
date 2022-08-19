@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Data", menuName = "Level")]
+[CreateAssetMenu(fileName = "Data", menuName = "Module")]
 public class ModuleLevel : ScriptableObject
 {
     // Module data is set every time the user clicks on a level
