@@ -5,11 +5,10 @@ using Firebase.Firestore;
 using Firebase.Extensions;
 using System;
 using System.IO;
-using UnityEditor;
+
 using TMPro;
 using Firebase.Storage;
 using UnityEngine.UI;
-using Unity.VisualScripting;
 using UnityEngine.Networking;
 
 public class FlashcardManager : MonoBehaviour

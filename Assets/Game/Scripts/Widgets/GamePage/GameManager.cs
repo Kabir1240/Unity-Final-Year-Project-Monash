@@ -35,6 +35,10 @@ public class GameManager : MonoBehaviour
     private List<NoteInfo> _noteDetails;
     private int _perfect, _great, _good, _miss;
     private bool _doneSong, _doneMidi;
+    private int currI;
+    private float delay;
+    private float _speed;
+
 
 
     //private string _path;
@@ -67,25 +71,33 @@ public class GameManager : MonoBehaviour
     {
         if (!_doneSong || !_doneMidi)
         {
+            Debug.Log("song: "+_doneSong+" midi: "+_doneMidi);
             return;
         }
         CancelInvoke();
         //start instantiating the game objects based on the lane
         // possible way:
-        double delay = 0;
-        for(int i = 0; i<_notes.Length;i++)
-        {
-            
-            StartCoroutine(InstantiateNote(delay, i));
-            delay = _noteDetails[i].DelayTime;
-        }
+        delay = 0;
+        Debug.Log("_notes.Length: " + _notes.Length);
+        Debug.Log("_noteDetails.Length: " + _noteDetails.Count);
+
+
+        StartCoroutine(InstantiateNote());
+
             
     }
 
-    private IEnumerator InstantiateNote(double delay, int i)
+    private IEnumerator InstantiateNote()
     {
-        _noteDetails[i].LaneAt.InstantiateObj(_notes[i].NoteName.ToString(), _notes[i].NoteNumber);
-        yield return new WaitForSeconds((float)(delay / 1000.0d));
+        for(int i = 0; i < _notes.Length; i++)
+        {
+            Debug.Log(" i: " + i + " _notes[i]: " + _notes[i].NoteName.ToString() + " delay: " + (delay / 1000.0f));
+            _noteDetails[i].LaneAt.InstantiateObj(_notes[i].NoteName.ToString(), _notes[i].Octave.ToString(), _notes[i].NoteNumber, _speed);
+            delay = (float)_noteDetails[i].DelayTime;
+            yield return new WaitForSeconds(delay / 1000.0f);
+            //_noteDetails[i].LaneAt.InstantiateObj(_notes[i].NoteName.ToString(), _notes[i].NoteNumber);
+            //delay = (float)_noteDetails[i].DelayTime;
+        }
     }
 
     private void GetSong()
@@ -124,7 +136,8 @@ public class GameManager : MonoBehaviour
                 //StartCoroutine(isDownloading(Convert.ToString(task.Result), path));
                 isDownloading(Convert.ToString(task.Result), path);
                 ConvertToNotes(path);
-                _doneMidi = true;
+
+
 
             }
         });
@@ -183,14 +196,28 @@ public class GameManager : MonoBehaviour
         Debug.Log("stuck");
 
         _map = Midi.GetTempoMap();
+        Tempo tempo = _map.GetTempoAtTime((MidiTimeSpan)0);
+        TimeSignature speed = _map.GetTimeSignatureAtTime((MidiTimeSpan)0);
+        Debug.Log("time signature: " + speed.Numerator+"/"+speed.Denominator);
+        // getting the speed in seconds
+        _speed = 1/ (tempo.MicrosecondsPerQuarterNote * (4 / speed.Denominator) / speed.Numerator/1000000.0f);
         Debug.Log("tempo: " + _map.GetTempoAtTime((MidiTimeSpan)0));
+        Debug.Log("speed: "+_speed);
+        foreach(Lane laneObj in laneObjects)
+        {
+            laneObj.speed = _speed;
+        }
 
         ICollection<Note> midiNote = Midi.GetNotes();
         _notes = new Note[midiNote.Count];
         midiNote.CopyTo(_notes, 0);
-
+        Debug.Log("notes length: " + _notes.Length);
         PreprocessNotes();
+        Debug.Log("PREPROCESS FINISH");
         BaseScore();
+        Debug.Log("CONVERT FINISH");
+        _doneMidi = true;
+        return;
     }
 
     private void BaseScore()
@@ -200,28 +227,52 @@ public class GameManager : MonoBehaviour
         _great = (int)0.88 * _perfect;
         _good = (int)0.78 * _great;
         _miss = 0;
+        return;
 
     }
 
     private void PreprocessNotes()
     {
         Debug.Log("preprocessing Notes");
-        for (int i = 0; i < _notes.Length - 1; i++)
+        for (int i = 0; i < _notes.Length-1; i++)
         {
+            //Debug.Log("preprocessing Notes: i: "+i);
             foreach (Lane currLane in laneObjects)
             {
+                //Debug.Log("preprocessing Notes: lane: " + currLane._id);
+                //Debug.Log("preprocessing Notes: notename: " + _notes[i].NoteName);
                 if (currLane.checkNoteRestriction(_notes[i]))
                 {
+                    //Debug.Log("preprocessing Notes: true: "+_notes[i].NoteName);
                     NoteInfo newInfo = new NoteInfo();
                     newInfo.StartTime = _notes[i].TimeAs<MetricTimeSpan>(_map).TotalMilliseconds;
                     newInfo.DelayTime = _notes[i + 1].TimeAs<MetricTimeSpan>(_map).TotalMilliseconds - newInfo.StartTime;
                     newInfo.LaneAt = currLane;
                     _noteDetails.Add(newInfo);
-                    Debug.Log("currNote: " + _notes[i].NoteName + _notes[i].Octave + " start: " + newInfo.StartTime + " delay: " + newInfo.DelayTime + " lane: " + newInfo.LaneAt);
+                    //Debug.Log("currNote: " + _notes[i].NoteName + _notes[i].Octave + " start: " + newInfo.StartTime + " delay: " + newInfo.DelayTime + " lane: " + newInfo.LaneAt);
                     break;
                 }
             }
         }
+
+        foreach (Lane currLane in laneObjects)
+        {
+            //Debug.Log("preprocessing Notes: lane: " + currLane._id);
+            //Debug.Log("preprocessing Notes: notename: " + _notes[i].NoteName);
+            if (currLane.checkNoteRestriction(_notes[_notes.Length - 1]))
+            {
+                NoteInfo newInfo = new NoteInfo();
+                newInfo.StartTime = _notes[_notes.Length - 1].TimeAs<MetricTimeSpan>(_map).TotalMilliseconds;
+                newInfo.DelayTime = 0;
+                newInfo.LaneAt = currLane;
+                _noteDetails.Add(newInfo);
+                //Debug.Log("currNote: " + _notes[i].NoteName + _notes[i].Octave + " start: " + newInfo.StartTime + " delay: " + newInfo.DelayTime + " lane: " + newInfo.LaneAt);
+                break;
+            }
+        }
+        
+        Debug.Log("finished here");
+        return;
     }
 
     // Update is called once per frame

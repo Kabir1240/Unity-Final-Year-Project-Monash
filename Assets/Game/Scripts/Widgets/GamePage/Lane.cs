@@ -4,17 +4,27 @@ using Melanchall.DryWetMidi.MusicTheory;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using TMPro;
 using UnityEngine;
 
 public class Lane : MonoBehaviour
 {
+    [SerializeField] public int _id;
+    [SerializeField] private List<string> _noteParseRestrictions;
+    [SerializeField] private RectTransform _laneObj;
+    [SerializeField] public Canvas _parentCanvas;
+    private GameObject _parentobj;
+
     public List<Note> noteRestrictions = new List<Note>();
-    [SerializeField] int id;
-    [SerializeField] private List<string> noteParseRestrictions;
     public KeyCode input;
     public GameObject notePrefab;
-    List<Note> notes = new List<Note>();
     public List<double> timeStamps = new List<double>();
+    public float speed;
+
+    private float _posY;
+    private GameObject _note;
+    private TextMeshProUGUI _noteName;
 
     int spawnIndex = 0;
     int inputIndex = 0;
@@ -22,11 +32,19 @@ public class Lane : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        foreach (string note in noteParseRestrictions)
+        // getting the parent canvas
+        _parentCanvas = (Canvas)GameObject.FindObjectOfType(typeof(Canvas));
+        _parentobj = _parentCanvas.gameObject;
+
+        _posY = _laneObj.transform.position.y;
+        foreach (string note in _noteParseRestrictions)
         {
             noteRestrictions.Add(Note.Parse(note));
-            Debug.Log("lane " + id + ": " + Note.Parse(note).NoteName + " no:" + Note.Parse(note).NoteNumber);
+            //Debug.Log("lane " + _id + ": " + Note.Parse(note).NoteName + " no:" + Note.Parse(note).NoteNumber);
         }
+
+        _note = (GameObject)LoadPrefabFromFile("Note");
+        _noteName = _note.transform.Find("note").GetComponent<TextMeshProUGUI>();
     }
 
     public bool checkNoteRestriction(Melanchall.DryWetMidi.Interaction.Note note)
@@ -41,10 +59,30 @@ public class Lane : MonoBehaviour
         return false;
     }
 
-    public void InstantiateObj(string noteName, SevenBitNumber noteNumber){
+    public void InstantiateObj(string noteName, string noteOctave, SevenBitNumber noteNumber, float speed){
         // instantiate the note object here
         // in the note object's update, we will update the speed according
         // to the tempo
+        //Debug.Log("instantiate note: " + noteName + " midiNo: " + noteNumber);
+        _noteName.text = noteName + noteOctave;
+        GameObject child = Instantiate(_note);
+        child.transform.SetParent(_parentobj.transform);
+        child.transform.localPosition = new Vector3(-1607, transform.localPosition.y, 0);
+        child.transform.localScale = new Vector3(1, 1, 1);
+        child.GetComponent<SingleNote>().speed = speed;
+        
+
+    }
+
+    public static UnityEngine.Object LoadPrefabFromFile(string filename)
+    {
+        Debug.Log("Trying to load LevelPrefab from file (" + filename + ")...");
+        var loadedObject = Resources.Load("Materials/Prefabs/" + filename);
+        if (loadedObject == null)
+        {
+            throw new FileNotFoundException("...no file found - please check the configuration");
+        }
+        return loadedObject;
     }
 
     //public void SetTimeStamps(Melanchall.DryWetMidi.Interaction.Note[] array)
@@ -77,8 +115,8 @@ public class Lane : MonoBehaviour
     //        double timeStamp = timeStamps[inputIndex];
     //        double marginOfError = SongManager.Instance.marginOfError;
     //        double audioTime = SongManager.GetAudioSourceTime() - (SongManager.Instance.inputDelayInMilliseconds / 1000.0);
-                // have 1 observer class and make all the lanes subsribe to it. if a sound is heard, it will distribute the result to all the strings
-                // if a m
+    // have 1 observer class and make all the lanes subsribe to it. if a sound is heard, it will distribute the result to all the strings
+    // if a m
     //        if (Input.GetKeyDown(input))
     //        {
     //            if (Math.Abs(audioTime - timeStamp) < marginOfError)
