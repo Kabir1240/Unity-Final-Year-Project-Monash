@@ -13,9 +13,9 @@ public class Lane : MonoBehaviour
     [SerializeField] public int _id;
     [SerializeField] private List<string> _noteParseRestrictions;
     [SerializeField] private RectTransform _laneObj;
-    [SerializeField] public Canvas _parentCanvas;
+    //[SerializeField] public Canvas _parentCanvas;
     [SerializeField] public GameManager manager;
-    private GameObject _parentobj;
+    [SerializeField] private GameObject _parentobj;
 
     public List<Note> noteRestrictions = new List<Note>();
     public KeyCode input;
@@ -34,8 +34,8 @@ public class Lane : MonoBehaviour
     void Start()
     {
         // getting the parent canvas
-        _parentCanvas = (Canvas)GameObject.FindObjectOfType(typeof(Canvas));
-        _parentobj = _parentCanvas.gameObject;
+        //_parentCanvas = (Canvas)GameObject.FindObjectOfType(typeof(Canvas));
+        //_parentobj = _parentCanvas.gameObject;
 
         _posY = _laneObj.transform.position.y;
         foreach (string note in _noteParseRestrictions)
@@ -73,6 +73,7 @@ public class Lane : MonoBehaviour
         child.GetComponent<SingleNote>().speed = speed;
         child.GetComponent<SingleNote>().index = index;
         child.GetComponent<SingleNote>().manager = manager;
+        manager.InstantiatedNotes.Add(child);
     }
 
     public static UnityEngine.Object LoadPrefabFromFile(string filename)

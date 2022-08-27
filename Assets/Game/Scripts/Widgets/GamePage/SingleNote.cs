@@ -23,13 +23,16 @@ public class SingleNote : MonoBehaviour
         if (manager.IsPlaying)
         {
             transform.Translate(Vector3.right * Time.deltaTime * speed);
-
-            // if the note is no longer visible
-            if (transform.localPosition.x >= 1596.0f)
+            if(transform.localPosition.x>= 1254.0f)
             {
-                GameManager.NoteData data = manager.NoteDetails[index].data;
-                data.endTime= Time.time;
-                Debug.Log("destroyed: start at " + data.startTime + " end at " + data.endTime);
+                manager.NoteDetails[index].data.setAccuracyType("missed");
+                manager.InstantiatedNotes.RemoveAt(0);
+            }
+            // if the note is no longer visible
+            if (transform.localPosition.x >= 1573.0f)
+            {
+                manager.NoteDetails[index].data.setEndTime(Time.time - manager.PauseDuration);
+                Debug.Log("destroyed: start at " + manager.NoteDetails[index].data.getStartTime() + " end at " + manager.NoteDetails[index].data.getEndTime());
                 Destroy(gameObject);
             }
         }

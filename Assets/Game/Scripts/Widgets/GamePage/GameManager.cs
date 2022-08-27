@@ -35,12 +35,12 @@ public class GameManager : MonoBehaviour
         public NoteData data;
     }
 
-    public struct NoteData
-    {
-        public string accuracyType;
-        public float startTime;
-        public float endTime;
-    }
+    //public struct NoteData
+    //{
+    //    public string accuracyType;
+    //    public float startTime;
+    //    public float endTime;
+    //}
 
     // public struct NotePlayInfo
 
@@ -56,7 +56,9 @@ public class GameManager : MonoBehaviour
     private float delay;
     private float _speed;
     private string _path;
-    private float _startTime, _stopTime, _pauseDuration;
+    private float _startTime, _stopTime;
+    public float PauseDuration;
+    public List<GameObject> InstantiatedNotes = new List<GameObject>();
 
     FirebaseStorage storage;
     StorageReference storageRef;
@@ -83,13 +85,15 @@ public class GameManager : MonoBehaviour
         currI = 0;
         _startTime = 0;
         _stopTime = 0;
-        _pauseDuration = 0;
+        PauseDuration = 0;
 
         GetMidi();
         GetSong();
 
         InvokeRepeating("StartGame", 1.0f, 1.0f);
     }
+
+    // imp
     private void Flow()
     {
         if (IsPlaying)
@@ -102,9 +106,9 @@ public class GameManager : MonoBehaviour
         else
         {
             IsPlaying = true;
-            if (_startTime > 0)
+            if (_stopTime > 0)
             {
-                _pauseDuration += Time.time - _stopTime;
+                PauseDuration += Time.time - _stopTime;
             }
             flowPanel.SetActive(false);
             playSymbol.gameObject.SetActive(false);
@@ -152,14 +156,15 @@ public class GameManager : MonoBehaviour
         while(currI<_notes.Length && IsPlaying)
         {
             Debug.Log(" i: " + currI + " _notes[i]: " + _notes[currI].NoteName.ToString() + " delay: " + (delay / 1000.0f));
-            float currTime = Time.time - _pauseDuration;
+            float currTime = Time.time - PauseDuration;
             if (currI == 0)
             {
                 _startTime = currTime;
             }
             NoteDetails[currI].LaneAt.InstantiateObj(_notes[currI].NoteName.ToString(), _notes[currI].Octave.ToString(), _notes[currI].NoteNumber, _speed, currI, currTime);
-            NoteData data = NoteDetails[currI].data;
-            data.startTime = currTime;
+            
+            NoteDetails[currI].data.setStartTime(currTime);
+            Debug.Log("starttime: " + NoteDetails[currI].data.getStartTime() +" pause: "+PauseDuration);
             delay = (float)NoteDetails[currI].DelayTime;
             currI += 1;
             yield return new WaitForSeconds(delay / 1000.0f);
@@ -351,6 +356,7 @@ public class GameManager : MonoBehaviour
                 newInfo.StartTime = _notes[_notes.Length - 1].TimeAs<MetricTimeSpan>(_map).TotalMilliseconds;
                 newInfo.DelayTime = 0;
                 newInfo.LaneAt = currLane;
+                newInfo.data = new NoteData();
                 NoteDetails.Add(newInfo);
                 //Debug.Log("currNote: " + _notes[i].NoteName + _notes[i].Octave + " start: " + newInfo.StartTime + " delay: " + newInfo.DelayTime + " lane: " + newInfo.LaneAt);
                 break;
