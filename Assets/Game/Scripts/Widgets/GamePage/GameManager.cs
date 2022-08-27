@@ -11,6 +11,7 @@ using UnityEngine.Networking;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Interaction;
 using Melanchall.DryWetMidi.Common;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -19,6 +20,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject multiplier;
     [SerializeField] Song currSong;
     [SerializeField] Lane[] laneObjects;
+    [SerializeField] Button pauseBtn;
+    [SerializeField] GameObject flowPanel;
+    [SerializeField] Button playSymbol;
+    [SerializeField] GameObject pauseSymbol;
 
     public struct NoteInfo
     {
@@ -27,21 +32,31 @@ public class GameManager : MonoBehaviour
         public double StartTime;
         public double DelayTime; // start of next note - current note start time
         public Lane LaneAt;
+        public NoteData data;
     }
+
+    public struct NoteData
+    {
+        public string accuracyType;
+        public float startTime;
+        public float endTime;
+    }
+
+    // public struct NotePlayInfo
+
+    public bool IsPlaying;
 
     private FirebaseFirestore _db;
     private TempoMap _map;
     private Note[] _notes;
-    private List<NoteInfo> _noteDetails;
-    private int _perfect, _great, _good, _miss;
+    public List<NoteInfo> NoteDetails;
+    private Dictionary<string, int> _accuracy = new Dictionary<string, int>();
     private bool _doneSong, _doneMidi;
     private int currI;
     private float delay;
     private float _speed;
-
-
-
-    //private string _path;
+    private string _path;
+    private float _startTime, _stopTime, _pauseDuration;
 
     FirebaseStorage storage;
     StorageReference storageRef;
@@ -59,12 +74,49 @@ public class GameManager : MonoBehaviour
         storageRef = storage.GetReferenceFromUrl("gs://fit3162-33646.appspot.com/");
         Debug.Log("initialized firestorage");
 
-        _noteDetails = new List<NoteInfo>();
+        pauseBtn.onClick.AddListener(Flow);
+        playSymbol.onClick.AddListener(Flow);
+        playSymbol.interactable= false;
+
+        NoteDetails = new List<NoteInfo>();
+        IsPlaying = false;
+        currI = 0;
+        _startTime = 0;
+        _stopTime = 0;
+        _pauseDuration = 0;
 
         GetMidi();
         GetSong();
 
         InvokeRepeating("StartGame", 1.0f, 1.0f);
+    }
+    private void Flow()
+    {
+        if (IsPlaying)
+        {
+            IsPlaying = false;
+            _stopTime = Time.time;
+            flowPanel.SetActive(true);
+            playSymbol.gameObject.SetActive(true);
+        }
+        else
+        {
+            IsPlaying = true;
+            if (_startTime > 0)
+            {
+                _pauseDuration += Time.time - _stopTime;
+            }
+            flowPanel.SetActive(false);
+            playSymbol.gameObject.SetActive(false);
+            StartCoroutine(PlayDelay());
+            
+            StartCoroutine(InstantiateNote());
+        }
+    }
+
+    private IEnumerator PlayDelay()
+    {
+        yield return new WaitForSeconds(3);
     }
 
     private void StartGame()
@@ -72,28 +124,44 @@ public class GameManager : MonoBehaviour
         if (!_doneSong || !_doneMidi)
         {
             Debug.Log("song: "+_doneSong+" midi: "+_doneMidi);
+            //SHOW LOADING PANEL
             return;
         }
         CancelInvoke();
+        // ENABLE PLAY BUTTON
+        playSymbol.interactable = true;
         //start instantiating the game objects based on the lane
         // possible way:
         delay = 0;
         Debug.Log("_notes.Length: " + _notes.Length);
-        Debug.Log("_noteDetails.Length: " + _noteDetails.Count);
+        Debug.Log("_noteDetails.Length: " + NoteDetails.Count);
 
-
-        StartCoroutine(InstantiateNote());
-
-            
     }
 
     private IEnumerator InstantiateNote()
     {
-        for(int i = 0; i < _notes.Length; i++)
+        //for(int i = 0; i < _notes.Length; i++)
+        //{
+        //    Debug.Log(" i: " + i + " _notes[i]: " + _notes[i].NoteName.ToString() + " delay: " + (delay / 1000.0f));
+        //    _noteDetails[i].LaneAt.InstantiateObj(_notes[i].NoteName.ToString(), _notes[i].Octave.ToString(), _notes[i].NoteNumber, _speed);
+        //    delay = (float)_noteDetails[i].DelayTime;
+        //    yield return new WaitForSeconds(delay / 1000.0f);
+        //    //_noteDetails[i].LaneAt.InstantiateObj(_notes[i].NoteName.ToString(), _notes[i].NoteNumber);
+        //    //delay = (float)_noteDetails[i].DelayTime;
+        //}
+        while(currI<_notes.Length && IsPlaying)
         {
-            Debug.Log(" i: " + i + " _notes[i]: " + _notes[i].NoteName.ToString() + " delay: " + (delay / 1000.0f));
-            _noteDetails[i].LaneAt.InstantiateObj(_notes[i].NoteName.ToString(), _notes[i].Octave.ToString(), _notes[i].NoteNumber, _speed);
-            delay = (float)_noteDetails[i].DelayTime;
+            Debug.Log(" i: " + currI + " _notes[i]: " + _notes[currI].NoteName.ToString() + " delay: " + (delay / 1000.0f));
+            float currTime = Time.time - _pauseDuration;
+            if (currI == 0)
+            {
+                _startTime = currTime;
+            }
+            NoteDetails[currI].LaneAt.InstantiateObj(_notes[currI].NoteName.ToString(), _notes[currI].Octave.ToString(), _notes[currI].NoteNumber, _speed, currI, currTime);
+            NoteData data = NoteDetails[currI].data;
+            data.startTime = currTime;
+            delay = (float)NoteDetails[currI].DelayTime;
+            currI += 1;
             yield return new WaitForSeconds(delay / 1000.0f);
             //_noteDetails[i].LaneAt.InstantiateObj(_notes[i].NoteName.ToString(), _notes[i].NoteNumber);
             //delay = (float)_noteDetails[i].DelayTime;
@@ -111,6 +179,8 @@ public class GameManager : MonoBehaviour
             {
                 Debug.Log("Download URL: " + task.Result);
                 //StartCoroutine(isDownloading(Convert.ToString(task.Result), _parent.transform.Find("FlashcardContentImage(Clone)").gameObject));
+
+                // TEST IN ANDROID USES Application.persistentDataPath+"/SongFile.wav"
                 string path = Path.Combine(Application.dataPath + "/Resources/Materials/Midi", "SongFile.wav").Replace("\\", "/");
                 //StartCoroutine(isDownloading(Convert.ToString(task.Result), path));
                 isDownloading(Convert.ToString(task.Result), path);
@@ -132,10 +202,12 @@ public class GameManager : MonoBehaviour
             {
                 Debug.Log("Download URL: " + task.Result);
                 //StartCoroutine(isDownloading(Convert.ToString(task.Result), _parent.transform.Find("FlashcardContentImage(Clone)").gameObject));
+                
+                // TEST IN ANDROID USES Application.persistentDataPath+"/Midifiles.mid"
                 string path = Path.Combine(Application.dataPath + "/Resources/Materials/Midi", "MidiFiles.mid").Replace("\\", "/");
                 //StartCoroutine(isDownloading(Convert.ToString(task.Result), path));
                 isDownloading(Convert.ToString(task.Result), path);
-                ConvertToNotes(path);
+                ConvertToNotes(_path);
 
 
 
@@ -174,6 +246,7 @@ public class GameManager : MonoBehaviour
                     // might need to make a loading page
                 }
                 Debug.Log("File downloaded at: " + path);
+                _path = path;
                 
             }
         }
@@ -186,7 +259,8 @@ public class GameManager : MonoBehaviour
         Debug.Log("converting to notes of file: " + filePath);
         try
         {
-            Midi = MidiFile.Read(Directory.GetCurrentDirectory() + "/Assets/Resources/Materials/Midi/MidiFiles.mid");
+            Midi = MidiFile.Read(_path);
+            //Midi = MidiFile.Read(Directory.GetCurrentDirectory() + "/Assets/Resources/Materials/Midi/MidiFiles.mid");
         }
         catch (Exception e)
         {
@@ -212,7 +286,14 @@ public class GameManager : MonoBehaviour
         _notes = new Note[midiNote.Count];
         midiNote.CopyTo(_notes, 0);
         Debug.Log("notes length: " + _notes.Length);
-        PreprocessNotes();
+        try
+        {
+            PreprocessNotes();
+        }catch(Exception e)
+        {
+            Debug.Log(e);
+        }
+        
         Debug.Log("PREPROCESS FINISH");
         BaseScore();
         Debug.Log("CONVERT FINISH");
@@ -223,10 +304,14 @@ public class GameManager : MonoBehaviour
     private void BaseScore()
     {
         Debug.Log("went base score first");
-        _perfect = 100000 / _notes.Length;
-        _great = (int)0.88 * _perfect;
-        _good = (int)0.78 * _great;
-        _miss = 0;
+        int perfect = 100000 / _notes.Length;
+        int great =(int)0.88 * perfect;
+        int good = (int)0.78 * great;
+
+        _accuracy.Add("Perfect", perfect);
+        _accuracy.Add("Great", great);
+        _accuracy.Add("Good", good);
+        _accuracy.Add("Miss", 0);
         return;
 
     }
@@ -248,7 +333,8 @@ public class GameManager : MonoBehaviour
                     newInfo.StartTime = _notes[i].TimeAs<MetricTimeSpan>(_map).TotalMilliseconds;
                     newInfo.DelayTime = _notes[i + 1].TimeAs<MetricTimeSpan>(_map).TotalMilliseconds - newInfo.StartTime;
                     newInfo.LaneAt = currLane;
-                    _noteDetails.Add(newInfo);
+                    newInfo.data = new NoteData();
+                    NoteDetails.Add(newInfo);
                     //Debug.Log("currNote: " + _notes[i].NoteName + _notes[i].Octave + " start: " + newInfo.StartTime + " delay: " + newInfo.DelayTime + " lane: " + newInfo.LaneAt);
                     break;
                 }
@@ -265,7 +351,7 @@ public class GameManager : MonoBehaviour
                 newInfo.StartTime = _notes[_notes.Length - 1].TimeAs<MetricTimeSpan>(_map).TotalMilliseconds;
                 newInfo.DelayTime = 0;
                 newInfo.LaneAt = currLane;
-                _noteDetails.Add(newInfo);
+                NoteDetails.Add(newInfo);
                 //Debug.Log("currNote: " + _notes[i].NoteName + _notes[i].Octave + " start: " + newInfo.StartTime + " delay: " + newInfo.DelayTime + " lane: " + newInfo.LaneAt);
                 break;
             }

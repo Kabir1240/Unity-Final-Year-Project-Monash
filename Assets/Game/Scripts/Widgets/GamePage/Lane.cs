@@ -14,6 +14,7 @@ public class Lane : MonoBehaviour
     [SerializeField] private List<string> _noteParseRestrictions;
     [SerializeField] private RectTransform _laneObj;
     [SerializeField] public Canvas _parentCanvas;
+    [SerializeField] public GameManager manager;
     private GameObject _parentobj;
 
     public List<Note> noteRestrictions = new List<Note>();
@@ -59,19 +60,19 @@ public class Lane : MonoBehaviour
         return false;
     }
 
-    public void InstantiateObj(string noteName, string noteOctave, SevenBitNumber noteNumber, float speed){
+    public void InstantiateObj(string noteName, string noteOctave, SevenBitNumber noteNumber, float speed, int index, float time){
         // instantiate the note object here
         // in the note object's update, we will update the speed according
         // to the tempo
-        //Debug.Log("instantiate note: " + noteName + " midiNo: " + noteNumber);
+        Debug.Log("instantiate note: " + noteName + " midiNo: " + noteNumber);
         _noteName.text = noteName + noteOctave;
         GameObject child = Instantiate(_note);
         child.transform.SetParent(_parentobj.transform);
         child.transform.localPosition = new Vector3(-1607, transform.localPosition.y, 0);
         child.transform.localScale = new Vector3(1, 1, 1);
         child.GetComponent<SingleNote>().speed = speed;
-        
-
+        child.GetComponent<SingleNote>().index = index;
+        child.GetComponent<SingleNote>().manager = manager;
     }
 
     public static UnityEngine.Object LoadPrefabFromFile(string filename)
