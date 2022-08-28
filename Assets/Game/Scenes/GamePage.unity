@@ -303,7 +303,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.028472222}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.3890381, y: -20.5}
+  m_AnchoredPosition: {x: -0.38916016, y: -20.5}
   m_SizeDelta: {x: 0.8000488, y: 41}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &176441547
@@ -2996,8 +2996,12 @@ MonoBehaviour:
   flowPanel: {fileID: 176441545}
   playSymbol: {fileID: 410599908}
   pauseSymbol: {fileID: 0}
+  result: {fileID: 11400000, guid: 210b0a21776b42c4eac3c2b6374db533, type: 2}
   IsPlaying: 0
+  IsPaused: 0
   PauseDuration: 0
+  DestroyedNotes: 0
+  Replay: 0
   InstantiatedNotes: []
 --- !u!1 &1712137716
 GameObject:

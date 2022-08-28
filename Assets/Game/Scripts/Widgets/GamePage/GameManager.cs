@@ -12,6 +12,8 @@ using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Interaction;
 using Melanchall.DryWetMidi.Common;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 
 public class GameManager : MonoBehaviour
 {
@@ -24,16 +26,17 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject flowPanel;
     [SerializeField] Button playSymbol;
     [SerializeField] GameObject pauseSymbol;
+    [SerializeField] GameResult result;
 
-    public struct NoteInfo
-    {
-        public string NoteName;
-        public SevenBitNumber NoteNumber;
-        public double StartTime;
-        public double DelayTime; // start of next note - current note start time
-        public Lane LaneAt;
-        public NoteData data;
-    }
+    //public struct NoteInfo
+    //{
+    //    public string NoteName;
+    //    public SevenBitNumber NoteNumber;
+    //    public double StartTime;
+    //    public double DelayTime; // start of next note - current note start time
+    //    public Lane LaneAt;
+    //    public NoteData data;
+    //}
 
     //public struct NoteData
     //{
@@ -44,7 +47,7 @@ public class GameManager : MonoBehaviour
 
     // public struct NotePlayInfo
 
-    public bool IsPlaying;
+    public bool IsPlaying, IsPaused;
 
     private FirebaseFirestore _db;
     private TempoMap _map;
@@ -52,12 +55,15 @@ public class GameManager : MonoBehaviour
     public List<NoteInfo> NoteDetails;
     private Dictionary<string, int> _accuracy = new Dictionary<string, int>();
     private bool _doneSong, _doneMidi;
-    private int currI;
+    private int currI, replayI;
     private float delay;
     private float _speed;
     private string _path;
+    private int currScore;
     private float _startTime, _stopTime;
     public float PauseDuration;
+    public int DestroyedNotes;
+    public bool Replay;
     public List<GameObject> InstantiatedNotes = new List<GameObject>();
 
     FirebaseStorage storage;
@@ -80,17 +86,157 @@ public class GameManager : MonoBehaviour
         playSymbol.onClick.AddListener(Flow);
         playSymbol.interactable= false;
 
-        NoteDetails = new List<NoteInfo>();
         IsPlaying = false;
+        IsPaused = false;
         currI = 0;
         _startTime = 0;
         _stopTime = 0;
         PauseDuration = 0;
+        currScore = 0;
+        DestroyedNotes = 0;
+        score.text = "0";
+        Replay = false;
 
-        GetMidi();
-        GetSong();
+        if (result.replay)
+        {
+            Replay = result.replay;
+            replayI = 0;
+            NoteDetails = result.noteInfo;
+            playSymbol.interactable = true;
+            pauseBtn.interactable = false;
+            flowPanel.SetActive(false);
+            Debug.Log(NoteDetails.Count);
+            ReplayGamePlay();
+        }
+        else
+        {
+            NoteDetails = new List<NoteInfo>();
 
-        InvokeRepeating("StartGame", 1.0f, 1.0f);
+            GetMidi();
+            GetSong();
+
+            InvokeRepeating("StartGame", 1.0f, 1.0f);
+        }
+
+        
+    }
+
+    private void ReplayGamePlay()
+    {
+        //float expectedEndTime = 2766.0f / currSong.speed;
+        float diffWithActual = NoteDetails[0].Data.getExpectedEndTime() - NoteDetails[0].Data.getEndTime();
+        Debug.Log("diff: " + diffWithActual);
+        float delayExpected = 0.0f, delayActual = 0.0f;
+
+        if (diffWithActual < 0)
+        {
+            delayActual = diffWithActual;
+        }
+        else
+        {
+            delayExpected = diffWithActual;
+        }
+
+        StartCoroutine(ReplayInstantiateExpected(delayExpected));
+        StartCoroutine(ReplayInstantiateActual(delayActual));
+        GoToScore();
+
+    }
+
+    //private async void ReplayInstantiateExpected(float expectedDelay)
+    //{
+    //    Debug.Log("called1");
+    //    await Task.Delay((int)expectedDelay);
+    //    Debug.Log("called1");
+    //    //float speed = _speed * 0.8f;
+    //    while (currI < NoteDetails.Count)
+    //    {
+    //        Debug.Log(" i: " + currI + " _notes[i]: " + NoteDetails[currI] + " delay: " + expectedDelay);
+    //        Debug.Log("note number:" + NoteDetails[currI].NoteName);
+    //        Note currNote = new Note((SevenBitNumber)NoteDetails[currI].NoteNumber);
+    //        laneObjects[NoteDetails[currI].LaneNo1].InstantiateObj(currNote.NoteName.ToString(), currNote.Octave.ToString(), currNote.NoteNumber, _speed, currI, 0);
+    //        expectedDelay = (float)NoteDetails[currI].DelayTime;
+    //        currI += 1;
+    //        await Task.Delay((int)expectedDelay);
+    //        //_noteDetails[i].LaneAt.InstantiateObj(_notes[i].NoteName.ToString(), _notes[i].NoteNumber);
+    //        //delay = (float)_noteDetails[i].DelayTime;
+    //    }
+    //}
+
+    private IEnumerator ReplayInstantiateExpected(float expectedDelay)
+    {
+        Debug.Log("called1");
+        yield return new WaitForSeconds(expectedDelay/1000.0f);
+        Debug.Log("called1");
+        //float speed = _speed * 0.8f;
+        while (currI < NoteDetails.Count)
+        {
+            Debug.Log(" i: " + currI + " _notes[i]: " + NoteDetails[currI].NoteNumber + " delay: " + expectedDelay);
+            Debug.Log("note number:" + NoteDetails[currI].NoteName);
+            Note currNote = new Note((SevenBitNumber)NoteDetails[currI].NoteNumber);
+            laneObjects[NoteDetails[currI].LaneNo1].InstantiateObj(currNote.NoteName.ToString(), currNote.Octave.ToString(), currNote.NoteNumber, currSong.speed, currI, 0);
+            expectedDelay = (float)NoteDetails[currI].DelayTime;
+            currI += 1;
+            yield return new WaitForSeconds(expectedDelay /1000.0f);
+            //_noteDetails[i].LaneAt.InstantiateObj(_notes[i].NoteName.ToString(), _notes[i].NoteNumber);
+            //delay = (float)_noteDetails[i].DelayTime;
+        }
+    }
+
+    //private async void ReplayInstantiateActual(float actualDelay)
+    //{
+    //    Debug.Log("called2");
+    //    await Task.Delay((int)actualDelay);
+    //    Debug.Log("called2");
+    //    while (replayI < NoteDetails.Count)
+    //    {
+    //        Debug.Log(" i: " + replayI + " _notes[i]: " + _notes[replayI].NoteName.ToString() + " delay: " + actualDelay);
+    //        Debug.Log("note number:" + NoteDetails[currI].Data.getNoteNumber());
+    //        //TESTING
+    //        Note currNote = new Note((SevenBitNumber)40);
+    //        laneObjects[NoteDetails[currI].LaneNo1].InstantiateObj(currNote.NoteName.ToString(), currNote.Octave.ToString(), currNote.NoteNumber, _speed, replayI, 0);
+
+    //        if (replayI + 1 != _notes.Length)
+    //        {
+    //            actualDelay = (float)NoteDetails[replayI + 1].Data.getEndTime() - NoteDetails[replayI].Data.getEndTime();
+    //        }
+    //        else
+    //        {
+    //            actualDelay = 0;
+    //        }
+    //        replayI += 1;
+    //        await Task.Delay((int)actualDelay);
+    //        //_noteDetails[i].LaneAt.InstantiateObj(_notes[i].NoteName.ToString(), _notes[i].NoteNumber);
+    //        //delay = (float)_noteDetails[i].DelayTime;
+    //    }
+    //}
+
+    private IEnumerator ReplayInstantiateActual(float actualDelay)
+    {
+        Debug.Log("called2");
+        yield return new WaitForSeconds(actualDelay/1000.0f);
+        Debug.Log("called2");
+        while (replayI < NoteDetails.Count)
+        {
+            Debug.Log(" i: " + replayI + " _notes[i]: " + NoteDetails[replayI] + " delay: " + actualDelay);
+            //Debug.Log("note number:" + NoteDetails[currI].Data.getNoteNumber());
+            //TESTING
+            Note currNote = new Note((SevenBitNumber)40);
+            laneObjects[5].InstantiateObj(currNote.NoteName.ToString(), currNote.Octave.ToString(), currNote.NoteNumber, currSong.speed, replayI, 0);
+
+            if (replayI + 1 != NoteDetails.Count)
+            {
+                actualDelay = (float)NoteDetails[replayI + 1].Data.getEndTime() - NoteDetails[replayI].Data.getEndTime();
+            }
+            else
+            {
+                actualDelay = 0;
+            }
+            replayI += 1;
+            yield return new WaitForSeconds(actualDelay);
+            //_noteDetails[i].LaneAt.InstantiateObj(_notes[i].NoteName.ToString(), _notes[i].NoteNumber);
+            //delay = (float)_noteDetails[i].DelayTime;
+        }
     }
 
     // imp
@@ -99,6 +245,7 @@ public class GameManager : MonoBehaviour
         if (IsPlaying)
         {
             IsPlaying = false;
+            IsPaused = true;
             _stopTime = Time.time;
             flowPanel.SetActive(true);
             playSymbol.gameObject.SetActive(true);
@@ -108,19 +255,27 @@ public class GameManager : MonoBehaviour
             IsPlaying = true;
             if (_stopTime > 0)
             {
-                PauseDuration += Time.time - _stopTime;
+                PauseDuration += Time.time - _stopTime -3;
             }
             flowPanel.SetActive(false);
             playSymbol.gameObject.SetActive(false);
-            StartCoroutine(PlayDelay());
-            
-            StartCoroutine(InstantiateNote());
+            if (IsPaused)
+            {
+                IsPaused = false;
+                StartCoroutine(PlayDelay());
+            }
+            else
+            {
+                StartCoroutine(InstantiateNote());
+            }
         }
     }
 
     private IEnumerator PlayDelay()
     {
         yield return new WaitForSeconds(3);
+        StartCoroutine(InstantiateNote());
+        
     }
 
     private void StartGame()
@@ -140,6 +295,19 @@ public class GameManager : MonoBehaviour
         Debug.Log("_notes.Length: " + _notes.Length);
         Debug.Log("_noteDetails.Length: " + NoteDetails.Count);
 
+    }
+
+    public void GoToScore()
+    {
+        Debug.Log("go to score");
+        // TODO: upload score to the database
+        if (result.replay)
+        {
+            currSong.speed = _speed;
+            result.score = currScore;
+            result.noteInfo = NoteDetails;
+        }
+        SceneManager.LoadScene("ScorePage");
     }
 
     private IEnumerator InstantiateNote()
@@ -163,14 +331,15 @@ public class GameManager : MonoBehaviour
             }
             NoteDetails[currI].LaneAt.InstantiateObj(_notes[currI].NoteName.ToString(), _notes[currI].Octave.ToString(), _notes[currI].NoteNumber, _speed, currI, currTime);
             
-            NoteDetails[currI].data.setStartTime(currTime);
-            Debug.Log("starttime: " + NoteDetails[currI].data.getStartTime() +" pause: "+PauseDuration);
+            NoteDetails[currI].Data.setStartTime(currTime);
+            Debug.Log("starttime: " + NoteDetails[currI].Data.getStartTime() +" pause: "+PauseDuration);
             delay = (float)NoteDetails[currI].DelayTime;
             currI += 1;
             yield return new WaitForSeconds(delay / 1000.0f);
             //_noteDetails[i].LaneAt.InstantiateObj(_notes[i].NoteName.ToString(), _notes[i].NoteNumber);
             //delay = (float)_noteDetails[i].DelayTime;
         }
+        
     }
 
     private void GetSong()
@@ -338,7 +507,10 @@ public class GameManager : MonoBehaviour
                     newInfo.StartTime = _notes[i].TimeAs<MetricTimeSpan>(_map).TotalMilliseconds;
                     newInfo.DelayTime = _notes[i + 1].TimeAs<MetricTimeSpan>(_map).TotalMilliseconds - newInfo.StartTime;
                     newInfo.LaneAt = currLane;
-                    newInfo.data = new NoteData();
+                    newInfo.NoteName = _notes[i].NoteName.ToString();
+                    newInfo.NoteNumber = _notes[i].NoteNumber;
+                    newInfo.LaneNo1 = currLane._id;
+                    newInfo.Data = new NoteData();
                     NoteDetails.Add(newInfo);
                     //Debug.Log("currNote: " + _notes[i].NoteName + _notes[i].Octave + " start: " + newInfo.StartTime + " delay: " + newInfo.DelayTime + " lane: " + newInfo.LaneAt);
                     break;
@@ -356,7 +528,10 @@ public class GameManager : MonoBehaviour
                 newInfo.StartTime = _notes[_notes.Length - 1].TimeAs<MetricTimeSpan>(_map).TotalMilliseconds;
                 newInfo.DelayTime = 0;
                 newInfo.LaneAt = currLane;
-                newInfo.data = new NoteData();
+                newInfo.NoteName = _notes[_notes.Length - 1].NoteName.ToString();
+                newInfo.NoteNumber = _notes[_notes.Length - 1].NoteNumber;
+                newInfo.LaneNo1 = currLane._id;
+                newInfo.Data = new NoteData();
                 NoteDetails.Add(newInfo);
                 //Debug.Log("currNote: " + _notes[i].NoteName + _notes[i].Octave + " start: " + newInfo.StartTime + " delay: " + newInfo.DelayTime + " lane: " + newInfo.LaneAt);
                 break;
@@ -367,10 +542,32 @@ public class GameManager : MonoBehaviour
         return;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void DetectedNote(string note)
     {
-        
+        Debug.Log("DETECTED NOTE:" + note);
+        int noteMidi = int.Parse(note);
+        if (InstantiatedNotes.Count > 0)
+        {
+            GameObject currNote = InstantiatedNotes[0];
+            //InstantiatedNotes.RemoveAt(0);
+
+            SingleNote noteScript = currNote.GetComponent<SingleNote>();
+            NoteDetails[noteScript.index].Data.setNoteNumber(noteMidi);
+
+            if (NoteDetails[noteScript.index].NoteNumber != noteMidi)
+            {
+                NoteDetails[noteScript.index].Data.setAccuracyType("missed");
+            }
+            CalculateScore(NoteDetails[noteScript.index].Data);
+            noteScript.Consume();
+        }
+
+    }
+
+    private void CalculateScore(NoteData data)
+    {
+        currScore += _accuracy[data.getAccuracyType()];
+        score.text = currScore.ToString();
     }
 
 }

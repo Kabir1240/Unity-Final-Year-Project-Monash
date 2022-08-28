@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class NoteData
 {
-    public string accuracyType;
-    public float startTime;
-    public float endTime;
+    private string accuracyType;
+    private float startTime;
+    private float expectedEndTime;
+    private float endTime;
+    private int noteNumber;
     public NoteData()
     {
         endTime = 0;
+        expectedEndTime = 0;
     }
 
     public void setStartTime(float startTime)
@@ -21,10 +24,19 @@ public class NoteData
         return startTime;
     }
 
+    public void setNoteNumber(int noteNumber)
+    {
+        this.noteNumber = noteNumber;
+    }
+    public int getNoteNumber()
+    {
+        return noteNumber;
+    }
+
 
     public void setEndTime(float endTime)
     {
-        if (endTime == 0)
+        if (this.endTime == 0)
         {
             this.endTime = endTime;
         }
@@ -36,8 +48,28 @@ public class NoteData
         return endTime;
     }
 
+    public void setExpectedEndTime(float endTime)
+    {
+
+        if (expectedEndTime == 0)
+        {
+            expectedEndTime = endTime;
+        }
+        
+
+    }
+
+    public float getExpectedEndTime()
+    {
+        return expectedEndTime;
+    }
+
     public void setAccuracyType(string accuracyType)
     {
         this.accuracyType = accuracyType;
+    }
+    public string getAccuracyType()
+    {
+        return accuracyType;
     }
 }

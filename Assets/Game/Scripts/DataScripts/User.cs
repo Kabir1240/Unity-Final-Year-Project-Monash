@@ -12,6 +12,7 @@ public class User : ScriptableObject
     public int Exp = 0;
     public int Level = 0;
     public int Points = 0;
+    public int GameRuns = 0;
 
     // need another attribute for the image
 }

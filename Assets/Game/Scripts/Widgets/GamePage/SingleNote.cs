@@ -10,32 +10,92 @@ public class SingleNote : MonoBehaviour
     public float speed;
     public int index;
     public float start, destroyed;
+    private bool removed;
     //public int x, y;
 
     // Start is called before the first frame update
     void Start()
     {
+        removed = false;
+        if (!manager.Replay)
+        {
+            manager.NoteDetails[index].Data.setAccuracyType("missed");
+        }
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (manager.IsPlaying)
+        if (manager.IsPlaying && !manager.Replay)
         {
             transform.Translate(Vector3.right * Time.deltaTime * speed);
-            if(transform.localPosition.x>= 1254.0f)
+            if (transform.localPosition.x >= 494.0f && transform.localPosition.x < 833.0f || transform.localPosition.x >= 1181.0f && transform.localPosition.x < 1253.0f)
             {
-                manager.NoteDetails[index].data.setAccuracyType("missed");
+                manager.NoteDetails[index].Data.setAccuracyType("good");
+            }
+            else if (transform.localPosition.x >= 833.0f && transform.localPosition.x < 1141.0f || transform.localPosition.x >= 1161.0f && transform.localPosition.x < 1181.0f)
+            {
+                manager.NoteDetails[index].Data.setAccuracyType("great");
+            }
+            else if (transform.localPosition.x >= 1141.0f && transform.localPosition.x < 1161.0f)
+            {
+                manager.NoteDetails[index].Data.setAccuracyType("perfect");
+                manager.NoteDetails[index].Data.setExpectedEndTime(Time.time - manager.PauseDuration);
+            }
+            if (transform.localPosition.x >= 1254.0f && !removed)
+            {
+                manager.NoteDetails[index].Data.setAccuracyType("missed");
+                //Debug.Log("note count before remove: " + manager.InstantiatedNotes.Count);
+                //Debug.Log("removing from list: "+manager.InstantiatedNotes[0].name);
+                manager.NoteDetails[index].Data.setEndTime(Time.time - manager.PauseDuration);
                 manager.InstantiatedNotes.RemoveAt(0);
+                removed = true;
             }
             // if the note is no longer visible
             if (transform.localPosition.x >= 1573.0f)
             {
-                manager.NoteDetails[index].data.setEndTime(Time.time - manager.PauseDuration);
-                Debug.Log("destroyed: start at " + manager.NoteDetails[index].data.getStartTime() + " end at " + manager.NoteDetails[index].data.getEndTime());
+                manager.NoteDetails[index].Data.setEndTime(Time.time - manager.PauseDuration);
+                Debug.Log("consumed: start at " + manager.NoteDetails[index].Data.getStartTime() + " end at " + manager.NoteDetails[index].Data.getEndTime());
+                manager.DestroyedNotes += 1;
                 Destroy(gameObject);
             }
+
+            //Debug.Log("destroyed: " + manager.DestroyedNotes);
+            if (manager.DestroyedNotes == manager.NoteDetails.Count)
+            {
+                Debug.Log("went here");
+                manager.GoToScore();
+            }
         }
-        
+        else
+        {
+            transform.Translate(Vector3.right * Time.deltaTime * speed);
+            if (transform.localPosition.x >= 1573.0f)
+            {
+                Destroy(gameObject);
+            }
+
+            //Debug.Log("destroyed: " + manager.DestroyedNotes);
+            if (manager.DestroyedNotes == manager.NoteDetails.Count)
+            {
+                Debug.Log("went here");
+                manager.GoToScore();
+            }
+        }
+    }
+
+    public void Consume()
+    {
+        // since the extra vibrations in guitar causes consumption to be done even though the player was not actually playing a note
+        if (transform.localPosition.x >= 183.0f && manager.InstantiatedNotes.Count > 0)
+        {
+            manager.NoteDetails[index].Data.setEndTime(Time.time - manager.PauseDuration);
+            manager.InstantiatedNotes.RemoveAt(0);
+            Debug.Log("consumed: start at " + manager.NoteDetails[index].Data.getStartTime() + " end at " + manager.NoteDetails[index].Data.getEndTime());
+            manager.DestroyedNotes += 1;
+            Destroy(gameObject);
+        }
+
     }
 }

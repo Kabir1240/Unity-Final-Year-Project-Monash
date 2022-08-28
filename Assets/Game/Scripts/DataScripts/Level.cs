@@ -7,6 +7,7 @@ public class Level : ScriptableObject
 {
     // Level data is set at the planet main page 
     public string LevelId = "Placeholder";
+    public int MaxExp = 0;
     public string ModuleId = "Placeholder";
     public List<string> SongIds = new List<string>();
 
