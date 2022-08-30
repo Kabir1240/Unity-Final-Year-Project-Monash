@@ -68,7 +68,7 @@ public class SingleNote : MonoBehaviour
                 manager.GoToScore();
             }
         }
-        else
+        else if(manager.Replay)
         {
             transform.Translate(Vector3.right * Time.deltaTime * speed);
             if (transform.localPosition.x >= 1573.0f)
