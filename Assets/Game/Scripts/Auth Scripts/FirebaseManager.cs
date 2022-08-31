@@ -3,10 +3,16 @@ using UnityEngine;
 using Firebase;
 using Firebase.Auth;
 using TMPro;
+using Firebase.Firestore;
+using System.Collections.Generic;
+using Firebase.Extensions;
+using System;
 
 public class FirebaseManager : MonoBehaviour
 {
     public static FirebaseManager instance;
+    private FirebaseFirestore _db;
+    [SerializeField] User userData;
 
     [Header("Firebase")]
     public FirebaseAuth auth;
@@ -25,8 +31,9 @@ public class FirebaseManager : MonoBehaviour
     [SerializeField] private TMP_InputField registerPassword;
     [SerializeField] private TMP_InputField registerConfirmPassword;
     [SerializeField] private TMP_Text registerOutputText;
- 
-       private void Awake() {
+
+    private void Awake()
+    {
         DontDestroyOnLoad(gameObject);
         if (instance == null)
         {
@@ -38,11 +45,14 @@ public class FirebaseManager : MonoBehaviour
             instance = this;
         }
 
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(checkDependencyTask => {
+        _db = FirebaseFirestore.DefaultInstance;
+
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(checkDependencyTask =>
+        {
             var dependencyStatus = checkDependencyTask.Result;
 
             if (dependencyStatus == DependencyStatus.Available)
-            {   
+            {
                 InitializeFirebase();
             }
             else
@@ -65,7 +75,7 @@ public class FirebaseManager : MonoBehaviour
         {
             bool signedIn = user != auth.CurrentUser && auth.CurrentUser != null;
             if (!signedIn && user != null)
-            {  
+            {
                 // Update this later, this means that the user signed out.
                 Debug.Log("signed out");
             }
@@ -73,7 +83,7 @@ public class FirebaseManager : MonoBehaviour
             user = auth.CurrentUser;
 
             if (signedIn)
-            {   
+            {
                 // Update this later, this means that the user signed in
                 Debug.Log($"Signed In: {user.DisplayName}");
             }
@@ -94,6 +104,56 @@ public class FirebaseManager : MonoBehaviour
     public void RegisterButton()
     {
         StartCoroutine(RegisterLogic(registerUsername.text, registerEmail.text, registerPassword.text, registerConfirmPassword.text));
+    }
+
+    private void SetUserData(string id, int accuracy, string email, int exp, int game_run, int level, int points)
+    {
+        userData.UserName = id;
+        userData.Email = email;
+        userData.Accuracy = accuracy;
+        userData.Exp = exp;
+        userData.Level = level;
+        userData.Points = 0;
+        userData.GameRuns = game_run;
+    }
+
+    private void GetUser(FirebaseUser user)
+    {
+        DocumentReference docRef = _db.Collection("User").Document(user.UserId);
+        docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            DocumentSnapshot snapshot = task.Result;
+        if (snapshot.Exists)
+        {
+            Debug.Log(String.Format("Document data for {0} document:", snapshot.Id));
+            Dictionary<string, object> city = snapshot.ToDictionary();
+                SetUserData(user.UserId, Convert.ToInt32(city["Accuracy"]), Convert.ToString(city["Email"]), Convert.ToInt32(city["Exp"]), Convert.ToInt32(city["Game_run"]), Convert.ToInt32(city["Level"]), Convert.ToInt32(city["Points"]));
+            }
+            else
+            {
+                Debug.Log(String.Format("Document {0} does not exist!", snapshot.Id));
+            }
+        });
+    }
+
+    private void NewUser(FirebaseUser user)
+    {
+        Debug.Log("Creating new user with id: " + user.UserId);
+        DocumentReference docRef = _db.Collection("User").Document(user.UserId);
+        Dictionary<string, object> newUser = new Dictionary<string, object>{
+        { "Accuracy", 0},
+        { "Email", user.Email },
+        { "Exp", 0},
+        { "Game_run", 0},
+        { "Level", 1},
+        { "Points", 0}};
+        docRef.SetAsync(newUser).ContinueWithOnMainThread(task =>
+        {
+            Debug.Log(task.IsCanceled || task.IsFaulted);
+            Debug.Log($"Added user: {user.UserId} to the User document");
+        });
+
+        SetUserData(user.UserId, 0, user.Email, 0,0,1,0);
     }
 
     private IEnumerator LoginLogic(string _email, string _password)
@@ -133,12 +193,15 @@ public class FirebaseManager : MonoBehaviour
                     break;
             }
             loginOutputText.text = output;
+
+            //update User data asset here
         }
         else
         {
             if (user.IsEmailVerified)
             {
                 yield return new WaitForSeconds(1f);
+                GetUser(auth.CurrentUser);
                 AuthSceneManager.instance.ChangeScene(1);
             }
             else
@@ -153,12 +216,12 @@ public class FirebaseManager : MonoBehaviour
 
     private IEnumerator RegisterLogic(string _username, string _email, string _password, string _confirmPassword)
     {
-        if(_username == "")
+        if (_username == "")
         {
             registerOutputText.text = "Please enter your Username";
         }
 
-        else if(_password != _confirmPassword)
+        else if (_password != _confirmPassword)
         {
             registerOutputText.text = "Passwords do not match";
         }
@@ -208,7 +271,7 @@ public class FirebaseManager : MonoBehaviour
 
                 var defaultUserTask = user.UpdateUserProfileAsync(profile);
                 yield return new WaitUntil(predicate: () => defaultUserTask.IsCompleted);
-            
+
                 if (defaultUserTask.Exception != null)
                 {
                     user.DeleteAsync();
@@ -229,6 +292,8 @@ public class FirebaseManager : MonoBehaviour
                 }
                 else
                 {
+                    //update User data asset here
+                    NewUser(auth.CurrentUser);
                     Debug.Log($"Firebase User Created Successfully: {user.DisplayName} ({user.UserId})");
                 }
             }

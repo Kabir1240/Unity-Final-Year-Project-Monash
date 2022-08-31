@@ -15,4 +15,4 @@ MonoBehaviour:
   accuracy: 00000000000000000000000000000000
   score: 0
   prevScore: 0
-  replay: 1
+  replay: 0
