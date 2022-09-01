@@ -5,7 +5,7 @@ public class AuthSceneManager : MonoBehaviour
 {
     public static AuthSceneManager instance;
 
-        private void Awake() 
+        private void Start() 
         {
             DontDestroyOnLoad(gameObject);
             if (instance == null)

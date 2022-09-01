@@ -11,7 +11,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Text
   - 
   - 
   - 
@@ -46,4 +46,7 @@ TagManager:
     locked: 0
   - name: layer2
     uniqueID: 3821300979
+    locked: 0
+  - name: Text
+    uniqueID: 3953157495
     locked: 0
