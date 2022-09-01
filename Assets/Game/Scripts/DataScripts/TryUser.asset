@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75f48cad8b890e74cb364f0f5a025464, type: 3}
   m_Name: TryUser
   m_EditorClassIdentifier: 
-  UserName: mbrown123
-  Email: mbrown@gmail.com
-  Accuracy: 30
-  Exp: 100
+  id: nJAjr1GNNjfahW8APx7W8uZhWlE2
+  UserName: kkas
+  Email: kkas0007@gmail.com
+  Accuracy: 0
+  Exp: 0
   Level: 1
-  Points: 20
+  Points: 0
+  GameRuns: 0

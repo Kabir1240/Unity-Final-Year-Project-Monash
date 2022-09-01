@@ -87,7 +87,7 @@ public class FirebaseManager : MonoBehaviour
             {
                 // Update this later, this means that the user signed in
                 Debug.Log($"Signed In: {user.DisplayName}");
-                SceneManager.LoadScene("MainPage");
+                // SceneManager.LoadScene("MainPage");
             }
         }
     }
@@ -301,9 +301,21 @@ public class FirebaseManager : MonoBehaviour
                     //update User data asset here
                     NewUser(auth.CurrentUser, _username);
                     Debug.Log($"Firebase User Created Successfully: {user.DisplayName} ({user.UserId})");
-                    SceneManager.LoadScene("MainPage");
+                    registerOutputText.text = "Account created successfully";
+                    registerOutputText.color = Color.green;
+                    Invoke("LoadAuthentication", 3f); //Reload scene
                 }
             }
         }
+    }
+
+    private void LoadAuthentication()
+    {
+        SceneManager.LoadScene("Authentication");
+    }
+
+    private void LoadMainPage()
+    {
+        SceneManager.LoadScene("MainPage");
     }
 }
