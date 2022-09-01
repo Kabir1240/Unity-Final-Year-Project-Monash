@@ -297,7 +297,7 @@ public class GameManager : MonoBehaviour
     {
         if (!_doneSong || !_doneMidi)
         {
-            Debug.Log("song: "+_doneSong+" midi: "+_doneMidi);
+            //Debug.Log("song: "+_doneSong+" midi: "+_doneMidi);
             //SHOW LOADING PANEL
             return;
         }
@@ -382,7 +382,8 @@ public class GameManager : MonoBehaviour
                 //StartCoroutine(isDownloading(Convert.ToString(task.Result), _parent.transform.Find("FlashcardContentImage(Clone)").gameObject));
 
                 // TEST IN ANDROID USES Application.persistentDataPath+"/SongFile.wav"
-                string path = Path.Combine(Application.dataPath + "/Resources/Materials/Midi", "SongFile.wav").Replace("\\", "/");
+                //string path = Path.Combine(Application.dataPath + "/Resources/Materials/Midi", "SongFile.wav").Replace("\\", "/");
+                string path = Application.persistentDataPath+"/SongFile.wav";
                 //StartCoroutine(isDownloading(Convert.ToString(task.Result), path));
                 isDownloading(Convert.ToString(task.Result), path);
                 _doneSong = true;
@@ -403,9 +404,10 @@ public class GameManager : MonoBehaviour
             {
                 Debug.Log("Download URL: " + task.Result);
                 //StartCoroutine(isDownloading(Convert.ToString(task.Result), _parent.transform.Find("FlashcardContentImage(Clone)").gameObject));
-                
+
                 // TEST IN ANDROID USES Application.persistentDataPath+"/Midifiles.mid"
-                string path = Path.Combine(Application.dataPath + "/Resources/Materials/Midi", "MidiFiles.mid").Replace("\\", "/");
+                //string path = Path.Combine(Application.dataPath + "/Resources/Materials/Midi", "MidiFiles.mid").Replace("\\", "/");
+                string path = Application.persistentDataPath + "/MidiFiles.mid";
                 //StartCoroutine(isDownloading(Convert.ToString(task.Result), path));
                 isDownloading(Convert.ToString(task.Result), path);
                 ConvertToNotes(_path);

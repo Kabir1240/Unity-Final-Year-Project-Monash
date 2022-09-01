@@ -6,6 +6,7 @@ using UnityEngine;
 public class User : ScriptableObject
 {
     // User data is set at the sign in/ login page
+    public string id = "id";
     public string UserName = "placeholder_name";
     public string Email = "placeholder_email";
     public int Accuracy = 0;

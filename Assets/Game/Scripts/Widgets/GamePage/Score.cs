@@ -11,17 +11,20 @@ public class Score : MonoBehaviour
 {
     [SerializeField] GameResult result;
     [SerializeField] TextMeshProUGUI score;
+    [SerializeField] TextMeshProUGUI songTitle;
     [SerializeField] Button restart;
     [SerializeField] Button feedback;
     [SerializeField] Button back;
     [SerializeField] Level level;
     [SerializeField] User user;
+    [SerializeField] Song song;
 
     private FirebaseFirestore _db;
     // Start is called before the first frame update
     void Start()
     {
         score.text = result.score.ToString();
+        songTitle.text = song.Title;
 
         _db = FirebaseFirestore.DefaultInstance;
         Debug.Log("initialized firestore");
@@ -36,7 +39,7 @@ public class Score : MonoBehaviour
         user.GameRuns += 1;
         result.replay = false;
         _db.Collection("User").Document(user.UserName).UpdateAsync("Game_run", user.GameRuns);
-        int exp = (int)((level.MaxExp * 0.8f) / level.SongIds.Count) * Math.Max(result.score, result.prevScore);
+        int exp = (int)((level.MaxExp * 0.8f) / level.SongIds.Count) * (Math.Max(result.score, result.prevScore)/ 100000);
         user.Exp += exp;
         _db.Collection("User").Document(user.UserName).UpdateAsync("Exp", user.Exp);
         SceneManager.LoadScene("EachPlanetPage");

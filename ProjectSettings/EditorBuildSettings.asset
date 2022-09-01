@@ -9,11 +9,14 @@ EditorBuildSettings:
     path: 
     guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/Game/Scenes/GamePage.unity
-    guid: bdd705dff5f339f45bc1de7b03a8950c
+    path: Assets/Game/Scenes/Authentication.unity
+    guid: ccb1d9c12f4b4e24db1c0b9993bdeb8b
   - enabled: 1
     path: Assets/Game/Scenes/MainPage.unity
     guid: 622e8499d6ea4af4fa83d7b82fe44c5b
+  - enabled: 1
+    path: Assets/Game/Scenes/GamePage.unity
+    guid: bdd705dff5f339f45bc1de7b03a8950c
   - enabled: 1
     path: Assets/Game/Scenes/CoursePage.unity
     guid: c41689ffd2d868c4fba48d7d099ee5bd
