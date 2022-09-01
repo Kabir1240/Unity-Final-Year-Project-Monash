@@ -7,6 +7,7 @@ using Firebase.Firestore;
 using System.Collections.Generic;
 using Firebase.Extensions;
 using System;
+using UnityEngine.SceneManagement;
 
 public class FirebaseManager : MonoBehaviour
 {
@@ -47,7 +48,7 @@ public class FirebaseManager : MonoBehaviour
 
         _db = FirebaseFirestore.DefaultInstance;
 
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(checkDependencyTask =>
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(checkDependencyTask =>
         {
             var dependencyStatus = checkDependencyTask.Result;
 
@@ -86,6 +87,7 @@ public class FirebaseManager : MonoBehaviour
             {
                 // Update this later, this means that the user signed in
                 Debug.Log($"Signed In: {user.DisplayName}");
+                SceneManager.LoadScene("MainPage");
             }
         }
     }
@@ -106,14 +108,15 @@ public class FirebaseManager : MonoBehaviour
         StartCoroutine(RegisterLogic(registerUsername.text, registerEmail.text, registerPassword.text, registerConfirmPassword.text));
     }
 
-    private void SetUserData(string id, int accuracy, string email, int exp, int game_run, int level, int points)
+    private void SetUserData(string id, int accuracy, string email, int exp, int game_run, int level, int points, string uname)
     {
-        userData.UserName = id;
+        userData.id = id;
+        userData.UserName = uname;
         userData.Email = email;
         userData.Accuracy = accuracy;
         userData.Exp = exp;
         userData.Level = level;
-        userData.Points = 0;
+        userData.Points = points;
         userData.GameRuns = game_run;
     }
 
@@ -127,7 +130,7 @@ public class FirebaseManager : MonoBehaviour
         {
             Debug.Log(String.Format("Document data for {0} document:", snapshot.Id));
             Dictionary<string, object> city = snapshot.ToDictionary();
-                SetUserData(user.UserId, Convert.ToInt32(city["Accuracy"]), Convert.ToString(city["Email"]), Convert.ToInt32(city["Exp"]), Convert.ToInt32(city["Game_run"]), Convert.ToInt32(city["Level"]), Convert.ToInt32(city["Points"]));
+                SetUserData(user.UserId, Convert.ToInt32(city["Accuracy"]), Convert.ToString(city["Email"]), Convert.ToInt32(city["Exp"]), Convert.ToInt32(city["Game_run"]), Convert.ToInt32(city["Level"]), Convert.ToInt32(city["Points"]), Convert.ToString(city["Username"]));
             }
             else
             {
@@ -136,7 +139,7 @@ public class FirebaseManager : MonoBehaviour
         });
     }
 
-    private void NewUser(FirebaseUser user)
+    private void NewUser(FirebaseUser user, string uname)
     {
         Debug.Log("Creating new user with id: " + user.UserId);
         DocumentReference docRef = _db.Collection("User").Document(user.UserId);
@@ -146,14 +149,15 @@ public class FirebaseManager : MonoBehaviour
         { "Exp", 0},
         { "Game_run", 0},
         { "Level", 1},
-        { "Points", 0}};
+        { "Points", 0},
+        { "Username", uname} };
         docRef.SetAsync(newUser).ContinueWithOnMainThread(task =>
         {
             Debug.Log(task.IsCanceled || task.IsFaulted);
             Debug.Log($"Added user: {user.UserId} to the User document");
         });
 
-        SetUserData(user.UserId, 0, user.Email, 0,0,1,0);
+        SetUserData(user.UserId, 0, user.Email, 0,0,1,0, uname);
     }
 
     private IEnumerator LoginLogic(string _email, string _password)
@@ -202,15 +206,17 @@ public class FirebaseManager : MonoBehaviour
             {
                 yield return new WaitForSeconds(1f);
                 GetUser(auth.CurrentUser);
-                AuthSceneManager.instance.ChangeScene(1);
+                //AuthSceneManager.instance.ChangeScene(1);
+                
             }
-            else
-            {
-                // TODO: Send Verification Email
+            SceneManager.LoadScene("MainPage");
+            //else
+            //{
+            //    // TODO: Send Verification Email
 
-                // Temporary solution
-                AuthSceneManager.instance.ChangeScene(1);
-            }
+            //    // Temporary solution
+            //    AuthSceneManager.instance.ChangeScene(1);
+            //}
         }
     }
 
@@ -293,8 +299,9 @@ public class FirebaseManager : MonoBehaviour
                 else
                 {
                     //update User data asset here
-                    NewUser(auth.CurrentUser);
+                    NewUser(auth.CurrentUser, _username);
                     Debug.Log($"Firebase User Created Successfully: {user.DisplayName} ({user.UserId})");
+                    SceneManager.LoadScene("MainPage");
                 }
             }
         }
