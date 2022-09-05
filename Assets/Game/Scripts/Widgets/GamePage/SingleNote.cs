@@ -43,6 +43,8 @@ public class SingleNote : MonoBehaviour
                 manager.NoteDetails[index].Data.setAccuracyType("perfect");
                 manager.NoteDetails[index].Data.setExpectedEndTime(Time.time - manager.PauseDuration);
             }
+
+            // to avoid any consumption for notes after this line
             if (transform.localPosition.x >= 1254.0f && !removed)
             {
                 manager.NoteDetails[index].Data.setAccuracyType("missed");
@@ -55,8 +57,8 @@ public class SingleNote : MonoBehaviour
             // if the note is no longer visible
             if (transform.localPosition.x >= 1573.0f)
             {
-                manager.NoteDetails[index].Data.setEndTime(Time.time - manager.PauseDuration);
-                Debug.Log("consumed: start at " + manager.NoteDetails[index].Data.getStartTime() + " end at " + manager.NoteDetails[index].Data.getEndTime());
+                //manager.NoteDetails[index].Data.setEndTime(Time.time - manager.PauseDuration);
+                Debug.Log("consumed: start at " + manager.NoteDetails[index].Data.getStartTime() + " end at " + manager.NoteDetails[index].Data.getEndTime() + " expected: "+ manager.NoteDetails[index].Data.getExpectedEndTime());
                 manager.DestroyedNotes += 1;
                 Destroy(gameObject);
             }
@@ -64,22 +66,23 @@ public class SingleNote : MonoBehaviour
             //Debug.Log("destroyed: " + manager.DestroyedNotes);
             if (manager.DestroyedNotes == manager.NoteDetails.Count)
             {
-                Debug.Log("went here");
+                //Debug.Log("went here");
                 manager.GoToScore();
             }
         }
         else if(manager.Replay)
         {
-            transform.Translate(Vector3.right * Time.deltaTime * speed);
+            transform.Translate(Vector3.right * manager.deltaTimeMan * speed);
             if (transform.localPosition.x >= 1573.0f)
             {
+                manager.DestroyedNotes += 1;
                 Destroy(gameObject);
             }
 
-            //Debug.Log("destroyed: " + manager.DestroyedNotes);
-            if (manager.DestroyedNotes == manager.NoteDetails.Count)
+            //Debug.Log("destroyed replay: " + manager.DestroyedNotes);
+            if (manager.DestroyedNotes == manager.NoteDetails.Count*2)
             {
-                Debug.Log("went here");
+                //Debug.Log("went here");
                 manager.GoToScore();
             }
         }

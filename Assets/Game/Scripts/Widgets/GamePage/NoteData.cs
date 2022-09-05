@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class NoteData
@@ -9,6 +7,10 @@ public class NoteData
     private float expectedEndTime;
     private float endTime;
     private int noteNumber;
+    private int laneNo;
+
+    public int LaneNo { get => laneNo; set => laneNo = value; }
+
     public NoteData()
     {
         endTime = 0;
@@ -54,6 +56,7 @@ public class NoteData
         if (expectedEndTime == 0)
         {
             expectedEndTime = endTime;
+            Debug.Log("noteNumber: " + noteNumber + " expectedEndTime: " + expectedEndTime);
         }
         
 

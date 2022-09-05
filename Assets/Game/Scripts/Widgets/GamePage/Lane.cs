@@ -31,7 +31,7 @@ public class Lane : MonoBehaviour
     int inputIndex = 0;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         // getting the parent canvas
         //_parentCanvas = (Canvas)GameObject.FindObjectOfType(typeof(Canvas));
@@ -60,21 +60,53 @@ public class Lane : MonoBehaviour
         return false;
     }
 
-    public void InstantiateObj(string noteName, string noteOctave, SevenBitNumber noteNumber, float speed, int index, float time){
+    public void InstantiateObj(string noteName, string noteOctave, SevenBitNumber noteNumber, float speed, int index, float time, Vector3 distance){
         // instantiate the note object here
         // in the note object's update, we will update the speed according
         // to the tempo
-        Debug.Log("instantiate note: " + noteName + " midiNo: " + noteNumber);
+        //Debug.Log("instantiate note: " + noteName + " midiNo: " + noteNumber);
         _noteName.text = noteName + noteOctave;
         GameObject child = Instantiate(_note);
         child.transform.SetParent(_parentobj.transform);
-        child.transform.localPosition = new Vector3(-1607, transform.localPosition.y, 0);
+        child.transform.localPosition = new Vector3(-1607, transform.localPosition.y, 0) + distance;
         child.transform.localScale = new Vector3(1, 1, 1);
         child.GetComponent<SingleNote>().speed = speed;
         child.GetComponent<SingleNote>().index = index;
         child.GetComponent<SingleNote>().manager = manager;
         manager.InstantiatedNotes.Add(child);
     }
+
+    //public void InstantiateObjsDistance(NoteInfo info, float speed, int index, Vector3 distance)
+    //{
+    //    // instantiate the note object here
+    //    // in the note object's update, we will update the speed according
+    //    // to the tempo
+    //    Debug.Log("instantiate note: " + info.NoteName + " midiNo: " + info.NoteNumber);
+    //    Debug.Log("instantiate other note: " + info.Data.getNoteNumber());
+    //    Melanchall.DryWetMidi.Interaction.Note expectedNote = new Melanchall.DryWetMidi.Interaction.Note(info.NoteNumber);
+    //    _noteName.text = info.NoteName + expectedNote.Octave;
+
+    //    GameObject child = Instantiate(_note);
+    //    child.transform.SetParent(_parentobj.transform);
+    //    child.transform.localPosition = new Vector3(-1607, transform.localPosition.y, 0);
+    //    child.transform.localScale = new Vector3(1, 1, 1);
+    //    child.GetComponent<SingleNote>().speed = speed;
+    //    child.GetComponent<SingleNote>().index = index;
+    //    child.GetComponent<SingleNote>().manager = manager;
+    //    manager.InstantiatedNotes.Add(child);
+
+    //    // instantiate the other note
+    //    expectedNote = new Melanchall.DryWetMidi.Interaction.Note((SevenBitNumber)info.Data.getNoteNumber());
+    //    _noteName.text = info.NoteName + expectedNote.Octave;
+    //    GameObject child2 = Instantiate(_note);
+    //    child.transform.SetParent(_parentobj.transform);
+    //    child.transform.localPosition = new Vector3(-1607, transform.localPosition.y, 0) + distance;
+    //    child.transform.localScale = new Vector3(1, 1, 1);
+    //    child.GetComponent<SingleNote>().speed = speed;
+    //    child.GetComponent<SingleNote>().index = index;
+    //    child.GetComponent<SingleNote>().manager = manager;
+    //    manager.InstantiatedNotes.Add(child2);
+    //}
 
     public static UnityEngine.Object LoadPrefabFromFile(string filename)
     {

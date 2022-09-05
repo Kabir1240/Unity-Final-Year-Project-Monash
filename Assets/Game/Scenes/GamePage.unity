@@ -1134,7 +1134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7435642157652154185f96aa28164c9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: 1
+  _id: 0
   _noteParseRestrictions:
   - a4
   - ab4
@@ -2070,7 +2070,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7435642157652154185f96aa28164c9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: 2
+  _id: 1
   _noteParseRestrictions:
   - d4
   - d#4
@@ -2429,7 +2429,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7435642157652154185f96aa28164c9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: 6
+  _id: 5
   _noteParseRestrictions:
   - e2
   - f2
@@ -2719,7 +2719,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7435642157652154185f96aa28164c9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: 4
+  _id: 3
   _noteParseRestrictions:
   - d3
   - d#3
@@ -2846,7 +2846,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7435642157652154185f96aa28164c9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: 3
+  _id: 2
   _noteParseRestrictions:
   - bb3
   - g3
@@ -2870,6 +2870,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1686206562}
+  - component: {fileID: 1686206564}
   - component: {fileID: 1686206561}
   - component: {fileID: 1686206563}
   - component: {fileID: 1686206560}
@@ -3002,7 +3003,24 @@ MonoBehaviour:
   PauseDuration: 0
   DestroyedNotes: 0
   Replay: 0
+  deltaTimeMan: 0
   InstantiatedNotes: []
+--- !u!114 &1686206564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1686206557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efff38a138906c44196a83204ead9220, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  recordBtn: {fileID: 410599908}
+  text: {fileID: 0}
+  manager: {fileID: 1686206563}
+  pauseBtn: {fileID: 598999736}
 --- !u!1 &1712137716
 GameObject:
   m_ObjectHideFlags: 0
@@ -3466,7 +3484,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7435642157652154185f96aa28164c9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: 5
+  _id: 4
   _noteParseRestrictions:
   - a2
   - a#2
