@@ -36,12 +36,20 @@ public class Score : MonoBehaviour
 
     private void Save()
     {
+        Debug.Log("save");
         user.GameRuns += 1;
         result.replay = false;
-        _db.Collection("User").Document(user.UserName).UpdateAsync("Game_run", user.GameRuns);
+        try
+        {
+            _db.Collection("User").Document(user.id).UpdateAsync("Game_run", user.GameRuns);
+        }catch(Exception e)
+        {
+            Debug.Log(e);
+        }
+        
         int exp = (int)((level.MaxExp * 0.8f) / level.SongIds.Count) * (Math.Max(result.score, result.prevScore)/ 100000);
         user.Exp += exp;
-        _db.Collection("User").Document(user.UserName).UpdateAsync("Exp", user.Exp);
+        _db.Collection("User").Document(user.id).UpdateAsync("Exp", user.Exp);
         SceneManager.LoadScene("EachPlanetPage");
 
     }

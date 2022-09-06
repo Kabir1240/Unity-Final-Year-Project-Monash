@@ -122,15 +122,18 @@ public class FirebaseManager : MonoBehaviour
 
     private void GetUser(FirebaseUser user)
     {
+        Debug.Log("user id: " + user.UserId);
         DocumentReference docRef = _db.Collection("User").Document(user.UserId);
         docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
+            Debug.Log("getting snapshot");
             DocumentSnapshot snapshot = task.Result;
         if (snapshot.Exists)
         {
             Debug.Log(String.Format("Document data for {0} document:", snapshot.Id));
             Dictionary<string, object> city = snapshot.ToDictionary();
                 SetUserData(user.UserId, Convert.ToInt32(city["Accuracy"]), Convert.ToString(city["Email"]), Convert.ToInt32(city["Exp"]), Convert.ToInt32(city["Game_run"]), Convert.ToInt32(city["Level"]), Convert.ToInt32(city["Points"]), Convert.ToString(city["Username"]));
+                SceneManager.LoadScene("MainPage");
             }
             else
             {
@@ -155,9 +158,13 @@ public class FirebaseManager : MonoBehaviour
         {
             Debug.Log(task.IsCanceled || task.IsFaulted);
             Debug.Log($"Added user: {user.UserId} to the User document");
+            //SceneManager.LoadScene("MainPage");
+            SetUserData(user.UserId, 0, user.Email, 0, 0, 1, 0, uname);
+            SceneManager.LoadScene("MainPage");
         });
 
-        SetUserData(user.UserId, 0, user.Email, 0,0,1,0, uname);
+        //SetUserData(user.UserId, 0, user.Email, 0,0,1,0, uname);
+        //SceneManager.LoadScene("MainPage");
     }
 
     private IEnumerator LoginLogic(string _email, string _password)
@@ -202,14 +209,17 @@ public class FirebaseManager : MonoBehaviour
         }
         else
         {
+            //Debug.Log("user email verified: "+ user.IsEmailVerified);
             if (user.IsEmailVerified)
             {
+                Debug.Log("user email verified");
                 yield return new WaitForSeconds(1f);
-                GetUser(auth.CurrentUser);
+                //GetUser(auth.CurrentUser);
                 //AuthSceneManager.instance.ChangeScene(1);
                 
             }
-            SceneManager.LoadScene("MainPage");
+            GetUser(auth.CurrentUser);
+            //SceneManager.LoadScene("MainPage");
             //else
             //{
             //    // TODO: Send Verification Email

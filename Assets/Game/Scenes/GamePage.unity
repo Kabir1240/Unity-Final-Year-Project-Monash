@@ -2998,6 +2998,7 @@ MonoBehaviour:
   playSymbol: {fileID: 410599908}
   pauseSymbol: {fileID: 0}
   result: {fileID: 11400000, guid: 210b0a21776b42c4eac3c2b6374db533, type: 2}
+  pitch: {fileID: 1686206564}
   IsPlaying: 0
   IsPaused: 0
   PauseDuration: 0
@@ -3017,10 +3018,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efff38a138906c44196a83204ead9220, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  recordBtn: {fileID: 410599908}
   text: {fileID: 0}
   manager: {fileID: 1686206563}
-  pauseBtn: {fileID: 598999736}
 --- !u!1 &1712137716
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e36cc1897ce756419a5e7756f5f1593, type: 3}
   m_Name: Data
   m_EditorClassIdentifier: 
-  SongId: 0001
-  Title: Twinkle2
-  WavLocation: twinkle2.wav
-  MidiLocation: twinkle2_1660025606867.mid
+  SongId: 0002
+  Title: Twinkle2slow
+  WavLocation: twinkle2slow.wav
+  MidiLocation: twinkle2slow.mid
+  speed: 0

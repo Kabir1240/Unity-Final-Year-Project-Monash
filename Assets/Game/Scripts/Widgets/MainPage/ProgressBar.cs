@@ -15,6 +15,7 @@ public class ProgressBar : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _lvlNo;
     private User _currentUser;
     private float _maxExp;
+    //private bool done = false;
 
     //// Start is called before the first frame update
     //void Start()
@@ -40,6 +41,7 @@ public class ProgressBar : MonoBehaviour
         {
             Debug.Log("went here 2");
             DocumentSnapshot snapshot = task.Result;
+            Debug.Log("result: " + snapshot.Exists);
             if (snapshot.Exists)
             {
                 Debug.Log("went here 3");
@@ -55,6 +57,7 @@ public class ProgressBar : MonoBehaviour
                 Debug.Log(_progressBarContainer.size.x * 0.96f);
                 Debug.Log(_progressBar.size.y);
                 _progressBar.size = new Vector2(length, _progressBar.size.y);
+                
             }
             else
             {

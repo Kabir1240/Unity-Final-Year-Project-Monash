@@ -7,7 +7,7 @@ public class ConnectDatabase : MonoBehaviour
 {
     private FirebaseApp app;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {
             var dependencyStatus = task.Result;

@@ -10,11 +10,11 @@ public class TestTarsos : MonoBehaviour
     static AndroidJavaClass unityClass;
     static AndroidJavaObject unityActivity;
     AndroidJavaObject _pitchPluginObject;
-    public Button recordBtn;
+    //public Button recordBtn;
     bool clicked;
     public TextMeshProUGUI text;
     [SerializeField] GameManager manager;
-    [SerializeField] Button pauseBtn;
+    //[SerializeField] Button pauseBtn;
 
     // Start is called before the first frame update
     void Start()
@@ -49,8 +49,8 @@ public class TestTarsos : MonoBehaviour
             Debug.Log("Asking for permission");
             Permission.RequestUserPermission(Permission.Microphone);
         }
-        recordBtn.onClick.AddListener(BtnOnClick);
-        pauseBtn.onClick.AddListener(Pause);
+        //recordBtn.onClick.AddListener(BtnOnClick);
+        //pauseBtn.onClick.AddListener(Pause);
     }
 
     public void Pause()
@@ -87,14 +87,15 @@ public class TestTarsos : MonoBehaviour
 
     public void Result(string note)
     {
-        StartCoroutine(delay(note));
+        //StartCoroutine(delay(note));
+        manager.DetectedNote(note);
     }
 
-    private IEnumerator delay(string note)
-    {
-        //text.text = note;
-        manager.DetectedNote(note);
-        yield return new WaitForSeconds(0.1f);
-        Debug.Log("delayed");
-    }
+    //private IEnumerator delay(string note)
+    //{
+    //    //text.text = note;
+    //    manager.DetectedNote(note);
+    //    //yield return new WaitForSeconds(0.1f);
+    //    //Debug.Log("delayed");
+    //}
 }
