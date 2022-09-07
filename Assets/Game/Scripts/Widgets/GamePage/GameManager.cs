@@ -110,6 +110,7 @@ public class GameManager : MonoBehaviour
             playSymbol.interactable = true;
             pauseBtn.interactable = false;
             flowPanel.SetActive(false);
+            score.text = result.score.ToString();
             Debug.Log(NoteDetails.Count);
             ReplayGamePlay();
         }

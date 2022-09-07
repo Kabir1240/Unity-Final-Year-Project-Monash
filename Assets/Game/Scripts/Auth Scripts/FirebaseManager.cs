@@ -110,7 +110,7 @@ public class FirebaseManager : MonoBehaviour
 
     private void SetUserData(string id, int accuracy, string email, int exp, int game_run, int level, int points, string uname)
     {
-        userData.id = id;
+        userData.Id = id;
         userData.UserName = uname;
         userData.Email = email;
         userData.Accuracy = accuracy;
