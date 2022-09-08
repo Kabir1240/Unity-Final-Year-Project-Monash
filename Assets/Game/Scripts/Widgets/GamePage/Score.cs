@@ -47,39 +47,43 @@ public class Score : MonoBehaviour
         try
         {
             Debug.Log(user.GameRuns);
-            _db.Collection("User").Document(user.Id).UpdateAsync("Game_run", 1).ContinueWithOnMainThread(task => {
+            user.GameRuns += 1;
+            _db.Collection("User").Document(user.Id).UpdateAsync("Game_run", user.GameRuns).ContinueWithOnMainThread(task => {
                 Debug.Log(
                         "Updated the Capital field of the new-city-id document in the cities collection.");
             });
 
-            DocumentReference docRef = _db.Collection("User").Document(user.Id);
-            docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
-            {
-                Debug.Log("getting snapshot");
-                DocumentSnapshot snapshot = task.Result;
-                if (snapshot.Exists)
-                {
-                    Debug.Log(String.Format("Document data for {0} document:", snapshot.Id));
-                    Dictionary<string, object> city = snapshot.ToDictionary();
-                    Debug.Log(Convert.ToInt32(city["Game_run"]));
-                    //SetUserData(user.UserId, Convert.ToInt32(city["Accuracy"]), Convert.ToString(city["Email"]), Convert.ToInt32(city["Exp"]), Convert.ToInt32(city["Game_run"]), Convert.ToInt32(city["Level"]), Convert.ToInt32(city["Points"]), Convert.ToString(city["Username"]));
-                    //SceneManager.LoadScene("MainPage");
-                }
-                else
-                {
-                    Debug.Log(String.Format("Document {0} does not exist!", snapshot.Id));
-                }
-            });
+            //DocumentReference docRef = _db.Collection("User").Document(user.Id);
+            //docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+            //{
+            //    Debug.Log("getting snapshot");
+            //    DocumentSnapshot snapshot = task.Result;
+            //    if (snapshot.Exists)
+            //    {
+            //        Debug.Log(String.Format("Document data for {0} document:", snapshot.Id));
+            //        Dictionary<string, object> city = snapshot.ToDictionary();
+            //        Debug.Log(Convert.ToInt32(city["Game_run"]));
+            //        //SetUserData(user.UserId, Convert.ToInt32(city["Accuracy"]), Convert.ToString(city["Email"]), Convert.ToInt32(city["Exp"]), Convert.ToInt32(city["Game_run"]), Convert.ToInt32(city["Level"]), Convert.ToInt32(city["Points"]), Convert.ToString(city["Username"]));
+            //        //SceneManager.LoadScene("MainPage");
+            //    }
+            //    else
+            //    {
+            //        Debug.Log(String.Format("Document {0} does not exist!", snapshot.Id));
+            //    }
+            //});
             //Debug.Log()
         }catch(Exception e)
         {
-            Debug.Log(e);
+            Debug.Log("Score error: "+e);
         }
         
         int exp = (int)((level.MaxExp * 0.8f) / level.SongIds.Count) * (Math.Max(result.score, result.prevScore)/ 100000);
         user.Exp += exp;
         _db.Collection("User").Document(user.Id).UpdateAsync("Exp", user.Exp);
         //SceneManager.LoadScene("EachPlanetPage");
+
+        //TESTING 
+        SceneManager.LoadScene("MainPage");
 
     }
 

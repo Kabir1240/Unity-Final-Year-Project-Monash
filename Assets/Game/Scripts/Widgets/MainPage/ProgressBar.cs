@@ -39,12 +39,12 @@ public class ProgressBar : MonoBehaviour
 
         userRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
-            Debug.Log("went here 2");
+            Debug.Log("went progress bar 2");
             DocumentSnapshot snapshot = task.Result;
             Debug.Log("result: " + snapshot.Exists);
             if (snapshot.Exists)
             {
-                Debug.Log("went here 3");
+                Debug.Log("went progress bar 3");
                 Dictionary<string, object> dbData = snapshot.ToDictionary();
                 int currMaxExp = Convert.ToInt32(dbData["Max_Exp"]);
                 //Debug.Log(currMaxExp);

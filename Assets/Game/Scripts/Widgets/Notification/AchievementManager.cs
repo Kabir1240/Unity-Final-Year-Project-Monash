@@ -21,13 +21,14 @@ using UnityEngine;
 //}
 
 
-public class AchievementManager : MonoBehaviour {
+public class AchievementManager : MonoBehaviour
+{
 
     [SerializeField] User user;
 
     private Dictionary<string, List<Achievement>> _allAchievements;
     public Dictionary<string, List<Achievement>> AllAchievements { get => _allAchievements; }
-    private Dictionary<string, int> _userFields = new Dictionary<string, int>();
+    //private Dictionary<string, int> _userFields = new Dictionary<string, int>();
     private FirebaseFirestore _db;
 
 
@@ -36,13 +37,27 @@ public class AchievementManager : MonoBehaviour {
 
     void Awake()
     {
-        _allAchievements = new Dictionary<string, List<Achievement>>();
-        _db = FirebaseFirestore.DefaultInstance;
-        getAllUserAttribute();
-        fetchFromDb();
-        // attach listener to collection
-        instance = this;
         DontDestroyOnLoad(this);
+        if (instance == null)
+        {
+            _allAchievements = new Dictionary<string, List<Achievement>>();
+            _db = FirebaseFirestore.DefaultInstance;
+            getAllUserAttribute();
+            fetchFromDb();
+            // FETCH USER ACHIEVEMENTS
+            fetchAllUserAchiev();
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject);
+            //_allAchievements = new Dictionary<string, List<Achievement>>();
+            //_db = FirebaseFirestore.DefaultInstance;
+            //getAllUserAttribute();
+            //fetchFromDb();
+            //instance = this;
+        }
+        //DontDestroyOnLoad(this);
     }
     #endregion
 
@@ -57,30 +72,38 @@ public class AchievementManager : MonoBehaviour {
         {
             Debug.Log("getting all achievements");
             QuerySnapshot allFlashcardsQuerySnapshot = task.Result;
-
+            Debug.Log("achievements count: " + allFlashcardsQuerySnapshot.Count);
+            Debug.Log("task status: " + task.IsCompleted);
             foreach (DocumentSnapshot documentSnapshot in allFlashcardsQuerySnapshot.Documents)
             {
                 Debug.Log(String.Format("Document data for {0} document:", documentSnapshot.Id));
                 Dictionary<string, object> achievement = documentSnapshot.ToDictionary();
-                int initialValue;
+                int initialValue = 0;
 
                 // if initial value is set to a reference in user collection
-                if (!int.TryParse(Convert.ToString(achievement["Initial_value"]), out initialValue))
+                try
                 {
-                    DocumentReference userDoc = _db.Collection("User").Document(user.Id);
-                    userDoc.GetSnapshotAsync().ContinueWithOnMainThread(userTask =>
+                    if (!int.TryParse(Convert.ToString(achievement["InitialValue"]), out initialValue))
                     {
-                        Debug.Log("getting specified intial value");
-                        DocumentSnapshot currUser = userTask.Result;
-                        Debug.Log(String.Format("Document data for {0} document:", currUser.Id));
-                        Dictionary<string, object> userAchievement = currUser.ToDictionary();
-                        initialValue = Convert.ToInt32(userAchievement[Convert.ToString(achievement["Initial_value"])]);
+                        DocumentReference userDoc = _db.Collection("User").Document(user.Id);
+                        userDoc.GetSnapshotAsync().ContinueWithOnMainThread(userTask =>
+                        {
+                            Debug.Log("getting specified intial value");
+                            DocumentSnapshot currUser = userTask.Result;
+                            Debug.Log(String.Format("Document data for {0} document:", currUser.Id));
+                            Dictionary<string, object> userAchievement = currUser.ToDictionary();
+                            initialValue = Convert.ToInt32(userAchievement[Convert.ToString(achievement["InitialValue"])]);
 
-                    });
+                        });
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.Log("Achievement Manager error: " + e);
                 }
 
                 Achievement currAchievement = new Achievement(Convert.ToString(achievement["Name"]), Convert.ToString(achievement["AssetAttribute"]), Convert.ToString(achievement["AssetName"]), Convert.ToInt32(achievement["Target"]), Convert.ToInt32(achievement["Exp"]), Convert.ToInt32(achievement["Coin"]), initialValue, documentSnapshot.Id);
-
+                Debug.Log("currAchievement: " + currAchievement.Name);
                 // most changes are caused by the user's interaction
                 switch (Convert.ToString(achievement["AssetAttribute"]))
                 {
@@ -97,6 +120,26 @@ public class AchievementManager : MonoBehaviour {
         });
     }
 
+    private void fetchAllUserAchiev()
+    {
+        user.resetAchieved();
+        CollectionReference userAchiev = _db.Collection("User").Document(user.Id).Collection("Achievements");
+        userAchiev.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            Debug.Log("getting all user achievements");
+            QuerySnapshot allFlashcardsQuerySnapshot = task.Result;
+            Debug.Log("user achievements count: " + allFlashcardsQuerySnapshot.Count);
+            Debug.Log("user achiev task status: " + task.IsCompleted);
+            foreach (DocumentSnapshot documentSnapshot in allFlashcardsQuerySnapshot.Documents)
+            {
+                Dictionary<string, object> achievement = documentSnapshot.ToDictionary();
+                Achievement currAchievement = new Achievement(documentSnapshot.Id, Convert.ToString(achievement["Name"]), Convert.ToString(achievement["AssetAttribute"]), Convert.ToString(achievement["AssetName"]), Convert.ToString(achievement["Date"]));
+                user.addAchievements(currAchievement);
+
+            }
+        });
+    }
+
     private void getAllUserAttribute()
     {
         //_userFields.Add("accuracy", user.Accuracy);
@@ -106,7 +149,7 @@ public class AchievementManager : MonoBehaviour {
         //_userFields.Add("gameRuns", user.GameRuns);
 
         _allAchievements.Add("accuracy", new List<Achievement>());
-        _allAchievements.Add("exp", new List<Achievement>());
+        //_allAchievements.Add("exp", new List<Achievement>());
         _allAchievements.Add("level", new List<Achievement>());
         _allAchievements.Add("points", new List<Achievement>());
         _allAchievements.Add("gameRuns", new List<Achievement>());
@@ -124,8 +167,21 @@ public class AchievementManager : MonoBehaviour {
     public void achieved(Achievement achievement)
     {
         Debug.Log("calling show notification");
+        Debug.Log("Achieved: " + achievement.Name);
+
         // call to notification class
         // push to user achievement collection class
+        DocumentReference userAchievDoc = _db.Collection("User").Document(user.Id).Collection("Achievements").Document(achievement.Id);
+        Dictionary<string, object> newAchiev= new Dictionary<string, object>
+        {
+            { "Name", achievement.Name },
+            { "Date", achievement.AchievedDate.ToString() },
+            { "AssetAttribute", achievement.AssetAttribute },
+            { "AssetName", achievement.AssetName }
+        };
+        userAchievDoc.SetAsync(newAchiev).ContinueWithOnMainThread(task => {
+            Debug.Log("Added data to achievement collection in user.");
+        });
     }
 
 }

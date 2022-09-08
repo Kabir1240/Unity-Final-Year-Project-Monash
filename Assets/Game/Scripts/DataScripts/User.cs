@@ -16,36 +16,88 @@ public class User : ScriptableObject
     private int points = 0;
     private int gameRuns = 0;
 
-    private Dictionary<string, List<Achievement>> observers = new Dictionary<string, List<Achievement>>();
+    private Dictionary<string, List<Achievement>> achieved = new Dictionary<string, List<Achievement>>();
 
     public string Id { get => id; set => id = value; }
     public string UserName { get => userName; set => userName = value; }
     public string Email { get => email; set => email = value; }
-    public int Accuracy { get => accuracy; set => onChange(value, "accuracy"); }
-    public int Exp { get => exp; set => onChange(value, "exp"); }
-    public int Level { get => level; set => onChange(value, "level"); }
-    public int Points { get => points; set => onChange(value, "points"); }
-    public int GameRuns { get => gameRuns; set => onChange(value, "gameRuns"); }
+    public int Accuracy { get => accuracy; set => accuracy = onChange(value, "accuracy"); }
+    public int Exp { get => exp; set => exp = value; }
+    public int Level { get => level; set => level = onChange(value, "level"); }
+    public int Points { get => points; set => points = onChange(value, "points"); }
+    public int GameRuns { get => gameRuns; set => gameRuns = onChange(value, "gameRuns"); }
+    public Dictionary<string, List<Achievement>> Achieved { get => achieved; set => achieved = value; }
+
     //public Dictionary<string, List<Achievement>> Observers { get => observers; set => observers = value; }
 
-    public void onChange(int value, string attribute)
+    public int onChange(int value, string attribute)
     {
         try
         {
+            Debug.Log("User " + attribute + " being changed to: " + value);
             List<Achievement> currAchivements = AchievementManager.instance.AllAchievements[attribute];
+            Debug.Log("USer currAchievements: " + currAchivements.Count);
             foreach (Achievement currAchieve in currAchivements)
             {
                 if (currAchieve.isAchieved(value))
                 {
-                    AchievementManager.instance.achieved(currAchieve);
+                    if (!hasBeenAchieved(currAchieve, attribute))
+                    {
+                        AchievementManager.instance.achieved(currAchieve);
+                        exp += currAchieve.Exp;
+                        achieved[attribute].Add(currAchieve);
+                    }
+
                 }
             }
-        }catch(Exception e)
-        {
-            Debug.Log(e);
         }
+        catch (Exception e)
+        {
+            Debug.Log("User error: " + e);
+
+        }
+        return value;
+
+    }
+
+    public void resetAchieved()
+    {
+        Debug.Log("User: achieved is resetted");
+         achieved= new Dictionary<string, List<Achievement>>();
+    }
+
+    public void addAchievements(Achievement achieve)
+    {
+        if (!achieved.ContainsKey(achieve.AssetAttribute))
+        {
+            achieved.Add(achieve.AssetAttribute, new List<Achievement>());
+ 
+        }
+        Debug.Log("User: addAchievement: " + achieve.Name);
+        achieved[achieve.AssetAttribute].Add(achieve);
         
     }
 
-    // need another attribute for the image
+    private bool hasBeenAchieved(Achievement curr, string attribute)
+    {
+        if (!achieved.ContainsKey(attribute))
+        {
+            achieved.Add(attribute, new List<Achievement>());
+            Debug.Log("User: achieved: " + false);
+            return false;
+        }
+        List<Achievement> catAchieve = achieved[attribute];
+
+        foreach (Achievement achieve in catAchieve)
+        {
+            if (achieve.Id == curr.Id)
+            {
+                Debug.Log("User: achieved: " + true);
+                return true;
+            }
+        }
+        Debug.Log("User: achieved: " + false);
+        return false;
+    }
 }
+
