@@ -22,7 +22,7 @@ public class User : ScriptableObject
     public string UserName { get => userName; set => userName = value; }
     public string Email { get => email; set => email = value; }
     public int Accuracy { get => accuracy; set => accuracy = onChange(value, "accuracy"); }
-    public int Exp { get => exp; set => exp = value; }
+    public int Exp { get => exp; set => exp = onChange(value, "exp"); }
     public int Level { get => level; set => level = onChange(value, "level"); }
     public int Points { get => points; set => points = onChange(value, "points"); }
     public int GameRuns { get => gameRuns; set => gameRuns = onChange(value, "gameRuns"); }
@@ -68,13 +68,13 @@ public class User : ScriptableObject
 
     public void addAchievements(Achievement achieve)
     {
-        if (!achieved.ContainsKey(achieve.AssetAttribute))
+        if (!achieved.ContainsKey(achieve.AssetName))
         {
-            achieved.Add(achieve.AssetAttribute, new List<Achievement>());
+            achieved.Add(achieve.AssetName, new List<Achievement>());
  
         }
-        Debug.Log("User: addAchievement: " + achieve.Name);
-        achieved[achieve.AssetAttribute].Add(achieve);
+        Debug.Log("User: addAchievement: " + achieve.Name+", attribute: "+achieve.AssetName);
+        achieved[achieve.AssetName].Add(achieve);
         
     }
 
@@ -83,13 +83,14 @@ public class User : ScriptableObject
         if (!achieved.ContainsKey(attribute))
         {
             achieved.Add(attribute, new List<Achievement>());
-            Debug.Log("User: achieved: " + false);
+            Debug.Log("User: no key, achieved: " + false);
             return false;
         }
         List<Achievement> catAchieve = achieved[attribute];
 
         foreach (Achievement achieve in catAchieve)
         {
+            Debug.Log("User: checking " + achieve.Name + " with " + curr.Name);
             if (achieve.Id == curr.Id)
             {
                 Debug.Log("User: achieved: " + true);

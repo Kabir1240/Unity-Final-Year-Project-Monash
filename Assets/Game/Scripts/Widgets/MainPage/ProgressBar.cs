@@ -53,9 +53,9 @@ public class ProgressBar : MonoBehaviour
                 float length = (_progressBarContainer.size.x * 0.96f) * (_currentUser.Exp / _maxExp);
                 Debug.Log(length);
                 Debug.Log("user exp: " + _currentUser.Exp);
-                Debug.Log(_currentUser.Exp / _maxExp);
-                Debug.Log(_progressBarContainer.size.x * 0.96f);
-                Debug.Log(_progressBar.size.y);
+                //Debug.Log(_currentUser.Exp / _maxExp);
+                //Debug.Log(_progressBarContainer.size.x * 0.96f);
+                //Debug.Log(_progressBar.size.y);
                 _progressBar.size = new Vector2(length, _progressBar.size.y);
                 
             }

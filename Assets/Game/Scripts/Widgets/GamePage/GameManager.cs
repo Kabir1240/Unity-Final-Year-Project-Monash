@@ -291,7 +291,6 @@ public class GameManager : MonoBehaviour
             }
             flowPanel.SetActive(false);
             playSymbol.gameObject.SetActive(false);
-            pitch.BtnOnClick();
             if (IsPaused)
             {
                 //IsPaused = false;
@@ -361,6 +360,7 @@ public class GameManager : MonoBehaviour
             {
                 yield return new WaitForSeconds(tmpDelay);
             }
+            pitch.BtnOnClick();
 
         }
 

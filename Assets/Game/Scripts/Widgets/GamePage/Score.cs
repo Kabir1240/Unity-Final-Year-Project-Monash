@@ -50,7 +50,7 @@ public class Score : MonoBehaviour
             user.GameRuns += 1;
             _db.Collection("User").Document(user.Id).UpdateAsync("Game_run", user.GameRuns).ContinueWithOnMainThread(task => {
                 Debug.Log(
-                        "Updated the Capital field of the new-city-id document in the cities collection.");
+                        "Updated user Game_run in User.");
             });
 
             //DocumentReference docRef = _db.Collection("User").Document(user.Id);
