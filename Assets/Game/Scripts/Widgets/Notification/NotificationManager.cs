@@ -1,18 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NotificationManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private static bool created = false;
+    void Awake()
     {
+        //Debug.Log("Awake:" + SceneManager.GetActiveScene().name);
+
+        // Ensure the script is not deleted while loading.
+        if (!created)
+        {
+            DontDestroyOnLoad(this.gameObject);
+            created = true;
+            //Load notification prefab
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
         
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    public IEnumerator ShowNotification()
     {
-        
+        // instantiate game object
+        //dont destroy on load
+        // yield return new WaitForSeconds(3);
+        //destroy game object
+
+        Debug.Log("ShowNotification: currScene" + SceneManager.GetActiveScene().name + " called");
+        yield return null;
     }
 }

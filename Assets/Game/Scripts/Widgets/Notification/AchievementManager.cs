@@ -5,26 +5,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-//[System.Serializable]
-//public class PropertiesFoo
-//{
-//    public PropertiesName propName;
-//    public Property prop;
-//}
-
-//[System.Serializable]
-//public class AchievementFoo
-//{
-//    public string achievName;
-//    public Achievement achiev;
-//}
+using UnityEngine.SceneManagement;
 
 
 public class AchievementManager : MonoBehaviour
 {
 
     [SerializeField] User user;
+    [SerializeField] NotificationManager notifManager;
 
     private Dictionary<string, List<Achievement>> _allAchievements;
     public Dictionary<string, List<Achievement>> AllAchievements { get => _allAchievements; }
@@ -70,10 +58,10 @@ public class AchievementManager : MonoBehaviour
 
         achievements.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
-            Debug.Log("getting all achievements");
+            Debug.Log("AchievementManager: getting all achievements");
             QuerySnapshot allFlashcardsQuerySnapshot = task.Result;
-            Debug.Log("achievements count: " + allFlashcardsQuerySnapshot.Count);
-            Debug.Log("task status: " + task.IsCompletedSuccessfully);
+            Debug.Log("AchievementManager: achievements count: " + allFlashcardsQuerySnapshot.Count);
+            Debug.Log("AchievementManager: task status: " + task.IsCompletedSuccessfully);
             foreach (DocumentSnapshot documentSnapshot in allFlashcardsQuerySnapshot.Documents)
             {
                 Debug.Log(String.Format("Document data for {0} document:", documentSnapshot.Id));
@@ -88,9 +76,9 @@ public class AchievementManager : MonoBehaviour
                         DocumentReference userDoc = _db.Collection("User").Document(user.Id);
                         userDoc.GetSnapshotAsync().ContinueWithOnMainThread(userTask =>
                         {
-                            Debug.Log("getting specified intial value");
+                            Debug.Log("AchievementManager: getting specified intial value");
                             DocumentSnapshot currUser = userTask.Result;
-                            Debug.Log(String.Format("Document data for {0} document:", currUser.Id));
+                            Debug.Log(String.Format("AchievementManager: Document data for {0} document:", currUser.Id));
                             Dictionary<string, object> userAchievement = currUser.ToDictionary();
                             initialValue = Convert.ToInt32(userAchievement[Convert.ToString(achievement["InitialValue"])]);
 
@@ -103,7 +91,7 @@ public class AchievementManager : MonoBehaviour
                 }
 
                 Achievement currAchievement = new Achievement(Convert.ToString(achievement["Name"]), Convert.ToString(achievement["AssetAttribute"]), Convert.ToString(achievement["AssetName"]), Convert.ToInt32(achievement["Target"]), Convert.ToInt32(achievement["Exp"]), Convert.ToInt32(achievement["Coin"]), initialValue, documentSnapshot.Id);
-                Debug.Log("currAchievement: " + currAchievement.Name);
+                Debug.Log("AchievementManager: currAchievement: " + currAchievement.Name);
                 // most changes are caused by the user's interaction
                 switch (Convert.ToString(achievement["AssetAttribute"]))
                 {
@@ -126,10 +114,10 @@ public class AchievementManager : MonoBehaviour
         CollectionReference userAchiev = _db.Collection("User").Document(user.Id).Collection("Achievements");
         userAchiev.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
-            Debug.Log("getting all user achievements");
+            Debug.Log("AchievementManager: getting all user achievements");
             QuerySnapshot allFlashcardsQuerySnapshot = task.Result;
-            Debug.Log("user achievements count: " + allFlashcardsQuerySnapshot.Count);
-            Debug.Log("user achiev task status: " + task.IsCompletedSuccessfully);
+            Debug.Log("AchievementManager: user achievements count: " + allFlashcardsQuerySnapshot.Count);
+            Debug.Log("AchievementManager: user achiev task status: " + task.IsCompletedSuccessfully);
             foreach (DocumentSnapshot documentSnapshot in allFlashcardsQuerySnapshot.Documents)
             {
                 Dictionary<string, object> achievement = documentSnapshot.ToDictionary();
@@ -156,7 +144,7 @@ public class AchievementManager : MonoBehaviour
         //_userFields.Add("gameRuns", user.GameRuns);
 
         _allAchievements.Add("accuracy", new List<Achievement>());
-        //_allAchievements.Add("exp", new List<Achievement>());
+        _allAchievements.Add("exp", new List<Achievement>());
         _allAchievements.Add("level", new List<Achievement>());
         _allAchievements.Add("points", new List<Achievement>());
         _allAchievements.Add("gameRuns", new List<Achievement>());
@@ -173,8 +161,8 @@ public class AchievementManager : MonoBehaviour
 
     public void achieved(Achievement achievement)
     {
-        Debug.Log("calling show notification");
-        Debug.Log("Achieved: " + achievement.Name);
+        Debug.Log("AchievementManager: calling show notification");
+        Debug.Log("AchievementManager: Achieved: " + achievement.Name);
 
         // call to notification class
         // push to user achievement collection class
@@ -187,13 +175,25 @@ public class AchievementManager : MonoBehaviour
             { "AssetName", achievement.AssetName }};
 
             _db.Collection("User").Document(user.Id).Collection("Achievements").Document(achievement.Id).SetAsync(newAchiev).ContinueWithOnMainThread(task=> {
-                Debug.Log("addition user task: " + (task.IsFaulted||task.IsCanceled));
+                Debug.Log("AchievementManager: addition user task: " + (task.IsFaulted||task.IsCanceled));
+                
             });
         }
         catch (Exception e)
         {
             Debug.Log("AchievementManager: achieved error: " + e);
         }
+
+        StartCoroutine(callNotification());
+    }
+
+    private IEnumerator callNotification()
+    {
+        //Scene currScene = SceneManager.GetActiveScene();
+        //GameObject currNotifLayer = GameObject.Find("NotificationManager");
+        Debug.Log("AchievementManager: in call notification");
+        yield return notifManager.ShowNotification();
+
     }
 
 }
