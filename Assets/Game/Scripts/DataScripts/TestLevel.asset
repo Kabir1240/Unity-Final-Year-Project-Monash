@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa2897c62a48838469ad4fabbb68e7c7, type: 3}
   m_Name: TestLevel
   m_EditorClassIdentifier: 
-  LevelId: lvl1
+  LevelId: lvl3
   MaxExp: 200
-  ModuleId: 0001
+  ModuleId: 0003
   SongIds:
   - song1

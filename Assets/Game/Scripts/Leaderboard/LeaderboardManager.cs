@@ -58,32 +58,4 @@ public class LeaderboardManager : MonoBehaviour
         }
         });
     }
-
-    // private IEnumerator LoadLeaderboardData()
-    // {
-    //     var DBtask = reference.Child("User").OrderByChild("Points").GetValueAsync();
-
-    //     yield return new WaitUntil(predicate: () => DBtask.IsCompleted);
-
-    //     if (DBtask.Exception != null)
-    //     {
-    //         Debug.LogWarning(message: $"Failed to load leaderboard data: {DBtask.Exception}");
-    //     }
-    //     else
-    //     {
-    //         DataSnapshot snapshot = DBtask.Result;
-
-    //         foreach (Transform Child in LBRungParent)
-    //         {
-    //             Destroy(Child.gameObject);
-    //         }
-
-    //         foreach (DataSnapshot user in snapshot.Children.Reverse<DataSnapshot>())
-    //         {
-    //             GameObject rung = Instantiate(original: LBRung, parent: LBRungParent);
-    //             rung.transform.GetChild(0).GetComponent<TMP_Text>().text = user.Value.ToString();
-    //             rung.transform.GetChild(1).GetComponent<TMP_Text>().text = user.Child("Points").Value.ToString();
-    //         }
-    //     }
-    // }
 }
