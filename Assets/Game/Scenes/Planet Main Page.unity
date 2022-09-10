@@ -379,9 +379,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
+    m_Left: 371
+    m_Right: 335
+    m_Top: -32
     m_Bottom: 0
   m_ChildAlignment: 0
   m_Spacing: 712.71
@@ -1782,6 +1782,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Levels: {fileID: 7600240927112547898, guid: 7c29c9893a0e3494aa4a4401fce85af3, type: 3}
   LevelsParent: {fileID: 244123409}
+  lvl: {fileID: 0}
 --- !u!4 &1948965955
 Transform:
   m_ObjectHideFlags: 0
