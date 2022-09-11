@@ -33,7 +33,7 @@ public class ProgressBar : MonoBehaviour
 
         // length of progress bar will be a certain fixed length * (_currentUser.Exp/current level max exp)
         // get the user's current level
-        DocumentReference userRef = _db.Collection("Level").Document("lvl" + _currentUser.Level);
+        DocumentReference userRef = _db.Collection("Level").Document(""+_currentUser.Level);
         Debug.Log(userRef.ToString());
         //_maxExp = (float)userRef.get("Max_Exp");
 

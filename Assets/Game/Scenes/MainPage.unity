@@ -556,7 +556,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   user: {fileID: 11400000, guid: 69b7ef9e27dfbe74ea876387b8aa6af2, type: 2}
-  manager: {fileID: 1400797154}
+  notifManager: {fileID: 0}
 --- !u!4 &165263835
 Transform:
   m_ObjectHideFlags: 0
@@ -1312,8 +1312,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 38, y: 0.0000047684}
-  m_SizeDelta: {x: 189.44, y: 60.56}
+  m_AnchoredPosition: {x: 18, y: -7}
+  m_SizeDelta: {x: 251.3, y: 56.15}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &525889622
 MonoBehaviour:
@@ -1335,7 +1335,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 100
+  m_text: Levels
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 68caf501c704d7a40b28230932478a05, type: 2}
   m_sharedMaterial: {fileID: -5657954856819499735, guid: 68caf501c704d7a40b28230932478a05, type: 2}

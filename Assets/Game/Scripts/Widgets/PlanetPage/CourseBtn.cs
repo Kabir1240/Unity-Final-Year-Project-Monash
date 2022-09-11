@@ -6,6 +6,6 @@ using UnityEngine.SceneManagement;
 public class CourseBtn : MonoBehaviour
 {
     public void LoadScene(string sceneName){
-        sceneManager.LoadScene(sceneName);
+        SceneManager.LoadScene(sceneName);
     }
 }

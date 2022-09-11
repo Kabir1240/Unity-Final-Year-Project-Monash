@@ -15,8 +15,8 @@ public class HomePage : MonoBehaviour
 
     private void GoToPage()
     {
-        Debug.Log("Go to gamepage");
-        SceneManager.LoadScene("GamePage");
+        Debug.Log("Go to PlanetMainPage");
+        SceneManager.LoadScene("PlanetMainPage");
     }
 
     // Update is called once per frame

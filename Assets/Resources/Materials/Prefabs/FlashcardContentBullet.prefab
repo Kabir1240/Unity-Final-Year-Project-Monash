@@ -224,7 +224,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 917816539271252757, guid: 1f2caf356dbd4e84484f86d77c73e93b, type: 3}
       propertyPath: m_Name
-      value: FlashcardContentBullet1
+      value: FlashcardContentBullet
       objectReference: {fileID: 0}
     - target: {fileID: 4481161457812943286, guid: 1f2caf356dbd4e84484f86d77c73e93b, type: 3}
       propertyPath: m_Pivot.x

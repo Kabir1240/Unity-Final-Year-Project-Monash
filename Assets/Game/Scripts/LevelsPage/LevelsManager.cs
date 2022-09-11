@@ -24,45 +24,110 @@ public class LevelsManager : MonoBehaviour
     {
         int currentLevel = 1;
         GameObject newLevel = Instantiate(Levels, LevelsParent);
-        Query allLevelsQuery = db.Collection("Modules");
+        //Query allLevelsQuery = db.Collection("Modules");
+        CollectionReference allLevelsQuery = db.Collection("Level");
         allLevelsQuery.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             QuerySnapshot allLevelsQuerySnapshot = task.Result;
+            Debug.Log("task: " + task.IsCompletedSuccessfully);
             foreach (DocumentSnapshot documentSnapshot in allLevelsQuerySnapshot.Documents)
             {
                 if (documentSnapshot.Exists)
                 {
+                    LevelsButtonManager btn1 = newLevel.transform.Find("Level1").GetComponent<LevelsButtonManager>();
+                    LevelsButtonManager btn2 = newLevel.transform.Find("Level2").GetComponent<LevelsButtonManager>();
+                    Dictionary<string, object> level = documentSnapshot.ToDictionary();
+                    {
+                        //if (currentLevel == 1)
+                        //{
+                        //    //string levelNo = level["LevelNo"].ToString();
+                        //    //string levelNo = documentSnapshot.Id;
+
+                        //    ////string title = level["Title"].ToString();
+                        //    //newLevel.transform.Find("Level1").transform.Find("Level").GetChild(0).GetComponent<TextMeshProUGUI>().text = levelNo;
+                        //    //newLevel.transform.Find("Level1").transform.Find("ModuleInfo").GetChild(0).GetComponent<TextMeshProUGUI>().text = documentSnapshot.Id;
+
+                        //    //newLevel.transform.Find("Level1").transform.Find("ModuleInfo").GetChild(1).GetComponent<TextMeshProUGUI>().text = title;
+                        //    currentLevel+=1;
+                        //}
+                        //else if (currentLevel > 0 && currentLevel%2 == 0)
+                        //{
+                        //    string levelNo = level["LevelNo"].ToString();
+                        //    string title = level["Title"].ToString();
+                        //    newLevel.transform.Find("Level2").gameObject.SetActive(true);
+                        //    newLevel.transform.Find("Level2").transform.Find("Level").GetChild(0).GetComponent<TextMeshProUGUI>().text = levelNo;
+                        //    newLevel.transform.Find("Level2").transform.Find("ModuleInfo").GetChild(0).GetComponent<TextMeshProUGUI>().text = documentSnapshot.Id;
+                        //    newLevel.transform.Find("Level2").transform.Find("ModuleInfo").GetChild(1).GetComponent<TextMeshProUGUI>().text = title;
+                        //    currentLevel+=1;
+                        //}
+                        //else
+                        //{
+                        //    newLevel = Instantiate(Levels, LevelsParent);
+                        //    string levelNo = level["LevelNo"].ToString();
+                        //    string title = level["Title"].ToString();
+                        //    newLevel.transform.Find("Level1").transform.Find("Level").GetChild(0).GetComponent<TextMeshProUGUI>().text = levelNo;
+                        //    newLevel.transform.Find("Level1").transform.Find("ModuleInfo").GetChild(0).GetComponent<TextMeshProUGUI>().text = documentSnapshot.Id;
+                        //    newLevel.transform.Find("Level1").transform.Find("ModuleInfo").GetChild(1).GetComponent<TextMeshProUGUI>().text = title;
+                        //    currentLevel+=1;
+                        //}
+                    }
+
                     if (currentLevel == 1)
                     {
-                        Dictionary<string, object> level = documentSnapshot.ToDictionary();
-                        string levelNo = level["LevelNo"].ToString();
-                        string title = level["Title"].ToString();
-                        newLevel.transform.Find("Level1").transform.Find("Level").GetChild(0).GetComponent<TextMeshProUGUI>().text = levelNo;
-                        newLevel.transform.Find("Level1").transform.Find("ModuleInfo").GetChild(0).GetComponent<TextMeshProUGUI>().text = documentSnapshot.Id;
-                        newLevel.transform.Find("Level1").transform.Find("ModuleInfo").GetChild(1).GetComponent<TextMeshProUGUI>().text = title;
-                        currentLevel+=1;
+                        
+                        //newLevel.transform.Find("Level1").transform.Find("ModuleInfo").GetChild(1).GetComponent<TextMeshProUGUI>().text = title;
+                        btn1.CurrId = documentSnapshot.Id;
+                        btn1.ModuleId = level["Module"].ToString();
+                        List<object> songs = level["Songs"] as List<object>;
+                        List<string> currSongArr = new List<string>();
+                        foreach(object song in songs)
+                        {
+                            currSongArr.Add(song.ToString());
+                        }
+                        btn1.SongId = currSongArr;
+
+                        newLevel.transform.Find("Level1").transform.Find("Level").GetChild(0).GetComponent<TextMeshProUGUI>().text = documentSnapshot.Id;
+                        Debug.Log("LevelsManager: " + documentSnapshot.Id);
+                        currentLevel += 1;
                     }
                     else if (currentLevel > 0 && currentLevel%2 == 0)
                     {
-                        Dictionary<string, object> level = documentSnapshot.ToDictionary();
-                        string levelNo = level["LevelNo"].ToString();
-                        string title = level["Title"].ToString();
+                        //string levelNo = level["LevelNo"].ToString();
+                        //string title = level["Title"].ToString();
                         newLevel.transform.Find("Level2").gameObject.SetActive(true);
-                        newLevel.transform.Find("Level2").transform.Find("Level").GetChild(0).GetComponent<TextMeshProUGUI>().text = levelNo;
-                        newLevel.transform.Find("Level2").transform.Find("ModuleInfo").GetChild(0).GetComponent<TextMeshProUGUI>().text = documentSnapshot.Id;
-                        newLevel.transform.Find("Level2").transform.Find("ModuleInfo").GetChild(1).GetComponent<TextMeshProUGUI>().text = title;
-                        currentLevel+=1;
+                        //newLevel.transform.Find("Level2").transform.Find("ModuleInfo").GetChild(0).GetComponent<TextMeshProUGUI>().text = documentSnapshot.Id;
+                        //newLevel.transform.Find("Level2").transform.Find("ModuleInfo").GetChild(1).GetComponent<TextMeshProUGUI>().text = title;
+                        btn2.CurrId = documentSnapshot.Id;
+                        btn2.ModuleId = level["Module"].ToString();
+                        List<object> songs = level["Songs"] as List<object>;
+                        List<string> currSongArr = new List<string>();
+                        foreach (object song in songs)
+                        {
+                            currSongArr.Add(song.ToString());
+                        }
+                        btn2.SongId = currSongArr;
+                        newLevel.transform.Find("Level2").transform.Find("Level").GetChild(0).GetComponent<TextMeshProUGUI>().text = documentSnapshot.Id;
+
+                        currentLevel += 1;
                     }
                     else
                     {
                         newLevel = Instantiate(Levels, LevelsParent);
-                        Dictionary<string, object> level = documentSnapshot.ToDictionary();
-                        string levelNo = level["LevelNo"].ToString();
-                        string title = level["Title"].ToString();
-                        newLevel.transform.Find("Level1").transform.Find("Level").GetChild(0).GetComponent<TextMeshProUGUI>().text = levelNo;
-                        newLevel.transform.Find("Level1").transform.Find("ModuleInfo").GetChild(0).GetComponent<TextMeshProUGUI>().text = documentSnapshot.Id;
-                        newLevel.transform.Find("Level1").transform.Find("ModuleInfo").GetChild(1).GetComponent<TextMeshProUGUI>().text = title;
-                        currentLevel+=1;
+                        //string levelNo = level["LevelNo"].ToString();
+                        //string title = level["Title"].ToString();
+                        //newLevel.transform.Find("Level1").transform.Find("ModuleInfo").GetChild(0).GetComponent<TextMeshProUGUI>().text = documentSnapshot.Id;
+                        //newLevel.transform.Find("Level1").transform.Find("ModuleInfo").GetChild(1).GetComponent<TextMeshProUGUI>().text = title;
+                        btn1.CurrId = documentSnapshot.Id;
+                        btn1.ModuleId = level["Module"].ToString();
+                        List<object> songs = level["Songs"] as List<object>;
+                        List<string> currSongArr = new List<string>();
+                        foreach (object song in songs)
+                        {
+                            currSongArr.Add(song.ToString());
+                        }
+                        btn1.SongId = currSongArr;
+                        newLevel.transform.Find("Level1").transform.Find("Level").GetChild(0).GetComponent<TextMeshProUGUI>().text = documentSnapshot.Id;
+                        currentLevel += 1;
                     }
                 }
             }
