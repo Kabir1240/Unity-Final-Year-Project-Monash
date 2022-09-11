@@ -39,7 +39,7 @@ public class LevelsButtonManager : MonoBehaviour
         level.ModuleId = moduleId;
         level.SongIds = songId;
 
-        Debug.Log("LevelsBtnManager: going to course page: " + CurrId + ", module: " + moduleId + ", songs: " + songId.Count);
-        SceneManager.LoadScene("CoursePage");
+        Debug.Log("LevelsBtnManager: going to each planet page: " + CurrId + ", module: " + moduleId + ", songs: " + songId.Count);
+        SceneManager.LoadScene("EachPlanetPage");
     }
 }

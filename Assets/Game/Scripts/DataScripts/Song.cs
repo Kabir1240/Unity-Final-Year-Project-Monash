@@ -11,4 +11,5 @@ public class Song : ScriptableObject
     public string WavLocation = "placeholder";
     public string MidiLocation = "placeholder";
     public float speed = 0.0f;
+    public int difficulty = 0;
 }
