@@ -190,9 +190,10 @@ public class AchievementManager : MonoBehaviour
     private IEnumerator callNotification()
     {
         //Scene currScene = SceneManager.GetActiveScene();
-        //GameObject currNotifLayer = GameObject.Find("NotificationManager");
-        Debug.Log("AchievementManager: in call notification");
-        yield return notifManager.ShowNotification();
+        GameObject currNotifLayer = GameObject.Find("NotificationManager");
+
+        Debug.Log("AchievementManager: in call notification, currNotifLayer: "+currNotifLayer);
+        yield return currNotifLayer.GetComponent<NotificationManager>().ShowNotification();
 
     }
 
