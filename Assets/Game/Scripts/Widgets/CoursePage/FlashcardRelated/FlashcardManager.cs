@@ -10,6 +10,7 @@ using TMPro;
 using Firebase.Storage;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 public class FlashcardManager : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class FlashcardManager : MonoBehaviour
     [SerializeField] private GameObject _initialPos;
     [SerializeField] private GameObject _parent;
     [SerializeField] private ModuleLevel lvl;
+    [SerializeField] Button backBtn;
     //[SerializeField] private test_rawimg script;
 
     private FirebaseFirestore _db;
@@ -55,17 +57,19 @@ public class FlashcardManager : MonoBehaviour
         _flashcardsArray = new List<Dictionary<string, object>>();
         _flashcardObjectsArray = new List<GameObject>();
 
+        backBtn.onClick.AddListener(BackToEachPlanet);
+
         LoadData();
 
     }
 
-    public int totalFlashcards()
+    public int TotalFlashcards()
     {
         Debug.Log("total: " + _flashcardsArray.Count);
         return _flashcardsArray.Count;
     }
 
-    public int getPointer()
+    public int GetPointer()
     {
         return _pointer;
     }
@@ -109,6 +113,9 @@ public class FlashcardManager : MonoBehaviour
         // unhide the current flashcard
         currentObj = _flashcardObjectsArray[_pointer];
         currentObj.SetActive(true);
+
+        // if current flashcard is of quiz type, disable the next button
+
         if(_pointer + 1 == _flashcardObjectsArray.Count)
         {
             Debug.Log("Reached end");
@@ -331,6 +338,12 @@ public class FlashcardManager : MonoBehaviour
             thePic.texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
         }
 
+    }
+
+    private void BackToEachPlanet()
+    {
+        Debug.Log("FlashcardManager: Back to each planet page");
+        SceneManager.LoadScene("EachPlanetPage");
     }
 
 }

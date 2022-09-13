@@ -13,7 +13,7 @@ public class User : ScriptableObject
     private int accuracy = 0;
     private int exp = 0;
     private int level = 0;
-    private int points = 0;
+    private int coin = 0;
     private int gameRuns = 0;
 
     private Dictionary<string, List<Achievement>> achieved = new Dictionary<string, List<Achievement>>();
@@ -24,7 +24,7 @@ public class User : ScriptableObject
     public int Accuracy { get => accuracy; set => accuracy = onChange(value, "accuracy"); }
     public int Exp { get => exp; set => exp = onChange(value, "exp"); }
     public int Level { get => level; set => level = onChange(value, "level"); }
-    public int Points { get => points; set => points = onChange(value, "points"); }
+    public int Coin { get => coin; set => coin = value; }
     public int GameRuns { get => gameRuns; set => gameRuns = onChange(value, "gameRuns"); }
     public Dictionary<string, List<Achievement>> Achieved { get => achieved; set => achieved = value; }
 

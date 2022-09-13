@@ -41,7 +41,7 @@ public class ProfPanel : MonoBehaviour
 
         _db = FirebaseFirestore.DefaultInstance;
         _progress.InitializeBar(_db, _currentUser);
-        _reward.text = _currentUser.Points.ToString();
+        _reward.text = _currentUser.Coin.ToString();
         _usernameUI.text = "@"+_currentUser.UserName;
     }
 

@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class NotificationManager : MonoBehaviour
 {
     //private static bool created = false;
+    private TextMeshProUGUI _achievName;
+    private TextMeshProUGUI _exp;
     public static NotificationManager instance;
 
     private GameObject notifPrefab;
@@ -25,8 +28,10 @@ public class NotificationManager : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
             instance = this;
             notifPrefab = (GameObject)LoadPrefabFromFile("Notification");
-            notifTime = 10.0f;
+            notifTime = 7.0f;
             interrupted = false;
+            _achievName = notifPrefab.transform.Find("AchievementName").GetComponent<TextMeshProUGUI>();
+            _exp = notifPrefab.transform.Find("ExpPlus").GetComponent<TextMeshProUGUI>();
             //currCamera = GameObject.Find("Main Camera").gameObject;
             SceneManager.activeSceneChanged += onActiveSceneChanged;
             //Load notification prefab
@@ -47,7 +52,7 @@ public class NotificationManager : MonoBehaviour
             if (changeTime - startTime < notifTime)
             {
                 Debug.Log("NotifManager: changeTime:" + (changeTime - startTime));
-                StartCoroutine(ShowNotification((int)(notifTime - (changeTime - startTime))));
+                StartCoroutine(ShowNotification(_achievName.text, _exp.text, (int)(notifTime - (changeTime - startTime))));
             }
         }
         //SceneManager.MoveGameObjectToScene(currCamera, next);
@@ -65,7 +70,7 @@ public class NotificationManager : MonoBehaviour
         return loadedObject;
     }
 
-    public IEnumerator ShowNotification(int seconds=10)
+    public IEnumerator ShowNotification(string achievName, string exp, int seconds=7)
     {
         //Canvas curr = GameObject.Find("NotificationManager").GetComponent<Canvas>();
         //Debug.Log("ShowNotification: canvas: " + curr.name);
@@ -79,6 +84,8 @@ public class NotificationManager : MonoBehaviour
         //currParent.transform.
 
         GameObject currParent = GameObject.FindGameObjectWithTag("NotificationLayer");
+        this._achievName.text = achievName;
+        this._exp.text = exp;
         GameObject result = Instantiate(notifPrefab, currParent.transform);
         //dont destroy on load
         //DontDestroyOnLoad(result);

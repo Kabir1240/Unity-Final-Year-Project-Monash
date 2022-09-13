@@ -19,6 +19,7 @@ public class ListSong : MonoBehaviour
     List<string> SongList;
 
     [SerializeField] Button modulebtn;
+    [SerializeField] Button back;
     [SerializeField] TextMeshProUGUI moduleTitle;
     [SerializeField] GameObject contentList;
     [SerializeField] GameObject mainParent;
@@ -36,6 +37,10 @@ public class ListSong : MonoBehaviour
         _songList = (GameObject)LoadPrefabFromFile("SongList");
         _db = FirebaseFirestore.DefaultInstance;
         planet.text = "Planet " + level.LevelId;
+        back.onClick.AddListener(() =>
+        {
+            LoadScene("MainPage");
+        });
         InstantiateSongList();
         ModuleData();
 

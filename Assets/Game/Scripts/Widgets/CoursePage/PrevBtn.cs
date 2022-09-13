@@ -33,6 +33,9 @@ public class PrevBtn : MonoBehaviour
     void TaskOnClick()
     {
         slider.Prev();
+
+        // when the prev button is clicked after reaching the end of the list
+        // thus the next button must be re enabled
         if (!next.lastClick)
         {
             next.LastClick();

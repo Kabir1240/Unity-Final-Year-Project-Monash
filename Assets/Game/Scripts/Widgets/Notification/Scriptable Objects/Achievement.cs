@@ -35,12 +35,14 @@ public class Achievement {
         this.currTar = currTar;
     }
 
-    public Achievement(string id, string name, string assetAttribute, string assetName, string date){
+    public Achievement(string id, string name, string assetAttribute, string assetName, string date, int coin)
+    {
         this.id = id;
         this.name = name;
         this.assetAttribute = assetAttribute;
         this.assetName = assetName;
         this.date = date;
+        this.coin = coin;
     }
 
     public string toString()

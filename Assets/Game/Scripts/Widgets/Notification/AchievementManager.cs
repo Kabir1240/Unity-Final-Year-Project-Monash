@@ -123,7 +123,7 @@ public class AchievementManager : MonoBehaviour
                 Dictionary<string, object> achievement = documentSnapshot.ToDictionary();
                 if (Convert.ToString(achievement["Name"]) != "dummy")
                 {
-                    Achievement currAchievement = new Achievement(documentSnapshot.Id, Convert.ToString(achievement["Name"]), Convert.ToString(achievement["AssetAttribute"]), Convert.ToString(achievement["AssetName"]), Convert.ToString(achievement["Date"]));
+                    Achievement currAchievement = new Achievement(documentSnapshot.Id, Convert.ToString(achievement["Name"]), Convert.ToString(achievement["AssetAttribute"]), Convert.ToString(achievement["AssetName"]), Convert.ToString(achievement["Date"]), Convert.ToInt32(achievement["Coin"]));
                     user.addAchievements(currAchievement);
                 }
                 
@@ -137,23 +137,12 @@ public class AchievementManager : MonoBehaviour
     }
     private void getAllUserAttribute()
     {
-        //_userFields.Add("accuracy", user.Accuracy);
-        //_userFields.Add("exp", user.Exp);
-        //_userFields.Add("level", user.Level);
-        //_userFields.Add("points", user.Points);
-        //_userFields.Add("gameRuns", user.GameRuns);
 
         _allAchievements.Add("accuracy", new List<Achievement>());
         _allAchievements.Add("exp", new List<Achievement>());
         _allAchievements.Add("level", new List<Achievement>());
-        _allAchievements.Add("points", new List<Achievement>());
+        _allAchievements.Add("coin", new List<Achievement>());
         _allAchievements.Add("gameRuns", new List<Achievement>());
-
-        //user.Observers.Add("accuracy", new List<Achievement>());
-        //user.Observers.Add("exp", new List<Achievement>());
-        //user.Observers.Add("level", new List<Achievement>());
-        //user.Observers.Add("points", new List<Achievement>());
-        //user.Observers.Add("gameRuns", new List<Achievement>());
 
     }
 
@@ -168,6 +157,7 @@ public class AchievementManager : MonoBehaviour
         // push to user achievement collection class
         try
         {
+            user.Coin += achievement.Coin;
             Dictionary<string, object> newAchiev = new Dictionary<string, object>{
             { "Name", achievement.Name },
             { "Date", achievement.AchievedDate.ToString() },
@@ -184,16 +174,16 @@ public class AchievementManager : MonoBehaviour
             Debug.Log("AchievementManager: achieved error: " + e);
         }
 
-        StartCoroutine(callNotification());
+        StartCoroutine(callNotification(achievement.Name, achievement.Exp.ToString()));
     }
 
-    private IEnumerator callNotification()
+    private IEnumerator callNotification(string name, string exp)
     {
         //Scene currScene = SceneManager.GetActiveScene();
         GameObject currNotifLayer = GameObject.Find("NotificationManager");
 
         Debug.Log("AchievementManager: in call notification, currNotifLayer: "+currNotifLayer);
-        yield return currNotifLayer.GetComponent<NotificationManager>().ShowNotification();
+        yield return currNotifLayer.GetComponent<NotificationManager>().ShowNotification(name, exp);
 
     }
 

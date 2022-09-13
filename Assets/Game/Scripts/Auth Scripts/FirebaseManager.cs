@@ -108,7 +108,7 @@ public class FirebaseManager : MonoBehaviour
         StartCoroutine(RegisterLogic(registerUsername.text, registerEmail.text, registerPassword.text, registerConfirmPassword.text));
     }
 
-    private void SetUserData(string id, int accuracy, string email, int exp, int game_run, int level, int points, string uname)
+    private void SetUserData(string id, int accuracy, string email, int exp, int game_run, int level, int points, string uname, int coin)
     {
         userData.Id = id;
         userData.UserName = uname;
@@ -116,7 +116,7 @@ public class FirebaseManager : MonoBehaviour
         userData.Accuracy = accuracy;
         userData.Exp = exp;
         userData.Level = level;
-        userData.Points = points;
+        userData.Coin = points;
         userData.GameRuns = game_run;
     }
 
@@ -131,8 +131,8 @@ public class FirebaseManager : MonoBehaviour
         if (snapshot.Exists)
         {
             Debug.Log(String.Format("Document data for {0} document:", snapshot.Id));
-            Dictionary<string, object> city = snapshot.ToDictionary();
-                SetUserData(user.UserId, Convert.ToInt32(city["Accuracy"]), Convert.ToString(city["Email"]), Convert.ToInt32(city["Exp"]), Convert.ToInt32(city["Game_run"]), Convert.ToInt32(city["Level"]), Convert.ToInt32(city["Points"]), Convert.ToString(city["Username"]));
+            Dictionary<string, object> userDataDb = snapshot.ToDictionary();
+            SetUserData(user.UserId, Convert.ToInt32(userDataDb["Accuracy"]), Convert.ToString(userDataDb["Email"]), Convert.ToInt32(userDataDb["Exp"]), Convert.ToInt32(userDataDb["Game_run"]), Convert.ToInt32(userDataDb["Level"]), Convert.ToInt32(userDataDb["Points"]), Convert.ToString(userDataDb["Username"]), Convert.ToInt32(userDataDb["Coin"]));
                 SceneManager.LoadScene("MainPage");
             }
             else

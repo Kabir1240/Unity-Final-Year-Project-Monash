@@ -20,7 +20,7 @@ public class ProgressBarCourse : MonoBehaviour
 
     public void setTotal()
     {
-        total = manager.totalFlashcards()-1;
+        total = manager.TotalFlashcards()-1;
     }
 
     public void Next()

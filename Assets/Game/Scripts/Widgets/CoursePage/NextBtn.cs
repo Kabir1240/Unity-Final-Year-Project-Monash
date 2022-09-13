@@ -21,7 +21,7 @@ public class NextBtn : MonoBehaviour
 
     void TaskOnClick()
     {
-        
+        // the first time next is clicked, thus we should enable the prev button
         if (!prev.firstClick)
         {
             prev.FirstClick();
