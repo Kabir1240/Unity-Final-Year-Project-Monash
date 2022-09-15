@@ -31,6 +31,12 @@ public class ProfPanel : MonoBehaviour
     [SerializeField] private ProgressBar _progress;
     [SerializeField] private TextMeshProUGUI _reward;
 
+    public void Refresh()
+    {
+        _progress.UpdateBar(_currentUser);
+        _reward.text = _currentUser.Coin.ToString();
+        _usernameUI.text = "@" + _currentUser.UserName;
+    }
 
     void Start()
     {

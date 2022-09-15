@@ -108,7 +108,7 @@ public class FirebaseManager : MonoBehaviour
         StartCoroutine(RegisterLogic(registerUsername.text, registerEmail.text, registerPassword.text, registerConfirmPassword.text));
     }
 
-    private void SetUserData(string id, int accuracy, string email, int exp, int game_run, int level, int points, string uname, int coin)
+    private void SetUserData(string id, int accuracy, string email, int exp, int game_run, int level, string uname, int coin)
     {
         userData.Id = id;
         userData.UserName = uname;
@@ -116,7 +116,7 @@ public class FirebaseManager : MonoBehaviour
         userData.Accuracy = accuracy;
         userData.Exp = exp;
         userData.Level = level;
-        userData.Coin = points;
+        userData.Coin = coin;
         userData.GameRuns = game_run;
     }
 
@@ -128,12 +128,19 @@ public class FirebaseManager : MonoBehaviour
         {
             Debug.Log("getting snapshot");
             DocumentSnapshot snapshot = task.Result;
-        if (snapshot.Exists)
-        {
-            Debug.Log(String.Format("Document data for {0} document:", snapshot.Id));
-            Dictionary<string, object> userDataDb = snapshot.ToDictionary();
-            SetUserData(user.UserId, Convert.ToInt32(userDataDb["Accuracy"]), Convert.ToString(userDataDb["Email"]), Convert.ToInt32(userDataDb["Exp"]), Convert.ToInt32(userDataDb["Game_run"]), Convert.ToInt32(userDataDb["Level"]), Convert.ToInt32(userDataDb["Points"]), Convert.ToString(userDataDb["Username"]), Convert.ToInt32(userDataDb["Coin"]));
-                SceneManager.LoadScene("MainPage");
+            if (snapshot.Exists)
+            {
+                Debug.Log(String.Format("Document data for {0} document:", snapshot.Id));
+                Dictionary<string, object> userDataDb = snapshot.ToDictionary();
+                try
+                {
+                    SetUserData(user.UserId, Convert.ToInt32(userDataDb["Accuracy"]), Convert.ToString(userDataDb["Email"]), Convert.ToInt32(userDataDb["Exp"]), Convert.ToInt32(userDataDb["Game_run"]), Convert.ToInt32(userDataDb["Level"]), Convert.ToString(userDataDb["Username"]), Convert.ToInt32(userDataDb["Coin"]));
+                    SceneManager.LoadScene("MainPage");
+                }
+                catch(Exception e){
+                    Debug.Log("FirebaseManager: " + e);
+                }
+
             }
             else
             {
@@ -152,14 +159,14 @@ public class FirebaseManager : MonoBehaviour
         { "Exp", 0},
         { "Game_run", 0},
         { "Level", 1},
-        { "Points", 0},
-        { "Username", uname} };
+        { "Username", uname},
+        { "Coin", 0}};
         docRef.SetAsync(newUser).ContinueWithOnMainThread(task =>
         {
             Debug.Log(task.IsCanceled || task.IsFaulted);
             Debug.Log($"Added user: {user.UserId} to the User document");
             //SceneManager.LoadScene("MainPage");
-            SetUserData(user.UserId, 0, user.Email, 0, 0, 1, 0, uname);
+            SetUserData(user.UserId, 0, user.Email, 0, 0, 1, uname, 0);
             SceneManager.LoadScene("MainPage");
         });
 
@@ -216,7 +223,7 @@ public class FirebaseManager : MonoBehaviour
                 yield return new WaitForSeconds(1f);
                 //GetUser(auth.CurrentUser);
                 //AuthSceneManager.instance.ChangeScene(1);
-                
+
             }
             GetUser(auth.CurrentUser);
             //SceneManager.LoadScene("MainPage");

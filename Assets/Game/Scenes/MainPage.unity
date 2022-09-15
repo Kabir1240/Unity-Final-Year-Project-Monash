@@ -3987,6 +3987,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelPage: {fileID: 908897068}
+  profPanel: {fileID: 754457941}
 --- !u!1 &1400797153
 GameObject:
   m_ObjectHideFlags: 0
