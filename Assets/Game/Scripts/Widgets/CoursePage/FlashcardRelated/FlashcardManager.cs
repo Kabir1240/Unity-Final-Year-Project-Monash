@@ -302,7 +302,7 @@ public class FlashcardManager : MonoBehaviour
         {
             return flashcardObj;
         }
-        StorageReference imagesRef = storageRef.Child(Convert.ToString(flashcard["Image"]));
+        StorageReference imagesRef = storageRef.Child("Images").Child(Convert.ToString(flashcard["Image"]));
 
         // Fetch the download URL
         imagesRef.GetDownloadUrlAsync().ContinueWithOnMainThread(task =>

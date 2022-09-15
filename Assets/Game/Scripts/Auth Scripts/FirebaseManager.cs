@@ -108,17 +108,38 @@ public class FirebaseManager : MonoBehaviour
         StartCoroutine(RegisterLogic(registerUsername.text, registerEmail.text, registerPassword.text, registerConfirmPassword.text));
     }
 
-    private void SetUserData(string id, int accuracy, string email, int exp, int game_run, int level, string uname, int coin)
+    private void fetchAllUserItem()
     {
-        userData.Id = id;
-        userData.UserName = uname;
-        userData.Email = email;
-        userData.Accuracy = accuracy;
-        userData.Exp = exp;
-        userData.Level = level;
-        userData.Coin = coin;
-        userData.GameRuns = game_run;
+        userData.resetItems();
+        CollectionReference userAchiev = _db.Collection("User").Document(userData.Id).Collection("Items");
+        userAchiev.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            Debug.Log("FirebaseManager: getting all user items");
+            QuerySnapshot allFlashcardsQuerySnapshot = task.Result;
+            Debug.Log("FirebaseManager: user items count: " + allFlashcardsQuerySnapshot.Count);
+            Debug.Log("FirebaseManager: user items task status: " + task.IsCompletedSuccessfully);
+            foreach (DocumentSnapshot documentSnapshot in allFlashcardsQuerySnapshot.Documents)
+            {
+                Dictionary<string, object> item = documentSnapshot.ToDictionary();
+                Item currItem = new Item(documentSnapshot.Id, item["Category"].ToString(), item["Image"].ToString(), item["Name"].ToString(), Convert.ToInt32(item["Price"]), item["Description"].ToString());
+                Debug.Log("FirebaseManager: id " + documentSnapshot.Id + " item " + currItem.Name + ", price " + currItem.Price);
+                userData.addItems(currItem);
+
+            }
+        });
     }
+
+    //private void SetUserData(string id, int accuracy, string email, int exp, int game_run, int level, string uname, int coin)
+    //{
+    //    userData.Id = id;
+    //    userData.UserName = uname;
+    //    userData.Email = email;
+    //    userData.Accuracy = accuracy;
+    //    userData.Exp = exp;
+    //    userData.Level = level;
+    //    userData.Coin = coin;
+    //    userData.GameRuns = game_run;
+    //}
 
     private void GetUser(FirebaseUser user)
     {
@@ -134,7 +155,8 @@ public class FirebaseManager : MonoBehaviour
                 Dictionary<string, object> userDataDb = snapshot.ToDictionary();
                 try
                 {
-                    SetUserData(user.UserId, Convert.ToInt32(userDataDb["Accuracy"]), Convert.ToString(userDataDb["Email"]), Convert.ToInt32(userDataDb["Exp"]), Convert.ToInt32(userDataDb["Game_run"]), Convert.ToInt32(userDataDb["Level"]), Convert.ToString(userDataDb["Username"]), Convert.ToInt32(userDataDb["Coin"]));
+                    userData.SetUserData(snapshot.Id, userDataDb);
+                    fetchAllUserItem();
                     SceneManager.LoadScene("MainPage");
                 }
                 catch(Exception e){
@@ -166,7 +188,8 @@ public class FirebaseManager : MonoBehaviour
             Debug.Log(task.IsCanceled || task.IsFaulted);
             Debug.Log($"Added user: {user.UserId} to the User document");
             //SceneManager.LoadScene("MainPage");
-            SetUserData(user.UserId, 0, user.Email, 0, 0, 1, uname, 0);
+            userData.SetUserData(user.UserId, newUser);
+            userData.resetItems();
             SceneManager.LoadScene("MainPage");
         });
 

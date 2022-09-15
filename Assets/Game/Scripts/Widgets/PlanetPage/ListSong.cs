@@ -30,6 +30,7 @@ public class ListSong : MonoBehaviour
 
     private GameObject _songList;
     private FirebaseFirestore _db;
+    //private SongBtn songData;
 
     // Start is called before the first frame update
     void Start()
@@ -37,11 +38,12 @@ public class ListSong : MonoBehaviour
         _songList = (GameObject)LoadPrefabFromFile("SongList");
         _db = FirebaseFirestore.DefaultInstance;
         planet.text = "Planet " + level.LevelId;
+        //songData = _songList.GetComponent<SongBtn>();
         back.onClick.AddListener(() =>
         {
             LoadScene("MainPage");
         });
-        InstantiateSongList();
+        StartCoroutine(InstantiateSongList());
         ModuleData();
 
     }
@@ -70,35 +72,66 @@ public class ListSong : MonoBehaviour
         });
     }
 
-    private void InstantiateSongList()
+    private IEnumerator GetSongInfo(string currSongLevel)
+    {
+        DocumentReference currSong = _db.Collection("Songs").Document(currSongLevel);
+        yield return currSong.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            Debug.Log("ListSong: getting song " + currSongLevel);
+            DocumentSnapshot documentSnapshot = task.Result;
+            Debug.Log("ListSong: getting song status" + task.IsCompletedSuccessfully);
+            Debug.Log("ListSong: getting song status" + (task.IsFaulted || task.IsCanceled));
+
+            Debug.Log(String.Format("Document data for {0} document:", documentSnapshot.Id));
+            Dictionary<string, object> song = documentSnapshot.ToDictionary();
+            // adding the collection of flashcards to an arraylist so we can have random access
+
+            GameObject button = (GameObject)Instantiate(_songList, contentList.transform);
+            SongBtn songData = _songList.GetComponent<SongBtn>();
+            songData.SongId = documentSnapshot.Id;
+            songData.Title = song["Title"].ToString();
+            songData.MidiLocation = song["Midi"].ToString();
+            songData.WavLocation = song["Sound"].ToString();
+            songData.Difficulty = Convert.ToInt32(song["Difficulty"]);
+            songData.SetUI();
+            //GameObject button = (GameObject)Instantiate(_songList, contentList.transform);
+
+            //button.transform.parent = _songList;
+        });
+    }
+
+    private IEnumerator InstantiateSongList()
     {
         //fetch data from database
         // Get the root reference location of the database
-        GameObject button = (GameObject)Instantiate(_songList, contentList.transform);
+        //GameObject button = (GameObject)Instantiate(_songList, contentList.transform);
         foreach (string currSongLevel in level.SongIds)
         {
             DocumentReference currSong = _db.Collection("Songs").Document(currSongLevel);
-            currSong.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+            yield return currSong.GetSnapshotAsync().ContinueWithOnMainThread(task =>
             {
                 Debug.Log("ListSong: getting song " + currSongLevel);
                 DocumentSnapshot documentSnapshot = task.Result;
                 Debug.Log("ListSong: getting song status" + task.IsCompletedSuccessfully);
+                Debug.Log("ListSong: getting song status" + (task.IsFaulted || task.IsCanceled));
 
                 Debug.Log(String.Format("Document data for {0} document:", documentSnapshot.Id));
                 Dictionary<string, object> song = documentSnapshot.ToDictionary();
                 // adding the collection of flashcards to an arraylist so we can have random access
 
+                GameObject button = (GameObject)Instantiate(_songList, contentList.transform);
                 SongBtn songData = button.GetComponent<SongBtn>();
                 songData.SongId = documentSnapshot.Id;
                 songData.Title = song["Title"].ToString();
+                Debug.Log("title: " + song["Title"].ToString());
                 songData.MidiLocation = song["Midi"].ToString();
                 songData.WavLocation = song["Sound"].ToString();
                 songData.Difficulty = Convert.ToInt32(song["Difficulty"]);
                 songData.SetUI();
+                //GameObject button = (GameObject)Instantiate(_songList, contentList.transform);
 
                 //button.transform.parent = _songList;
             });
-
         }
         //DocumentReference reference = 
 

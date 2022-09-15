@@ -37,6 +37,7 @@ public class SongBtn : MonoBehaviour
             deactiveStars[i].SetActive(false);
         }
 
+
     }
 
     private void GoToGamePage()
@@ -45,6 +46,7 @@ public class SongBtn : MonoBehaviour
         song.MidiLocation = midiLocation;
         song.SongId = songId;
         song.WavLocation = wavLocation;
+        Debug.Log("Song title: " + title + " midilocation: " + midiLocation);
         SceneManager.LoadScene("GamePage");
     }
 

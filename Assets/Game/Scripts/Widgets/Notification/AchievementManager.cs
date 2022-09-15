@@ -52,7 +52,7 @@ public class AchievementManager : MonoBehaviour
     //public List<PropertiesFoo> mProp;
     //public List<AchievementFoo> mAchievement;
 
-    public void fetchFromDb()
+    private void fetchFromDb()
     {
         CollectionReference achievements = _db.Collection("Achievements");
 

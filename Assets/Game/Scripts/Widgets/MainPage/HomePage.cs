@@ -7,17 +7,25 @@ using UnityEngine.UI;
 public class HomePage : MonoBehaviour, Refresh
 {
     [SerializeField] Button levelPage;
+    [SerializeField] Button storePage;
     [SerializeField] ProfPanel profPanel;
     // Start is called before the first frame update
     void Start()
     {
         levelPage.onClick.AddListener(GoToPage);
+        storePage.onClick.AddListener(GoToStore);
     }
 
     private void GoToPage()
     {
         Debug.Log("Go to PlanetMainPage");
         SceneManager.LoadScene("PlanetMainPage");
+    }
+
+    private void GoToStore()
+    {
+        Debug.Log("Go to Store");
+        SceneManager.LoadScene("Store");
     }
 
     // Update is called once per frame

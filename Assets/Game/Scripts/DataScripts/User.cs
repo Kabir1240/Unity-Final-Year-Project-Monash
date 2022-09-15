@@ -1,3 +1,4 @@
+using Firebase.Firestore;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ public class User : ScriptableObject
     private int gameRuns = 0;
 
     private Dictionary<string, List<Achievement>> achieved = new Dictionary<string, List<Achievement>>();
+    private Dictionary<string, Item> boughtItems = new Dictionary<string, Item>();
 
     public string Id { get => id; set => id = value; }
     public string UserName { get => userName; set => userName = value; }
@@ -26,9 +28,22 @@ public class User : ScriptableObject
     public int Level { get => level; set => level = onChange(value, "level"); }
     public int Coin { get => coin; set => coin = value; }
     public int GameRuns { get => gameRuns; set => gameRuns = onChange(value, "gameRuns"); }
-    public Dictionary<string, List<Achievement>> Achieved { get => achieved; set => achieved = value; }
+    public Dictionary<string, List<Achievement>> Achieved { get => achieved; }
+    public Dictionary<string, Item> BoughtItems { get => boughtItems; }
 
     //public Dictionary<string, List<Achievement>> Observers { get => observers; set => observers = value; }
+
+    public void SetUserData(string id, Dictionary<string, object> userDataDb)
+    {
+        this.id = id;
+        userName = Convert.ToString(userDataDb["Username"]);
+        email = Convert.ToString(userDataDb["Email"]);
+        accuracy = Convert.ToInt32(userDataDb["Accuracy"]);
+        exp = Convert.ToInt32(userDataDb["Exp"]);
+        level = Convert.ToInt32(userDataDb["Level"]);
+        coin = Convert.ToInt32(userDataDb["Coin"]);
+        gameRuns = Convert.ToInt32(userDataDb["Game_run"]);
+    }
 
     public int onChange(int value, string attribute)
     {
@@ -63,7 +78,13 @@ public class User : ScriptableObject
     public void resetAchieved()
     {
         Debug.Log("User: achieved is resetted");
-         achieved= new Dictionary<string, List<Achievement>>();
+        achieved = new Dictionary<string, List<Achievement>>();
+    }
+
+    public void resetItems()
+    {
+        Debug.Log("User: boughtItems is resetted");
+        boughtItems = new Dictionary<string, Item>();
     }
 
     public void addAchievements(Achievement achieve)
@@ -71,11 +92,18 @@ public class User : ScriptableObject
         if (!achieved.ContainsKey(achieve.AssetName))
         {
             achieved.Add(achieve.AssetName, new List<Achievement>());
- 
+
         }
-        Debug.Log("User: addAchievement: " + achieve.Name+", attribute: "+achieve.AssetName);
+        Debug.Log("User: addAchievement: " + achieve.Name + ", attribute: " + achieve.AssetName);
         achieved[achieve.AssetName].Add(achieve);
-        
+
+    }
+
+    public void addItems(Item item)
+    {
+        boughtItems.Add(item.Id, item);
+        Debug.Log("User: addItems: " + item.Name + ", price " + item.Price);
+
     }
 
     private bool hasBeenAchieved(Achievement curr, string attribute)
