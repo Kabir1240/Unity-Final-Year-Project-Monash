@@ -168,6 +168,12 @@ public class AchievementManager : MonoBehaviour
                 Debug.Log("AchievementManager: addition user task: " + (task.IsFaulted||task.IsCanceled));
                 
             });
+
+            Refresh currRefresh = GameObject.FindGameObjectWithTag("NotificationLayer").transform.GetComponent<Refresh>();
+            if (currRefresh != null)
+            {
+                currRefresh.Refresh();
+            }
         }
         catch (Exception e)
         {

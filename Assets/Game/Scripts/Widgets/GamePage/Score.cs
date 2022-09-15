@@ -21,11 +21,16 @@ public class Score : MonoBehaviour
     [SerializeField] Song song;
 
     private FirebaseFirestore _db;
+    private int _scoreThreshold, _midScore, _highScore;
+
     // Start is called before the first frame update
     void Start()
     {
         score.text = result.score.ToString();
         songTitle.text = song.Title;
+        _scoreThreshold = 20000;
+        _midScore = 50000;
+        _highScore = 80000;
 
         _db = FirebaseFirestore.DefaultInstance;
         Debug.Log("initialized firestore");
@@ -35,6 +40,18 @@ public class Score : MonoBehaviour
         back.onClick.AddListener(Save);
     }
 
+    private void UpdateCoin()
+    {
+        if (result.score >= _highScore)
+        {
+            user.Coin += 10;
+        }
+        else if (result.score >= _midScore)
+        {
+            user.Coin += 4;
+        }
+    }
+
     private void Save()
     {
         Debug.Log("save");
@@ -42,11 +59,13 @@ public class Score : MonoBehaviour
         try
         {
             Debug.Log(user.GameRuns);
-            if (result.score > 20000)
-            {
-                user.GameRuns += 1;
-            }
-            //user.GameRuns += 1;
+            //FOR TESTING THIS WILL BE COMMENTED
+            //if (result.score > _scoreThreshold)
+            //{
+            //    user.GameRuns += 1;
+            //    UpdateCoin();
+            //}
+            user.GameRuns += 1;
             _db.Collection("User").Document(user.Id).UpdateAsync("Game_run", user.GameRuns).ContinueWithOnMainThread(task => {
                 Debug.Log(
                         "Updated user Game_run in User.");

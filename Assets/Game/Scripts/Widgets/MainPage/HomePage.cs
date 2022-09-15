@@ -4,9 +4,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class HomePage : MonoBehaviour
+public class HomePage : MonoBehaviour, Refresh
 {
     [SerializeField] Button levelPage;
+    [SerializeField] ProfPanel profPanel;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,5 +24,10 @@ public class HomePage : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void Refresh()
+    {
+        profPanel.Refresh();
     }
 }

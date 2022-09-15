@@ -23,6 +23,17 @@ public class ProgressBar : MonoBehaviour
 
     //}
 
+    public void UpdateBar(User currUser)
+    {
+        float length = (_progressBarContainer.size.x * 0.96f) * (currUser.Exp / _maxExp);
+        Debug.Log(length);
+        Debug.Log("user exp: " + currUser.Exp);
+        //Debug.Log(_currentUser.Exp / _maxExp);
+        //Debug.Log(_progressBarContainer.size.x * 0.96f);
+        //Debug.Log(_progressBar.size.y);
+        _progressBar.size = new Vector2(length, _progressBar.size.y);
+    }
+
     public void InitializeBar(FirebaseFirestore db, User currUser)
     {
         _db = db;
