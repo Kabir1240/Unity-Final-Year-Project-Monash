@@ -7,28 +7,40 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class StoreManager : MonoBehaviour
 {
     [SerializeField] User user;
-    //[SerializeField] Button buyBtn; // taken from itemPanel too
-    [SerializeField] GameObject itemPanel;
-    //[SerializeField] TextMeshProUGUI itemName, itemDesc, itemPrice; // taken from itemPanel
+
+    [SerializeField] GameObject itemPrefab;
+    [SerializeField] GameObject allItemPanel;
     [SerializeField] GameObject content;
     [SerializeField] GameObject receiptPanel;
     [SerializeField] GameObject receiptContent;
-    [SerializeField] TextMeshProUGUI price;
+    [SerializeField] GameObject warningCoin;
+
     [SerializeField] Button confirm;
     [SerializeField] Button goBack;
     [SerializeField] Button receiptBtn;
+    [SerializeField] Button okWarning;
+    [SerializeField] Button backHome;
+
+    [SerializeField] TextMeshProUGUI price;
+    [SerializeField] TextMeshProUGUI tempPrice;
 
     FirebaseStorage storage;
     StorageReference storageRef;
 
+    public bool receiptSection;
+
     private FirebaseFirestore _db;
     private List<Item> _items;
-    private List<Item> _boughtItems;
+    private Dictionary<string, GameObject> _allItemsObj;
+    private Dictionary<string, Item> _boughtItems;
+    private Dictionary<string, GameObject> _boughtItemsObj;
+    private int _boughtPrice;
 
 
     // Start is called before the first frame update
@@ -37,30 +49,120 @@ public class StoreManager : MonoBehaviour
         _db = FirebaseFirestore.DefaultInstance;
         storage = FirebaseStorage.DefaultInstance;
         storageRef = storage.GetReferenceFromUrl("gs://fit3162-33646.appspot.com/");
+
         _items = new List<Item>();
+        _boughtItems = new Dictionary<string, Item>();
+        _boughtItemsObj = new Dictionary<string, GameObject>();
+        _allItemsObj = new Dictionary<string, GameObject>();
+        _boughtPrice = 0;
+        receiptSection = false;
+
         receiptPanel.SetActive(false);
+        warningCoin.SetActive(false);
+
+        receiptBtn.enabled = false;
         receiptBtn.onClick.AddListener(ShowReceipt);
-        _boughtItems = new List<Item>();
+        goBack.onClick.AddListener(Back);
+        confirm.onClick.AddListener(AddToUser);
+        okWarning.onClick.AddListener(() =>
+        {
+            warningCoin.SetActive(false);
+        });
+        backHome.onClick.AddListener(() =>
+        {
+            SceneManager.LoadScene("MainPage");
+        });
+
         FetchFromDb();
+    }
 
+    private void AddToUser()
+    {
+        //if (user.Coin >= _boughtPrice)
+        //{
+        //    Debug.Log("StoreManager: enough money");
+        //    user.Coin -= _boughtPrice;
+        //    foreach(Item item in _boughtItems.Values)
+        //    {
+        //        user.addItems(item);
+        //    }
+        //}
+        //else
+        //{
+        //    warningCoin.SetActive(true);
+        //}
 
+        // FOR TESTING
+        Debug.Log("StoreManager: enough money");
+        user.Coin -= _boughtPrice;
+        foreach (Item item in _boughtItems.Values)
+        {
+            user.addItems(item);
+        }
+        SceneManager.LoadScene("MainPage");
+
+    }
+
+    private void Back()
+    {
+        allItemPanel.SetActive(true);
+        receiptPanel.SetActive(false);
+        receiptSection = false;
     }
 
     public void UserBuy(Item item)
     {
-        _boughtItems.Add(item);
+        _boughtItems.Add(item.Id, item);
+        _boughtPrice += item.Price;
+        tempPrice.text = _boughtPrice + "";
+        receiptBtn.enabled = true;
     }
 
-    public void ShowReceipt()
+    public void UserRemoves(Item item)
     {
-        receiptPanel.SetActive(true);
-        int boughtPrice = 0;
-        foreach(Item item in _boughtItems)
+        _boughtItems.Remove(item.Id);
+        _boughtPrice -= item.Price;
+        tempPrice.text = _boughtPrice + "";
+        if (_boughtPrice == 0)
         {
-            boughtPrice += item.Price;
-            InstantiateItems(item, receiptContent.transform);
-            price.text = boughtPrice + "";
+            receiptBtn.enabled = false;
         }
+    }
+
+    private void ShowReceipt()
+    {
+        allItemPanel.SetActive(false);
+        receiptPanel.SetActive(true);
+        receiptSection = true;
+
+        // these two loops reduces the amount of times instantiation and is needed when a user
+        // repeats the buying and cancelling process
+        foreach (Item item in _boughtItems.Values)
+        {
+            if (!_boughtItemsObj.ContainsKey(item.Id))
+            {
+                Debug.Log("StoreManager: instantiated " + item.Id);
+                GameObject obj = Instantiate(_allItemsObj[item.Id], receiptContent.transform);
+                obj.GetComponent<BuyItem>().BtnVisibility();
+                _boughtItemsObj.Add(item.Id, obj);
+            }
+        }
+        List<string> removeKey = new List<string>();
+        foreach (string key in _boughtItemsObj.Keys)
+        {
+            if (!_boughtItems.ContainsKey(key))
+            {
+                Debug.Log("StoreManager: destroyed " + key);
+                Destroy(_boughtItemsObj[key]);
+                removeKey.Add(key);
+            }
+        }
+
+        foreach (string key in removeKey)
+        {
+            _boughtItemsObj.Remove(key);
+        }
+        price.text = _boughtPrice + "";
     }
 
     private void FetchFromDb()
@@ -83,10 +185,12 @@ public class StoreManager : MonoBehaviour
                     Item currItem = new Item(documentSnapshot.Id, item["Category"].ToString(), item["Image"].ToString(), item["Name"].ToString(), Convert.ToInt32(item["Price"]), item["Description"].ToString());
                     Debug.Log("Store: id " + documentSnapshot.Id + " item " + currItem.Name + ", price " + currItem.Price);
                     _items.Add(currItem);
-                    InstantiateItems(currItem, content.transform);
+                    GameObject currItemObj = InstantiateItems(currItem, content.transform);
+                    _allItemsObj.Add(currItem.Id, currItemObj);
 
                 }
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 Debug.Log(e);
             }
@@ -130,19 +234,24 @@ public class StoreManager : MonoBehaviour
         else
         {
             RawImage thePic = item.transform.Find("Item").gameObject.transform.Find("ItemImg").gameObject.GetComponent<RawImage>();
-            Debug.Log("StoreManager pic: "+thePic);
+            Debug.Log("StoreManager pic: " + thePic);
             thePic.texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
         }
 
     }
 
-    private void InstantiateItems(Item currItem, Transform parentTransform)
+    private GameObject InstantiateItems(Item currItem, Transform parentTransform)
     {
-        GameObject item = Instantiate(itemPanel, parentTransform);
+        GameObject item = Instantiate(itemPrefab, parentTransform);
         BuyItem boughtItem = item.GetComponent<BuyItem>();
         boughtItem.SetUI(currItem);
         downloadImage(item, currItem);
+        if (user.BoughtItems.ContainsKey(currItem.Id))
+        {
+            Debug.Log("StoreManager: user has this already " + currItem.Name);
+            boughtItem.BtnVisibility(false);
+        }
+        return item;
 
-
-    } 
+    }
 }
