@@ -22,6 +22,7 @@ public class BuyItem : MonoBehaviour
     private void Buy()
     {
         Debug.Log("BuyItem: triggered "+itemName.text);
+        manager.UserBuy(currItem);
     }
 
     public void SetUI(Item item)

@@ -17,8 +17,11 @@ public class StoreManager : MonoBehaviour
     //[SerializeField] TextMeshProUGUI itemName, itemDesc, itemPrice; // taken from itemPanel
     [SerializeField] GameObject content;
     [SerializeField] GameObject receiptPanel;
+    [SerializeField] GameObject receiptContent;
+    [SerializeField] TextMeshProUGUI price;
     [SerializeField] Button confirm;
     [SerializeField] Button goBack;
+    [SerializeField] Button receiptBtn;
 
     FirebaseStorage storage;
     StorageReference storageRef;
@@ -36,6 +39,7 @@ public class StoreManager : MonoBehaviour
         storageRef = storage.GetReferenceFromUrl("gs://fit3162-33646.appspot.com/");
         _items = new List<Item>();
         receiptPanel.SetActive(false);
+        receiptBtn.onClick.AddListener(ShowReceipt);
         _boughtItems = new List<Item>();
         FetchFromDb();
 
@@ -49,7 +53,14 @@ public class StoreManager : MonoBehaviour
 
     public void ShowReceipt()
     {
-
+        receiptPanel.SetActive(true);
+        int boughtPrice = 0;
+        foreach(Item item in _boughtItems)
+        {
+            boughtPrice += item.Price;
+            InstantiateItems(item, receiptContent.transform);
+            price.text = boughtPrice + "";
+        }
     }
 
     private void FetchFromDb()
@@ -72,7 +83,7 @@ public class StoreManager : MonoBehaviour
                     Item currItem = new Item(documentSnapshot.Id, item["Category"].ToString(), item["Image"].ToString(), item["Name"].ToString(), Convert.ToInt32(item["Price"]), item["Description"].ToString());
                     Debug.Log("Store: id " + documentSnapshot.Id + " item " + currItem.Name + ", price " + currItem.Price);
                     _items.Add(currItem);
-                    InstantiateItems(currItem);
+                    InstantiateItems(currItem, content.transform);
 
                 }
             }catch(Exception e)
@@ -125,13 +136,13 @@ public class StoreManager : MonoBehaviour
 
     }
 
-    private void InstantiateItems(Item currItem)
+    private void InstantiateItems(Item currItem, Transform parentTransform)
     {
-        GameObject item = Instantiate(itemPanel, content.transform);
+        GameObject item = Instantiate(itemPanel, parentTransform);
         BuyItem boughtItem = item.GetComponent<BuyItem>();
         boughtItem.SetUI(currItem);
         downloadImage(item, currItem);
 
 
-    }
+    } 
 }
