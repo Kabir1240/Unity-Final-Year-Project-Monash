@@ -159,7 +159,7 @@ public class FirebaseManager : MonoBehaviour
             Debug.Log(task.IsCanceled || task.IsFaulted);
             Debug.Log($"Added user: {user.UserId} to the User document");
             //SceneManager.LoadScene("MainPage");
-            SetUserData(user.UserId, 0, user.Email, 0, 0, 1, 0, uname);
+            //SetUserData(user.UserId, 0, user.Email, 0, 0, 1, 0, uname);
             SceneManager.LoadScene("MainPage");
         });
 
