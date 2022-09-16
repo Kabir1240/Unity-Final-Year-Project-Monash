@@ -3,11 +3,11 @@ using UnityEngine;
 using System;
 using TMPro;
 
-public class Image : FlashcardInterface
+public class FlashcardImage : FlashcardInterface
 {
     private GameObject flashcardObject;
     private TextMeshProUGUI titleObj, subheadingObj, pageNoObj;
-    public Image() { 
+    public FlashcardImage() { 
         flashcardObject = (GameObject)FlashcardManager.LoadPrefabFromFile("FlashcardImage");
         titleObj = flashcardObject.transform.Find("Title").GetComponent<TextMeshProUGUI>();
         subheadingObj = flashcardObject.transform.Find("Subheading").GetComponent<TextMeshProUGUI>();

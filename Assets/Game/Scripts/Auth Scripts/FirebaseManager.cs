@@ -118,13 +118,19 @@ public class FirebaseManager : MonoBehaviour
             QuerySnapshot allFlashcardsQuerySnapshot = task.Result;
             Debug.Log("FirebaseManager: user items count: " + allFlashcardsQuerySnapshot.Count);
             Debug.Log("FirebaseManager: user items task status: " + task.IsCompletedSuccessfully);
-            foreach (DocumentSnapshot documentSnapshot in allFlashcardsQuerySnapshot.Documents)
+            try
             {
-                Dictionary<string, object> item = documentSnapshot.ToDictionary();
-                Item currItem = new Item(documentSnapshot.Id, item["Category"].ToString(), item["Image"].ToString(), item["Name"].ToString(), Convert.ToInt32(item["Price"]), item["Description"].ToString());
-                Debug.Log("FirebaseManager: id " + documentSnapshot.Id + " item " + currItem.Name + ", price " + currItem.Price);
-                userData.addItems(currItem);
+                foreach (DocumentSnapshot documentSnapshot in allFlashcardsQuerySnapshot.Documents)
+                {
+                    Dictionary<string, object> item = documentSnapshot.ToDictionary();
+                    Item currItem = new Item(documentSnapshot.Id, item["Category"].ToString(), item["Image"].ToString(), item["Name"].ToString());
+                    Debug.Log("FirebaseManager: id " + documentSnapshot.Id + " item " + currItem.Name + ", image"+ currItem.Img);
+                    userData.addItems(currItem);
 
+                }
+            }catch(Exception e)
+            {
+                Debug.Log("FirebaseManager: " + e);
             }
         });
     }

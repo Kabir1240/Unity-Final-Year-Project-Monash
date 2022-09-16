@@ -17,6 +17,14 @@ public class Item
         this.price = price;
     }
 
+    public Item(string id, string category, string img, string name)
+    {
+        _category = category;
+        _id = id;
+        _img = img;
+        _name = name;
+    }
+
     public string Category { get => _category; set => _category = value; }
     public string Img { get => _img; set => _img = value; }
     public string Name { get => _name; set => _name = value; }

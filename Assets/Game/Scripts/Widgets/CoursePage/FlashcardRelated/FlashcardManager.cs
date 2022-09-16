@@ -47,7 +47,7 @@ public class FlashcardManager : MonoBehaviour
         _types.Add("content", new Content());
         _types.Add("content-img", new ContentImage());
         _types.Add("content-bullet", new ContentBullet());
-        _types.Add("img", new Image());
+        _types.Add("img", new FlashcardImage());
 
         Debug.Log("added all the types");
 

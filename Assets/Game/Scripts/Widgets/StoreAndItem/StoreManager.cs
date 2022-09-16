@@ -82,10 +82,25 @@ public class StoreManager : MonoBehaviour
         //{
         //    Debug.Log("StoreManager: enough money");
         //    user.Coin -= _boughtPrice;
-        //    foreach(Item item in _boughtItems.Values)
+        //    //update coin in database
+        //    foreach (Item item in _boughtItems.Values)
         //    {
         //        user.addItems(item);
+
+        //        Dictionary<string, object> newItem = new Dictionary<string, object>{
+        //            { "Category", item.Category},
+        //            { "Name", item.Name},
+        //            { "Image", item.Img}};
+        //        _db.Collection("User").Document(user.Id).Collection("Items").Document(item.Id).SetAsync(newItem).ContinueWithOnMainThread(task =>
+        //        {
+        //            Debug.Log("StoreManager: Created new Item in Items collection in User");
+        //        });
         //    }
+
+        //    // fetch item images and save them to the persistent path (using the item name)
+        //    // then in UserCollection, don't need to fetch foto from database anymore
+        //    // then on button click, change the assetmanager path
+        //    // then on gameplay, load the picture in assetmanager path first
         //}
         //else
         //{
@@ -98,6 +113,14 @@ public class StoreManager : MonoBehaviour
         foreach (Item item in _boughtItems.Values)
         {
             user.addItems(item);
+            Dictionary<string, object> newItem = new Dictionary<string, object>{
+                    { "Category", item.Category},
+                    { "Name", item.Name},
+                    { "Image", item.Img}};
+            _db.Collection("User").Document(user.Id).Collection("Items").Document(item.Id).SetAsync(newItem).ContinueWithOnMainThread(task =>
+            {
+                Debug.Log("StoreManager: Created new Item in Items collection in User");
+            });
         }
         SceneManager.LoadScene("MainPage");
 

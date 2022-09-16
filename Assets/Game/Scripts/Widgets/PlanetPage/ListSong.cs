@@ -41,8 +41,9 @@ public class ListSong : MonoBehaviour
         //songData = _songList.GetComponent<SongBtn>();
         back.onClick.AddListener(() =>
         {
-            LoadScene("MainPage");
+            LoadScene("PlanetMainPage");
         });
+        Debug.Log("ListSong: level obj" + level.LevelId + ", song count: " + level.SongIds.Count);
         StartCoroutine(InstantiateSongList());
         ModuleData();
 

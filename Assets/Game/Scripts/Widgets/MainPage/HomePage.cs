@@ -8,12 +8,18 @@ public class HomePage : MonoBehaviour, Refresh
 {
     [SerializeField] Button levelPage;
     [SerializeField] Button storePage;
+    [SerializeField] Button itemColPage;
     [SerializeField] ProfPanel profPanel;
     // Start is called before the first frame update
     void Start()
     {
         levelPage.onClick.AddListener(GoToPage);
         storePage.onClick.AddListener(GoToStore);
+        itemColPage.onClick.AddListener(() =>
+        {
+            Debug.Log("Go to UserItems");
+            SceneManager.LoadScene("UserItems");
+        });
     }
 
     private void GoToPage()

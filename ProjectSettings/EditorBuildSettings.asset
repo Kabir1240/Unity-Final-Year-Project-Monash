@@ -29,6 +29,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Game/Scenes/EachPlanetPage.unity
     guid: 83c5c221426af9c4e9978ba5ea8703bc
+  - enabled: 1
+    path: Assets/Game/Scenes/Store.unity
+    guid: f553d7af6ef4b5b47adc21d4d2d8015c
+  - enabled: 1
+    path: Assets/Game/Scenes/UserItems.unity
+    guid: b3edad0d86da70447a72028e8341406a
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 1d00c43c4f5b12d4590f82016d4c7b43, type: 2}
     com.unity.adaptiveperformance.samsung.android.provider_settings: {fileID: 11400000, guid: 5ec4e58ab0b41214ea941f53cd8fccd5, type: 2}
