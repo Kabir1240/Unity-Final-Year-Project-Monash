@@ -14,7 +14,8 @@ using UnityEngine.SceneManagement;
 
 public class FlashcardManager : MonoBehaviour
 {
-    [SerializeField] private Dictionary<string, FlashcardInterface> _types = new Dictionary<string, FlashcardInterface>();
+    private Dictionary<string, FlashcardInterface> _types = new Dictionary<string, FlashcardInterface>();
+    [SerializeField] List<GameObject> interfaces;
     [SerializeField] private GameObject _initialPos;
     [SerializeField] private GameObject _parent;
     [SerializeField] private ModuleLevel lvl;
@@ -31,8 +32,8 @@ public class FlashcardManager : MonoBehaviour
     private int _start = 0;
     private int _end = 0;
 
-    public FirebaseStorage storage;
-    public StorageReference storageRef;
+    public static FirebaseStorage storage;
+    public static StorageReference storageRef;
 
     void Start()
     {
@@ -43,11 +44,11 @@ public class FlashcardManager : MonoBehaviour
         Debug.Log("initialized firestore");
 
         // initialize _types
-        _types.Add("title", new Title());
-        _types.Add("content", new Content());
-        _types.Add("content-img", new ContentImage());
-        _types.Add("content-bullet", new ContentBullet());
-        _types.Add("img", new FlashcardImage());
+        _types.Add("title", interfaces[0].GetComponent<FlashcardInterface>());
+        _types.Add("content", interfaces[1].GetComponent<FlashcardInterface>());
+        _types.Add("content-img", interfaces[2].GetComponent<FlashcardInterface>());
+        _types.Add("content-bullet", interfaces[3].GetComponent<FlashcardInterface>());
+        _types.Add("img", interfaces[4].GetComponent<FlashcardInterface>());
 
         Debug.Log("added all the types");
 
@@ -237,20 +238,28 @@ public class FlashcardManager : MonoBehaviour
         Debug.Log(_subheading + " " + _lvlTitle);
 
         // instantiate game object to the screen
-        GameObject currObject = _types[type].setAllData(flashcard, _lvlTitle, _subheading, _pointer+1, this);
+        GameObject currObject = _types[type].setAllData(flashcard, _lvlTitle, _subheading, _pointer + 1);
 
         Debug.Log("finished setting new flashcard");
 
         GameObject result = Instantiate(currObject, _parent.transform);
 
-        if (type == "content-bullet")
-        {
-            bullet(result, flashcard);
-        }
-        else if (type == "content-img" || type == "img")
-        {
-            downloadImage(result, flashcard);
-        }
+        FlashcardInterface instantiatedInterface = result.GetComponent<FlashcardInterface>();
+        instantiatedInterface.instantiatedObjFunctionality(result, flashcard);
+
+        //if (type == "content-bullet")
+        //{
+        //    bullet(result, flashcard);
+        //}
+        //else if (type == "content-img" || type == "img")
+        //{
+        //    downloadImage(result, flashcard);
+        //}
+
+        //if (type == "content-img" || type == "img")
+        //{
+        //    downloadImage(result, flashcard);
+        //}
 
         // saving the created game object
         _flashcardObjectsArray[_pointer] = result;
@@ -273,72 +282,72 @@ public class FlashcardManager : MonoBehaviour
 
     // extra functionalities that needs monobehaviour
     // for ContentBullet
-    private void bullet(GameObject flashcardObject, Dictionary<string, object> flashcard)
-    {
-        List<object> bullets = flashcard["Bullet"] as List<object>;
-        Debug.Log("making bullets");
+    //private void bullet(GameObject flashcardObject, Dictionary<string, object> flashcard)
+    //{
+    //    List<object> bullets = flashcard["Bullet"] as List<object>;
+    //    Debug.Log("making bullets");
 
-        Transform bulletParent = flashcardObject.transform.Find("BulletGroup").transform;
-        foreach (object bullet in bullets)
-        {
+    //    Transform bulletParent = flashcardObject.transform.Find("BulletGroup").transform;
+    //    foreach (object bullet in bullets)
+    //    {
 
-            GameObject bulletObject = (GameObject)LoadPrefabFromFile("BulletContent");
-            GameObject parent = bulletObject.transform.Find("Bullet").gameObject;
-            TextMeshProUGUI bulletContentObj = parent.transform.Find("Content").GetComponent<TextMeshProUGUI>();
-            bulletContentObj.text = Convert.ToString(bullet); ;
+    //        GameObject bulletObject = (GameObject)LoadPrefabFromFile("BulletContent");
+    //        GameObject parent = bulletObject.transform.Find("Bullet").gameObject;
+    //        TextMeshProUGUI bulletContentObj = parent.transform.Find("Content").GetComponent<TextMeshProUGUI>();
+    //        bulletContentObj.text = Convert.ToString(bullet); ;
 
-            // instantiate child and set its parent to the vertical layout group
-            GameObject child = Instantiate(bulletObject, _parent.transform);
-            child.transform.SetParent(bulletParent);
-        }
-        return;
-    }
+    //        // instantiate child and set its parent to the vertical layout group
+    //        GameObject child = Instantiate(bulletObject, _parent.transform);
+    //        child.transform.SetParent(bulletParent);
+    //    }
+    //    return;
+    //}
 
     // for ContentImage
-    public GameObject downloadImage(GameObject flashcardObj, Dictionary<string, object> flashcard)
-    {
-        // TODO: FOR TESTING PURPOSES ONLY DELETE THIS
-        if (Convert.ToString(flashcard["Image"]) == "")
-        {
-            return flashcardObj;
-        }
-        StorageReference imagesRef = storageRef.Child("Images").Child(Convert.ToString(flashcard["Image"]));
+    //public GameObject downloadImage(GameObject flashcardObj, Dictionary<string, object> flashcard)
+    //{
+    //    // TODO: FOR TESTING PURPOSES ONLY DELETE THIS
+    //    if (Convert.ToString(flashcard["Image"]) == "")
+    //    {
+    //        return flashcardObj;
+    //    }
+    //    StorageReference imagesRef = storageRef.Child("Images").Child(Convert.ToString(flashcard["Image"]));
 
-        // Fetch the download URL
-        imagesRef.GetDownloadUrlAsync().ContinueWithOnMainThread(task =>
-        {
-            if (!task.IsFaulted && !task.IsCanceled)
-            {
-                Debug.Log("Download URL: " + task.Result);
-                //StartCoroutine(isDownloading(Convert.ToString(task.Result), _parent.transform.Find("FlashcardContentImage(Clone)").gameObject));
-                StartCoroutine(isDownloading(Convert.ToString(task.Result), flashcardObj));
+    //    // Fetch the download URL
+    //    imagesRef.GetDownloadUrlAsync().ContinueWithOnMainThread(task =>
+    //    {
+    //        if (!task.IsFaulted && !task.IsCanceled)
+    //        {
+    //            Debug.Log("Download URL: " + task.Result);
+    //            //StartCoroutine(isDownloading(Convert.ToString(task.Result), _parent.transform.Find("FlashcardContentImage(Clone)").gameObject));
+    //            StartCoroutine(isDownloading(Convert.ToString(task.Result), flashcardObj));
 
-            }
-        });
+    //        }
+    //    });
 
-        return null;
-    }
-    // source: https://answers.unity.com/questions/1122905/how-do-you-download-image-to-uiimage.html
-    // the one without www: https://github.com/Vikings-Tech/FirebaseStorageTutorial/blob/master/Assets/Scripts/ImageLoader.cs
-    private IEnumerator isDownloading(string url, GameObject flashcard)
-    {
+    //    return null;
+    //}
+    //// source: https://answers.unity.com/questions/1122905/how-do-you-download-image-to-uiimage.html
+    //// the one without www: https://github.com/Vikings-Tech/FirebaseStorageTutorial/blob/master/Assets/Scripts/ImageLoader.cs
+    //private IEnumerator isDownloading(string url, GameObject flashcard)
+    //{
 
-        UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
-        yield return request.SendWebRequest();
-        Debug.Log("finished request");
-        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
-        {
-            Debug.Log(request.error);
-        }
+    //    UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
+    //    yield return request.SendWebRequest();
+    //    Debug.Log("finished request");
+    //    if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+    //    {
+    //        Debug.Log(request.error);
+    //    }
 
-        else
-        {
-            RawImage thePic = flashcard.transform.Find("Canvas").gameObject.transform.Find("Image").gameObject.GetComponent<RawImage>();
-            Debug.Log(thePic);
-            thePic.texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
-        }
+    //    else
+    //    {
+    //        RawImage thePic = flashcard.transform.Find("Canvas").gameObject.transform.Find("Image").gameObject.GetComponent<RawImage>();
+    //        Debug.Log(thePic);
+    //        thePic.texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+    //    }
 
-    }
+    //}
 
     private void BackToEachPlanet()
     {

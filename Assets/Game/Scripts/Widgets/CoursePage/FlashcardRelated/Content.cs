@@ -4,22 +4,27 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class Content : FlashcardInterface
+public class Content : MonoBehaviour, FlashcardInterface
 {
 
-    private GameObject flashcardObject;
-    private TextMeshProUGUI titleObj, subheadingObj, pageNoObj, contentObj;
+    [SerializeField] private GameObject flashcardObject;
+    [SerializeField] private TextMeshProUGUI titleObj, subheadingObj, pageNoObj, contentObj;
 
-    public Content()
+    public GameObject instantiatedObjFunctionality(GameObject flashcardObject, Dictionary<string, object> flashcard)
     {
-        flashcardObject = (GameObject)FlashcardManager.LoadPrefabFromFile("FlashcardContent");
-        titleObj = flashcardObject.transform.Find("Title").GetComponent<TextMeshProUGUI>();
-        subheadingObj = flashcardObject.transform.Find("Subheading").GetComponent<TextMeshProUGUI>();
-        pageNoObj = flashcardObject.transform.Find("Circle").transform.Find("Number").GetComponent<TextMeshProUGUI>();
-        contentObj = flashcardObject.transform.Find("Content").GetComponent<TextMeshProUGUI>();
+        return null;
     }
 
-    public GameObject setAllData(Dictionary<string, object> flashcard, string title, string subheading, int no, FlashcardManager manager)
+    //public Content()
+    //{
+    //    flashcardObject = (GameObject)FlashcardManager.LoadPrefabFromFile("FlashcardContent");
+    //    titleObj = flashcardObject.transform.Find("Title").GetComponent<TextMeshProUGUI>();
+    //    subheadingObj = flashcardObject.transform.Find("Subheading").GetComponent<TextMeshProUGUI>();
+    //    pageNoObj = flashcardObject.transform.Find("Circle").transform.Find("Number").GetComponent<TextMeshProUGUI>();
+    //    contentObj = flashcardObject.transform.Find("Content").GetComponent<TextMeshProUGUI>();
+    //}
+
+    public GameObject setAllData(Dictionary<string, object> flashcard, string title, string subheading, int no)
     {
         //_title.text = Convert.ToString(flashcard["Content"]);
 

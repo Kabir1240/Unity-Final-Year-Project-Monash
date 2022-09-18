@@ -427,6 +427,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2d6eab57b5c5fc42a9da01ac12d5b9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interfaces:
+  - {fileID: 3119243990292902158, guid: fefc9cae872072d47837e9153f93e927, type: 3}
+  - {fileID: 2027983824901727872, guid: 3cb4031859728f749b4c2820326cc729, type: 3}
+  - {fileID: 4049480731074957156, guid: 72cebabf3f16f4e49ad0c26f714059cb, type: 3}
+  - {fileID: 1995572329273411550, guid: a4b7f5aae980b33428806b9ea1554be7, type: 3}
+  - {fileID: 9059647820550909181, guid: e3a074a30f2eb084e9bc3fe9e25023b9, type: 3}
   _initialPos: {fileID: 862998843}
   _parent: {fileID: 526795399}
   lvl: {fileID: 11400000, guid: 5c0e4761c4d42454589f29ac419e0338, type: 2}
