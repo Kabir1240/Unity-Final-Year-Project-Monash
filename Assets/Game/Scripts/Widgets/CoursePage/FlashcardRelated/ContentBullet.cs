@@ -25,7 +25,7 @@ public class ContentBullet : MonoBehaviour, FlashcardInterface
         foreach (object bullet in bullets)
         {
 
-            GameObject bulletObject = (GameObject)FlashcardManager.LoadPrefabFromFile("BulletContent");
+            GameObject bulletObject = (GameObject)Operations.GetInstance().LoadPrefabFromFile("Prefabs/BulletContent");
             GameObject parent = bulletObject.transform.Find("Bullet").gameObject;
             TextMeshProUGUI bulletContentObj = parent.transform.Find("Content").GetComponent<TextMeshProUGUI>();
             bulletContentObj.text = Convert.ToString(bullet); ;

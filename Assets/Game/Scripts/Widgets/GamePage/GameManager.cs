@@ -51,6 +51,7 @@ public class GameManager : MonoBehaviour
     private float _delay, _speed, _prevPause;
     private string _path;
     private float _startTime, _stopTime;
+    private Color _errorColor;
 
     FirebaseStorage storage;
     StorageReference storageRef;
@@ -62,11 +63,13 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _db = FirebaseFirestore.DefaultInstance;
+        //_db = FirebaseFirestore.DefaultInstance;
+        _db = Operations.db;
         Debug.Log("initialized firestore");
 
-        storage = FirebaseStorage.DefaultInstance;
-        storageRef = storage.GetReferenceFromUrl("gs://fit3162-33646.appspot.com/");
+        //storage = FirebaseStorage.DefaultInstance;
+        //storageRef = storage.GetReferenceFromUrl("gs://fit3162-33646.appspot.com/");
+        storageRef = Operations.storageRef;
         Debug.Log("initialized firestorage");
 
         //pauseBtn.onClick.AddListener(Flow);
@@ -78,7 +81,7 @@ public class GameManager : MonoBehaviour
         //    SceneManager.LoadScene("EachPlanetPage");
         //});
         //restart.onClick.AddListener(Restart);
-
+        _errorColor = new Color(198.0f, 66.0f, 79.0f);
         IsPlaying = false;
         IsPaused = false;
         _currI = 0;
@@ -196,14 +199,17 @@ public class GameManager : MonoBehaviour
         {
             //deltaTimeMan = Time.deltaTime;
             // if expectedDelay<0, then the actual end time is longer than expected, else it is faster
-            Debug.Log("expected end: " + NoteDetails[_currI].Data.getExpectedEndTime() + " actual end: " + NoteDetails[_currI].Data.getEndTime());
+            Debug.Log("pos expected end: " + NoteDetails[_currI].Data.getExpectedEndPos() + " actual end: " + NoteDetails[_currI].Data.ActualEndPos);
             expectedDelay = NoteDetails[_currI].Data.getExpectedEndTime() - NoteDetails[_currI].Data.getEndTime();
             float tempDistance = NoteDetails[_currI].Data.getExpectedEndPos() - NoteDetails[_currI].Data.ActualEndPos;
             
-            // ensuring that the biggest offset is 270.0f
-            if (Math.Abs(tempDistance) <= 270.0f)
+            // ensuring that the biggest negative offset is -270.0f and a positive offset of 958.0f
+            if (tempDistance <= -270.0f)
             {
-                tempDistance = 270.0f;
+                tempDistance = -270.0f;
+            }else if (tempDistance > 958.0f)
+            {
+                tempDistance = 958.0f;
             }
 
             Vector3 distance = new Vector3(tempDistance,0,0);
@@ -214,19 +220,23 @@ public class GameManager : MonoBehaviour
             //Debug.Log(" i: " + replayI + " _notes[i]: " + NoteDetails[replayI] + " delay: " + expectedDelay);
             Debug.Log(" i: " + _currI + " actual note number:" + NoteDetails[_currI].Data.getNoteNumber() + " lane: " + NoteDetails[_currI].Data.LaneNo);
 
-            Note currNote;
-            currNote = new Note((SevenBitNumber)NoteDetails[_currI].NoteNumber);
-            laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(currNote.NoteName.ToString(), currNote.Octave.ToString(), currNote.NoteNumber, currSong.speed, _currI, 0, new Vector3(0, 0, 0));
+            //Note currNote;
+            //currNote = new Note((SevenBitNumber)NoteDetails[_currI].NoteNumber);
+            //laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(currNote.NoteName.ToString(), currNote.Octave.ToString(), currNote.NoteNumber, currSong.speed, _currI, 0, new Vector3(0, 0, 0));
             // TESTING
             //currNote = new Note((SevenBitNumber)40);
             //laneObjects[5].InstantiateObj(currNote.NoteName.ToString(), currNote.Octave.ToString(), currNote.NoteNumber, currSong.speed, replayI, 0, distance);
             //InstantiatedNotes[InstantiatedNotes.Count - 1].transform.Find("note").GetComponent<TextMeshProUGUI>().color = Color.blue;
 
+            Note currNote;
+            currNote = new Note((SevenBitNumber)NoteDetails[_currI].NoteNumber);
+            //laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(currNote.NoteName.ToString(), currNote.Octave.ToString(), currNote.NoteNumber, currSong.speed, _currI, 0, new Vector3(0, 0, 0));
 
 
             if (NoteDetails[_currI].Data.getAccuracyType() != "missed")
             {
                 currNote = new Note((SevenBitNumber)NoteDetails[_currI].Data.getNoteNumber());
+                laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(currNote.NoteName.ToString(), currNote.Octave.ToString(), currNote.NoteNumber, currSong.speed, _currI, 0, new Vector3(0, 0, 0));
                 laneObjects[NoteDetails[_currI].Data.LaneNo].InstantiateObj(currNote.NoteName.ToString(), currNote.Octave.ToString(), currNote.NoteNumber, currSong.speed, _replayI, 0, distance);
                 InstantiatedNotes[InstantiatedNotes.Count - 1].transform.Find("note").GetComponent<TextMeshProUGUI>().color = Color.blue;
             }
@@ -239,15 +249,24 @@ public class GameManager : MonoBehaviour
                     currNote = new Note((SevenBitNumber)NoteDetails[_currI].Data.getNoteNumber());
                     noteName = currNote.NoteName.ToString();
                     noteOctave = currNote.Octave.ToString();
+                    laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(currNote.NoteName.ToString(), currNote.Octave.ToString(), currNote.NoteNumber, currSong.speed, _currI, 0, new Vector3(0, 0, 0));
+                    laneObjects[(NoteDetails[_currI].LaneNo1 - 1) % laneObjects.Length].InstantiateObj(noteName, noteOctave, currNote.NoteNumber, currSong.speed, _currI, 0, distance);
+                    InstantiatedNotes[InstantiatedNotes.Count - 1].transform.Find("note").GetComponent<TextMeshProUGUI>().color = new Color(198.0f,66.0f, 79.0f);
+
                 }
                 else
                 {
                     noteName = "X";
                     noteOctave = "X";
+                    laneObjects[(NoteDetails[_currI].LaneNo1) % laneObjects.Length].InstantiateObj(noteName, noteOctave, currNote.NoteNumber, currSong.speed, _currI, 0, distance);
+                    laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(currNote.NoteName.ToString(), currNote.Octave.ToString(), currNote.NoteNumber, currSong.speed, _currI, 0, new Vector3(0, 0, 0));
+                    InstantiatedNotes[InstantiatedNotes.Count - 1].transform.Find("note").GetComponent<TextMeshProUGUI>().color = _errorColor;
+
                 }
-                
-                laneObjects[(NoteDetails[_currI].LaneNo1-1)%laneObjects.Length].InstantiateObj(noteName, noteOctave, currNote.NoteNumber, currSong.speed, _currI, 0, distance);
-                InstantiatedNotes[InstantiatedNotes.Count - 1].transform.Find("note").GetComponent<TextMeshProUGUI>().color = Color.red;
+                //int currLaneNo = (NoteDetails[_currI].LaneNo1 - 1)<0?
+                //laneObjects[(NoteDetails[_currI].LaneNo1-1)%laneObjects.Length].InstantiateObj(noteName, noteOctave, currNote.NoteNumber, currSong.speed, _currI, 0, distance);
+                //InstantiatedNotes[InstantiatedNotes.Count - 1].SetActive(false);
+                //InstantiatedNotes[InstantiatedNotes.Count - 2].transform.Find("note").GetComponent<TextMeshProUGUI>().color = Color.red;
             }
             float delay = (float)NoteDetails[_currI].DelayTime;
             _currI += 1;

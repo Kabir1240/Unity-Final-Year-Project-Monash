@@ -45,7 +45,7 @@ public class ProfPanel : MonoBehaviour
         //minSwipeDistX = 0.7f;
         //transformAmount = 0.35f;
 
-        _db = FirebaseFirestore.DefaultInstance;
+        _db = Operations.db;
         _progress.InitializeBar(_db, _currentUser);
         _reward.text = _currentUser.Coin.ToString();
         _usernameUI.text = "@"+_currentUser.UserName;

@@ -32,15 +32,20 @@ public class FlashcardManager : MonoBehaviour
     private int _start = 0;
     private int _end = 0;
 
-    public static FirebaseStorage storage;
-    public static StorageReference storageRef;
+    //public static FirebaseStorage storage;
+    //public static StorageReference storageRef;
 
     void Start()
     {
         //initialize all the flashcard types in the inspector
 
         _initialPos.SetActive(false);
-        _db = FirebaseFirestore.DefaultInstance;
+        //_db = FirebaseFirestore.DefaultInstance;
+        //storage = FirebaseStorage.DefaultInstance;
+        //storageRef = storage.GetReferenceFromUrl("gs://fit3162-33646.appspot.com/");
+
+        _db = Operations.db;
+        //storageRef = ConnectDatabase.storageRef;
         Debug.Log("initialized firestore");
 
         // initialize _types
@@ -51,9 +56,6 @@ public class FlashcardManager : MonoBehaviour
         _types.Add("img", interfaces[4].GetComponent<FlashcardInterface>());
 
         Debug.Log("added all the types");
-
-        storage = FirebaseStorage.DefaultInstance;
-        storageRef = storage.GetReferenceFromUrl("gs://fit3162-33646.appspot.com/");
 
         _flashcardsArray = new List<Dictionary<string, object>>();
         _flashcardObjectsArray = new List<GameObject>();
@@ -268,16 +270,16 @@ public class FlashcardManager : MonoBehaviour
     }
 
     // directly put the filename without .prefab to the parameter
-    public static UnityEngine.Object LoadPrefabFromFile(string filename)
-    {
-        Debug.Log("Trying to load LevelPrefab from file (" + filename + ")...");
-        var loadedObject = Resources.Load("Materials/Prefabs/" + filename);
-        if (loadedObject == null)
-        {
-            throw new FileNotFoundException("...no file found - please check the configuration");
-        }
-        return loadedObject;
-    }
+    //public static UnityEngine.Object LoadPrefabFromFile(string filename)
+    //{
+    //    Debug.Log("Trying to load LevelPrefab from file (" + filename + ")...");
+    //    var loadedObject = Resources.Load("Materials/Prefabs/" + filename);
+    //    if (loadedObject == null)
+    //    {
+    //        throw new FileNotFoundException("...no file found - please check the configuration");
+    //    }
+    //    return loadedObject;
+    //}
 
 
     // extra functionalities that needs monobehaviour

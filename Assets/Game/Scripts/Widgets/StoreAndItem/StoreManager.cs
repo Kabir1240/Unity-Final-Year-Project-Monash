@@ -46,10 +46,10 @@ public class StoreManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _db = FirebaseFirestore.DefaultInstance;
-        storage = FirebaseStorage.DefaultInstance;
-        storageRef = storage.GetReferenceFromUrl("gs://fit3162-33646.appspot.com/");
-
+        _db = Operations.db;
+        storageRef = Operations.storageRef;
+        //storage = FirebaseStorage.DefaultInstance;
+        //storageRef = storage.GetReferenceFromUrl("gs://fit3162-33646.appspot.com/");
         _items = new List<Item>();
         _boughtItems = new Dictionary<string, Item>();
         _boughtItemsObj = new Dictionary<string, GameObject>();
@@ -121,6 +121,7 @@ public class StoreManager : MonoBehaviour
             {
                 Debug.Log("StoreManager: Created new Item in Items collection in User");
             });
+            //ConnectDatabase.GetInstance().NewUserItem(item);
         }
         SceneManager.LoadScene("MainPage");
 
@@ -220,55 +221,60 @@ public class StoreManager : MonoBehaviour
         });
     }
 
-    // for ContentImage
-    private GameObject downloadImage(GameObject flashcardObj, Item item)
-    {
-        StorageReference imagesRef = storageRef.Child(item.Category).Child(item.Img);
+    //// for ContentImage
+    //private GameObject downloadImage(GameObject flashcardObj, Item item)
+    //{
+    //    StorageReference imagesRef = storageRef.Child(item.Category).Child(item.Img);
 
-        // Fetch the download URL
-        imagesRef.GetDownloadUrlAsync().ContinueWithOnMainThread(task =>
-        {
-            if (!task.IsFaulted && !task.IsCanceled)
-            {
-                Debug.Log("Download URL: " + task.Result);
-                //StartCoroutine(isDownloading(Convert.ToString(task.Result), _parent.transform.Find("FlashcardContentImage(Clone)").gameObject));
-                StartCoroutine(isDownloading(Convert.ToString(task.Result), flashcardObj));
+    //    // Fetch the download URL
+    //    imagesRef.GetDownloadUrlAsync().ContinueWithOnMainThread(task =>
+    //    {
+    //        if (!task.IsFaulted && !task.IsCanceled)
+    //        {
+    //            Debug.Log("Download URL: " + task.Result);
+    //            //StartCoroutine(isDownloading(Convert.ToString(task.Result), _parent.transform.Find("FlashcardContentImage(Clone)").gameObject));
+    //            StartCoroutine(isDownloading(Convert.ToString(task.Result), flashcardObj));
 
-            }
-        });
+    //        }
+    //    });
 
-        return null;
-    }
+    //    return null;
+    //}
 
-    // source: https://answers.unity.com/questions/1122905/how-do-you-download-image-to-uiimage.html
-    // the one without www: https://github.com/Vikings-Tech/FirebaseStorageTutorial/blob/master/Assets/Scripts/ImageLoader.cs
-    private IEnumerator isDownloading(string url, GameObject item)
-    {
+    //// source: https://answers.unity.com/questions/1122905/how-do-you-download-image-to-uiimage.html
+    //// the one without www: https://github.com/Vikings-Tech/FirebaseStorageTutorial/blob/master/Assets/Scripts/ImageLoader.cs
+    //private IEnumerator isDownloading(string url, GameObject item)
+    //{
 
-        Debug.Log("Download URL: " + url);
-        UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
-        yield return request.SendWebRequest();
-        Debug.Log("finished request");
-        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
-        {
-            Debug.Log(request.error);
-        }
+    //    Debug.Log("Download URL: " + url);
+    //    UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
+    //    yield return request.SendWebRequest();
+    //    Debug.Log("finished request");
+    //    if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+    //    {
+    //        Debug.Log(request.error);
+    //    }
 
-        else
-        {
-            RawImage thePic = item.transform.Find("Item").gameObject.transform.Find("ItemImg").gameObject.GetComponent<RawImage>();
-            Debug.Log("StoreManager pic: " + thePic);
-            thePic.texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
-        }
+    //    else
+    //    {
+    //        RawImage thePic = item.transform.Find("Item").gameObject.transform.Find("ItemImg").gameObject.GetComponent<RawImage>();
+    //        Debug.Log("StoreManager pic: " + thePic);
+    //        thePic.texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+    //    }
 
-    }
+    //}
 
     private GameObject InstantiateItems(Item currItem, Transform parentTransform)
     {
         GameObject item = Instantiate(itemPrefab, parentTransform);
         BuyItem boughtItem = item.GetComponent<BuyItem>();
         boughtItem.SetUI(currItem);
-        downloadImage(item, currItem);
+
+        RawImage thePic = item.transform.Find("Item").gameObject.transform.Find("ItemImg").gameObject.GetComponent<RawImage>();
+        StorageReference imagesRef = storageRef.Child(currItem.Category).Child(currItem.Img);
+
+        Operations.GetInstance().DownloadImage(thePic, imagesRef);
+        //downloadImage(item, currItem);
         if (user.BoughtItems.ContainsKey(currItem.Id))
         {
             Debug.Log("StoreManager: user has this already " + currItem.Name);

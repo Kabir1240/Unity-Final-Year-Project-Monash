@@ -12,7 +12,8 @@ using UnityEngine.SceneManagement;
 public class FirebaseManager : MonoBehaviour
 {
     public static FirebaseManager instance;
-    private FirebaseFirestore _db;
+    private FirebaseFirestore db;
+    private FirebaseApp app;
     [SerializeField] User userData;
 
     [Header("Firebase")]
@@ -46,14 +47,14 @@ public class FirebaseManager : MonoBehaviour
             instance = this;
         }
 
-        _db = FirebaseFirestore.DefaultInstance;
-
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(checkDependencyTask =>
         {
             var dependencyStatus = checkDependencyTask.Result;
 
             if (dependencyStatus == DependencyStatus.Available)
             {
+                app = Firebase.FirebaseApp.DefaultInstance;
+                
                 InitializeFirebase();
             }
             else
@@ -61,6 +62,10 @@ public class FirebaseManager : MonoBehaviour
                 Debug.LogError($"could not resolve all firebase dependencies: {dependencyStatus}");
             }
         });
+
+        //db = FirebaseFirestore.DefaultInstance;
+        Operations.InitializeDb();
+        db = Operations.db;
     }
 
     private void InitializeFirebase()
@@ -111,7 +116,7 @@ public class FirebaseManager : MonoBehaviour
     private void fetchAllUserItem()
     {
         userData.resetItems();
-        CollectionReference userAchiev = _db.Collection("User").Document(userData.Id).Collection("Items");
+        CollectionReference userAchiev = db.Collection("User").Document(userData.Id).Collection("Items");
         userAchiev.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             Debug.Log("FirebaseManager: getting all user items");
@@ -124,11 +129,12 @@ public class FirebaseManager : MonoBehaviour
                 {
                     Dictionary<string, object> item = documentSnapshot.ToDictionary();
                     Item currItem = new Item(documentSnapshot.Id, item["Category"].ToString(), item["Image"].ToString(), item["Name"].ToString());
-                    Debug.Log("FirebaseManager: id " + documentSnapshot.Id + " item " + currItem.Name + ", image"+ currItem.Img);
+                    Debug.Log("FirebaseManager: id " + documentSnapshot.Id + " item " + currItem.Name + ", image" + currItem.Img);
                     userData.addItems(currItem);
 
                 }
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 Debug.Log("FirebaseManager: " + e);
             }
@@ -147,10 +153,10 @@ public class FirebaseManager : MonoBehaviour
     //    userData.GameRuns = game_run;
     //}
 
-    private void GetUser(FirebaseUser user)
+    private void GetInitialUser(FirebaseUser user)
     {
         Debug.Log("user id: " + user.UserId);
-        DocumentReference docRef = _db.Collection("User").Document(user.UserId);
+        DocumentReference docRef = db.Collection("User").Document(user.UserId);
         docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             Debug.Log("getting snapshot");
@@ -165,7 +171,8 @@ public class FirebaseManager : MonoBehaviour
                     fetchAllUserItem();
                     SceneManager.LoadScene("MainPage");
                 }
-                catch(Exception e){
+                catch (Exception e)
+                {
                     Debug.Log("FirebaseManager: " + e);
                 }
 
@@ -180,7 +187,7 @@ public class FirebaseManager : MonoBehaviour
     private void NewUser(FirebaseUser user, string uname)
     {
         Debug.Log("Creating new user with id: " + user.UserId);
-        DocumentReference docRef = _db.Collection("User").Document(user.UserId);
+        DocumentReference docRef = db.Collection("User").Document(user.UserId);
         Dictionary<string, object> newUser = new Dictionary<string, object>{
         { "Accuracy", 0},
         { "Email", user.Email },
@@ -254,7 +261,8 @@ public class FirebaseManager : MonoBehaviour
                 //AuthSceneManager.instance.ChangeScene(1);
 
             }
-            GetUser(auth.CurrentUser);
+            GetInitialUser(auth.CurrentUser);
+            //GetInitialUser(auth.CurrentUser);
             //SceneManager.LoadScene("MainPage");
             //else
             //{
@@ -346,6 +354,7 @@ public class FirebaseManager : MonoBehaviour
                 {
                     //update User data asset here
                     NewUser(auth.CurrentUser, _username);
+                    //NewUser(auth.CurrentUser, _username);
                     Debug.Log($"Firebase User Created Successfully: {user.DisplayName} ({user.UserId})");
                     registerOutputText.text = "Account created successfully";
                     registerOutputText.color = Color.green;

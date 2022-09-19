@@ -2039,10 +2039,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be7e411aa8a4fb543ba0cf2251f65621, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Levels: {fileID: 7600240927112547898, guid: 7c29c9893a0e3494aa4a4401fce85af3, type: 3}
-  LevelsParent: {fileID: 244123409}
-  lvl: {fileID: 0}
-  back: {fileID: 0}
+  _levels: {fileID: 7600240927112547898, guid: 7c29c9893a0e3494aa4a4401fce85af3, type: 3}
+  _levelsParent: {fileID: 244123409}
+  _back: {fileID: 522217755}
 --- !u!4 &1948965955
 Transform:
   m_ObjectHideFlags: 0

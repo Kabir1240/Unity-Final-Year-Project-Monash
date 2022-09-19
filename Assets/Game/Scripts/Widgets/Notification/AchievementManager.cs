@@ -29,7 +29,7 @@ public class AchievementManager : MonoBehaviour
         if (instance == null)
         {
             _allAchievements = new Dictionary<string, List<Achievement>>();
-            _db = FirebaseFirestore.DefaultInstance;
+            _db = Operations.db;
             getAllUserAttribute();
             fetchFromDb();
             // FETCH USER ACHIEVEMENTS

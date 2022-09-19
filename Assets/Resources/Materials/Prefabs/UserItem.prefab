@@ -203,12 +203,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f35cfb8cbb28e5045af6d7114742fa7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firstItem: {fileID: 0}
-  secondItem: {fileID: 0}
+  firstItem: {fileID: 4029977752880994490}
+  secondItem: {fileID: 82433555662072923}
   chooseFirst: {fileID: 0}
   chooseSecond: {fileID: 0}
-  itemName: {fileID: 0}
-  itemName2: {fileID: 0}
+  itemName: {fileID: 4778859836067357354}
+  itemName2: {fileID: 2518001399917225885}
 --- !u!222 &7973375461007128974
 CanvasRenderer:
   m_ObjectHideFlags: 0

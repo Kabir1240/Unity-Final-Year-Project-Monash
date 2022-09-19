@@ -27,7 +27,7 @@ public class NotificationManager : MonoBehaviour
         {
             DontDestroyOnLoad(this.gameObject);
             instance = this;
-            notifPrefab = (GameObject)LoadPrefabFromFile("Notification");
+            notifPrefab = (GameObject)Operations.GetInstance().LoadPrefabFromFile("Prefabs/Notification");
             notifTime = 7.0f;
             interrupted = false;
             _achievName = notifPrefab.transform.Find("AchievementName").GetComponent<TextMeshProUGUI>();
@@ -58,17 +58,17 @@ public class NotificationManager : MonoBehaviour
         //SceneManager.MoveGameObjectToScene(currCamera, next);
     }
 
-    // directly put the filename without .prefab to the parameter
-    public static UnityEngine.Object LoadPrefabFromFile(string filename)
-    {
-        Debug.Log("Trying to load LevelPrefab from file (" + filename + ")...");
-        var loadedObject = Resources.Load("Materials/Prefabs/" + filename);
-        if (loadedObject == null)
-        {
-            throw new FileNotFoundException("...no file found - please check the configuration");
-        }
-        return loadedObject;
-    }
+    //// directly put the filename without .prefab to the parameter
+    //public static UnityEngine.Object LoadPrefabFromFile(string filename)
+    //{
+    //    Debug.Log("Trying to load LevelPrefab from file (" + filename + ")...");
+    //    var loadedObject = Resources.Load("Materials/Prefabs/" + filename);
+    //    if (loadedObject == null)
+    //    {
+    //        throw new FileNotFoundException("...no file found - please check the configuration");
+    //    }
+    //    return loadedObject;
+    //}
 
     public IEnumerator ShowNotification(string achievName, string exp, int seconds=7)
     {

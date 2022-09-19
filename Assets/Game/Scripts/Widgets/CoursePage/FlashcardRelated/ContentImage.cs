@@ -30,53 +30,56 @@ public class ContentImage : MonoBehaviour, FlashcardInterface
     public GameObject instantiatedObjFunctionality(GameObject flashcardObject, Dictionary<string, object> flashcard)
     {
         //TESTING
-        return downloadImage(flashcardObject, flashcard);
+        StorageReference imagesRef = Operations.storageRef.Child("Images").Child(Convert.ToString(flashcard["Image"]));
+        RawImage thePic = flashcardObject.transform.Find("Canvas").gameObject.transform.Find("Image").gameObject.GetComponent<RawImage>();
+
+        return Operations.GetInstance().DownloadImage(thePic, imagesRef);
     }
 
-        public GameObject downloadImage(GameObject flashcardObj, Dictionary<string, object> flashcard)
-    {
-        // TODO: FOR TESTING PURPOSES ONLY DELETE THIS
-        if (Convert.ToString(flashcard["Image"]) == "")
-        {
-            return flashcardObj;
-        }
-        StorageReference imagesRef = FlashcardManager.storageRef.Child("Images").Child(Convert.ToString(flashcard["Image"]));
+    //    public GameObject downloadImage(GameObject flashcardObj, Dictionary<string, object> flashcard)
+    //{
+    //    // TODO: FOR TESTING PURPOSES ONLY DELETE THIS
+    //    if (Convert.ToString(flashcard["Image"]) == "")
+    //    {
+    //        return flashcardObj;
+    //    }
+    //    StorageReference imagesRef = FlashcardManager.storageRef.Child("Images").Child(Convert.ToString(flashcard["Image"]));
 
-        // Fetch the download URL
-        imagesRef.GetDownloadUrlAsync().ContinueWithOnMainThread(task =>
-        {
-            if (!task.IsFaulted && !task.IsCanceled)
-            {
-                Debug.Log("Download URL: " + task.Result);
-                //StartCoroutine(isDownloading(Convert.ToString(task.Result), _parent.transform.Find("FlashcardContentImage(Clone)").gameObject));
-                StartCoroutine(isDownloading(Convert.ToString(task.Result), flashcardObj));
+    //    // Fetch the download URL
+    //    imagesRef.GetDownloadUrlAsync().ContinueWithOnMainThread(task =>
+    //    {
+    //        if (!task.IsFaulted && !task.IsCanceled)
+    //        {
+    //            Debug.Log("Download URL: " + task.Result);
+    //            //StartCoroutine(isDownloading(Convert.ToString(task.Result), _parent.transform.Find("FlashcardContentImage(Clone)").gameObject));
+    //            StartCoroutine(isDownloading(Convert.ToString(task.Result), flashcardObj));
 
-            }
-        });
+    //        }
+    //    });
 
-        return null;
-    }
-    // source: https://answers.unity.com/questions/1122905/how-do-you-download-image-to-uiimage.html
-    // the one without www: https://github.com/Vikings-Tech/FirebaseStorageTutorial/blob/master/Assets/Scripts/ImageLoader.cs
-    private IEnumerator isDownloading(string url, GameObject flashcard)
-    {
+    //    return null;
+    //}
+    //// source: https://answers.unity.com/questions/1122905/how-do-you-download-image-to-uiimage.html
+    //// the one without www: https://github.com/Vikings-Tech/FirebaseStorageTutorial/blob/master/Assets/Scripts/ImageLoader.cs
+    //private IEnumerator isDownloading(string url, GameObject flashcard)
+    //{
 
-        UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
-        yield return request.SendWebRequest();
-        Debug.Log("finished request");
-        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
-        {
-            Debug.Log(request.error);
-        }
+    //    UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
+    //    yield return request.SendWebRequest();
+    //    Debug.Log("finished request");
+    //    if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+    //    {
+    //        Debug.Log(request.error);
+    //    }
 
-        else
-        {
-            RawImage thePic = flashcard.transform.Find("Canvas").gameObject.transform.Find("Image").gameObject.GetComponent<RawImage>();
-            Debug.Log(thePic);
-            thePic.texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
-        }
+    //    else
+    //    {
+    //        RawImage thePic = flashcard.transform.Find("Canvas").gameObject.transform.Find("Image").gameObject.GetComponent<RawImage>();
+    //        Debug.Log(thePic);
+    //        thePic.texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+    //    }
 
-    }
+    //}
 
     public GameObject setAllData(Dictionary<string, object> flashcard, string title, string subheading, int no)
     {

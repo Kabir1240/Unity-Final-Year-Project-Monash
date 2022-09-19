@@ -13,26 +13,29 @@ using UnityEngine.UI;
 
 public class UserCollection : MonoBehaviour
 {
-    [SerializeField] GameObject collectionPanel;
-    [SerializeField] GameObject collectionContent;
-    [SerializeField] GameObject itemPrefab;
-    [SerializeField] GameObject content;
+    //[SerializeField] GameObject collectionPanel; // the collection panel
+    //[SerializeField] GameObject collectionContent; // horizontal content group
+    [SerializeField] GameObject itemPrefab; // the item prefab
+    [SerializeField] GameObject content; // horizontal content group
     [SerializeField] Button back;
-    [SerializeField] User user;
 
-    FirebaseStorage storage;
-    StorageReference storageRef;
+    [SerializeField] User user; // User Data Asset
 
+    private StorageReference storageRef;
     private FirebaseFirestore _db;
+
     private List<Item> _items;
     private GameObject currItemObj, secondItemObj;
 
     // Start is called before the first frame update
     void Start()
     {
-        _db = FirebaseFirestore.DefaultInstance;
-        storage = FirebaseStorage.DefaultInstance;
-        storageRef = storage.GetReferenceFromUrl("gs://fit3162-33646.appspot.com/");
+        //_db = FirebaseFirestore.DefaultInstance;
+        //storage = FirebaseStorage.DefaultInstance;
+        //storageRef = storage.GetReferenceFromUrl("gs://fit3162-33646.appspot.com/");
+        
+        _db = Operations.db;
+        storageRef = Operations.storageRef;
 
         back.onClick.AddListener(() =>
         {
@@ -46,36 +49,6 @@ public class UserCollection : MonoBehaviour
 
     }
 
-    //private void FetchFromDb()
-    //{
-    //    CollectionReference userItems = _db.Collection("User").Document(user.Id).Collection("Items");
-
-    //    userItems.GetSnapshotAsync().ContinueWithOnMainThread(task =>
-    //    {
-    //        try
-    //        {
-    //            Debug.Log("UserCollection: getting all item");
-    //            QuerySnapshot allItemsQuerySnapshot = task.Result;
-    //            Debug.Log("UserCollection:  items count: " + allItemsQuerySnapshot.Count);
-    //            Debug.Log("UserCollection:  task status: " + task.IsCompletedSuccessfully);
-    //            foreach (DocumentSnapshot documentSnapshot in allItemsQuerySnapshot.Documents)
-    //            {
-    //                Debug.Log(String.Format("Document data for {0} document:", documentSnapshot.Id));
-    //                Dictionary<string, object> item = documentSnapshot.ToDictionary();
-
-    //                Item currItem = new Item(documentSnapshot.Id, item["Category"].ToString(), item["Image"].ToString(), item["Name"].ToString(), Convert.ToInt32(item["Price"]), item["Description"].ToString());
-    //                Debug.Log("UserCollection:  id " + documentSnapshot.Id + " item " + currItem.Name + ", price " + currItem.Price);
-    //                _items.Add(currItem);
-    //                GameObject currItemObj = InstantiateItems(currItem, content.transform);
-
-    //            }
-    //        }
-    //        catch (Exception e)
-    //        {
-    //            Debug.Log(e);
-    //        }
-    //    });
-    //}
 
     private void InstantiateOriginal()
     {
@@ -129,7 +102,11 @@ public class UserCollection : MonoBehaviour
             secondItemObj.SetActive(true);
             boughtItem = currItemObj.GetComponent<UserItem>();
             boughtItem.SetUI2(currItem);
-            downloadImage(secondItemObj, currItem);
+
+            StorageReference imagesRef = storageRef.Child(currItem.Category).Child(currItem.Img);
+            RawImage thePic = secondItemObj.transform.Find("ItemImg").gameObject.GetComponent<RawImage>();
+            Operations.GetInstance().DownloadImage(thePic, imagesRef);
+            //downloadImage(secondItemObj, currItem);
             return secondItemObj;
         }
         else
@@ -139,7 +116,12 @@ public class UserCollection : MonoBehaviour
             currItemObj = item;
             boughtItem = item.GetComponent<UserItem>();
             boughtItem.SetUI1(currItem);
-            downloadImage(boughtItem.GetFirst(), currItem);
+
+            StorageReference imagesRef = storageRef.Child(currItem.Category).Child(currItem.Img);
+            RawImage thePic = boughtItem.GetFirst().transform.Find("ItemImg").gameObject.GetComponent<RawImage>();
+            
+            Operations.GetInstance().DownloadImage(thePic, imagesRef);
+            //downloadImage(boughtItem.GetFirst(), currItem);
             secondItemObj = boughtItem.GetSecond();
             return item;
         }
@@ -147,45 +129,45 @@ public class UserCollection : MonoBehaviour
 
     }
 
-    private GameObject downloadImage(GameObject flashcardObj, Item item)
-    {
-        StorageReference imagesRef = storageRef.Child(item.Category).Child(item.Img);
+    //private GameObject downloadImage(GameObject flashcardObj, Item item)
+    //{
+    //    StorageReference imagesRef = storageRef.Child(item.Category).Child(item.Img);
 
-        // Fetch the download URL
-        imagesRef.GetDownloadUrlAsync().ContinueWithOnMainThread(task =>
-        {
-            if (!task.IsFaulted && !task.IsCanceled)
-            {
-                Debug.Log("UserCollection: " + task.Result);
-                //StartCoroutine(isDownloading(Convert.ToString(task.Result), _parent.transform.Find("FlashcardContentImage(Clone)").gameObject));
-                StartCoroutine(isDownloading(Convert.ToString(task.Result), flashcardObj));
+    //    // Fetch the download URL
+    //    imagesRef.GetDownloadUrlAsync().ContinueWithOnMainThread(task =>
+    //    {
+    //        if (!task.IsFaulted && !task.IsCanceled)
+    //        {
+    //            Debug.Log("UserCollection: " + task.Result);
+    //            //StartCoroutine(isDownloading(Convert.ToString(task.Result), _parent.transform.Find("FlashcardContentImage(Clone)").gameObject));
+    //            StartCoroutine(isDownloading(Convert.ToString(task.Result), flashcardObj));
 
-            }
-        });
+    //        }
+    //    });
 
-        return null;
-    }
+    //    return null;
+    //}
 
-    // source: https://answers.unity.com/questions/1122905/how-do-you-download-image-to-uiimage.html
-    // the one without www: https://github.com/Vikings-Tech/FirebaseStorageTutorial/blob/master/Assets/Scripts/ImageLoader.cs
-    private IEnumerator isDownloading(string url, GameObject item)
-    {
+    //// source: https://answers.unity.com/questions/1122905/how-do-you-download-image-to-uiimage.html
+    //// the one without www: https://github.com/Vikings-Tech/FirebaseStorageTutorial/blob/master/Assets/Scripts/ImageLoader.cs
+    //private IEnumerator isDownloading(string url, GameObject item)
+    //{
 
-        Debug.Log("Download URL: " + url);
-        UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
-        yield return request.SendWebRequest();
-        Debug.Log("finished request");
-        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
-        {
-            Debug.Log(request.error);
-        }
+    //    Debug.Log("Download URL: " + url);
+    //    UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
+    //    yield return request.SendWebRequest();
+    //    Debug.Log("finished request");
+    //    if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+    //    {
+    //        Debug.Log(request.error);
+    //    }
 
-        else
-        {
-            RawImage thePic = item.transform.Find("ItemImg").gameObject.GetComponent<RawImage>();
-            Debug.Log("UserCollection: " + thePic);
-            thePic.texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
-        }
+    //    else
+    //    {
+    //        RawImage thePic = item.transform.Find("ItemImg").gameObject.GetComponent<RawImage>();
+    //        Debug.Log("UserCollection: " + thePic);
+    //        thePic.texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+    //    }
 
-    }
+    //}
 }

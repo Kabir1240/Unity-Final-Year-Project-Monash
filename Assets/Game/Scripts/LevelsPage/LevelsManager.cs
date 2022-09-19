@@ -12,16 +12,18 @@ using UnityEngine.SceneManagement;
 
 public class LevelsManager : MonoBehaviour
 {
-    [SerializeField] private GameObject Levels;
-    [SerializeField] private Transform LevelsParent;
-    [SerializeField] private ModuleLevel lvl;
-    [SerializeField] private Button back;
-    
-    private FirebaseFirestore db;
+    [SerializeField] private GameObject _levels; // the level prefab
+    [SerializeField] private Transform _levelsParent; // root canvas
+    [SerializeField] private Button _back; // back to main page button
+
+    //[SerializeField] private ModuleLevel lvl; // ModuleLevel data asset
+    private FirebaseFirestore _db;
     void Awake()
     {
-        db = FirebaseFirestore.DefaultInstance;
-        back.onClick.AddListener(()=>
+        //_db = Operations.db;
+        //TESTING PURPOSES
+        _db = FirebaseFirestore.DefaultInstance;
+        _back.onClick.AddListener(()=>
         {
             SceneManager.LoadScene("MainPage");
         });
@@ -31,9 +33,9 @@ public class LevelsManager : MonoBehaviour
     void InstantiateLevels()
     {
         int currentLevel = 1;
-        GameObject newLevel = Instantiate(Levels, LevelsParent);
+        GameObject newLevel = Instantiate(_levels, _levelsParent);
         //Query allLevelsQuery = db.Collection("Modules");
-        CollectionReference allLevelsQuery = db.Collection("Level");
+        CollectionReference allLevelsQuery = _db.Collection("Level");
         allLevelsQuery.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             QuerySnapshot allLevelsQuerySnapshot = task.Result;
@@ -125,7 +127,7 @@ public class LevelsManager : MonoBehaviour
                         }
                         else
                         {
-                            newLevel = Instantiate(Levels, LevelsParent);
+                            newLevel = Instantiate(_levels, _levelsParent);
                             LevelsButtonManager btn1 = newLevel.transform.Find("Level1").GetComponent<LevelsButtonManager>();
 
                             //string levelNo = level["LevelNo"].ToString();

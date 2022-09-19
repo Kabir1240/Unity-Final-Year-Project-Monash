@@ -44,7 +44,7 @@ public class Lane : MonoBehaviour
             //Debug.Log("lane " + _id + ": " + Note.Parse(note).NoteName + " no:" + Note.Parse(note).NoteNumber);
         }
 
-        _note = (GameObject)LoadPrefabFromFile("Note");
+        _note = (GameObject)Operations.GetInstance().LoadPrefabFromFile("Prefabs/Note");
         _noteName = _note.transform.Find("note").GetComponent<TextMeshProUGUI>();
     }
 
@@ -108,16 +108,16 @@ public class Lane : MonoBehaviour
     //    manager.InstantiatedNotes.Add(child2);
     //}
 
-    public static UnityEngine.Object LoadPrefabFromFile(string filename)
-    {
-        Debug.Log("Trying to load LevelPrefab from file (" + filename + ")...");
-        var loadedObject = Resources.Load("Materials/Prefabs/" + filename);
-        if (loadedObject == null)
-        {
-            throw new FileNotFoundException("...no file found - please check the configuration");
-        }
-        return loadedObject;
-    }
+    //public static UnityEngine.Object LoadPrefabFromFile(string filename)
+    //{
+    //    Debug.Log("Trying to load LevelPrefab from file (" + filename + ")...");
+    //    var loadedObject = Resources.Load("Materials/Prefabs/" + filename);
+    //    if (loadedObject == null)
+    //    {
+    //        throw new FileNotFoundException("...no file found - please check the configuration");
+    //    }
+    //    return loadedObject;
+    //}
 
     //public void SetTimeStamps(Melanchall.DryWetMidi.Interaction.Note[] array)
     //{

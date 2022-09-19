@@ -32,7 +32,7 @@ public class Score : MonoBehaviour
         _midScore = 50000;
         _highScore = 80000;
 
-        _db = FirebaseFirestore.DefaultInstance;
+        _db = Operations.db;
         Debug.Log("initialized firestore");
 
         restart.onClick.AddListener(Restart);
