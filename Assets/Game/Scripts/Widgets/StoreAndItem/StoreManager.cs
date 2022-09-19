@@ -4,6 +4,7 @@ using Firebase.Storage;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -122,7 +123,18 @@ public class StoreManager : MonoBehaviour
                 Debug.Log("StoreManager: Created new Item in Items collection in User");
             });
             //ConnectDatabase.GetInstance().NewUserItem(item);
+
+            //saving image to persistent data path (if coin is enough)
+            GameObject currItem = _boughtItemsObj[item.Id];
+            Texture2D tex = (Texture2D)currItem.transform.Find("Item").gameObject.transform.Find("ItemImg").gameObject.GetComponent<RawImage>().texture;
+            byte[] texBytes = tex.EncodeToJPG(50);
+            //UNCOMMENT THIS IF NOT TESTING
+            //File.WriteAllBytes(Application.persistentDataPath + "/FIT3162Files/"+item.Name+".jpg", texBytes);
+            Debug.Log("StoreManager: file saved at path " + Application.persistentDataPath + "/FIT3162Files/" + item.Name + ".jpg");
+            File.WriteAllBytes(Application.persistentDataPath + "/FIT3162Files/" + item.Name + ".jpg", texBytes);
+
         }
+
         SceneManager.LoadScene("MainPage");
 
     }

@@ -15,6 +15,7 @@ public class LevelsManager : MonoBehaviour
     [SerializeField] private GameObject _levels; // the level prefab
     [SerializeField] private Transform _levelsParent; // root canvas
     [SerializeField] private Button _back; // back to main page button
+    [SerializeField] private User user;
 
     //[SerializeField] private ModuleLevel lvl; // ModuleLevel data asset
     private FirebaseFirestore _db;
@@ -122,6 +123,11 @@ public class LevelsManager : MonoBehaviour
                             //Debug.Log("LevelsManager: %2==0" + documentSnapshot.Id);
                             //Debug.Log("LevelsManager: %2==0" + btn2.SongId.Count);
                             newLevel.transform.Find("Level2").transform.Find("Level").GetChild(0).GetComponent<TextMeshProUGUI>().text = documentSnapshot.Id;
+                            
+                            if (user.Level < currentLevel)
+                            {
+                                btn2.disableBtn();
+                            }
 
                             currentLevel += 1;
                         }
@@ -144,6 +150,11 @@ public class LevelsManager : MonoBehaviour
                             }
                             btn1.SongId = currSongArr;
                             //Debug.Log("LevelsManager: new pair" + documentSnapshot.Id);
+
+                            if (user.Level < currentLevel)
+                            {
+                                btn1.disableBtn();
+                            }
 
                             newLevel.transform.Find("Level1").transform.Find("Level").GetChild(0).GetComponent<TextMeshProUGUI>().text = documentSnapshot.Id;
                             currentLevel += 1;

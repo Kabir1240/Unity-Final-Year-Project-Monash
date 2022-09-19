@@ -25,6 +25,7 @@ public class UserCollection : MonoBehaviour
     private FirebaseFirestore _db;
 
     private List<Item> _items;
+    private Item original;
     private GameObject currItemObj, secondItemObj;
 
     // Start is called before the first frame update
@@ -44,6 +45,8 @@ public class UserCollection : MonoBehaviour
 
         _items = new List<Item>();
 
+        original = new Item("", "Skin", "Felicia/guitar", "Original Skin");
+
         InstantiateAllBought();
         InstantiateOriginal();
 
@@ -53,31 +56,32 @@ public class UserCollection : MonoBehaviour
     private void InstantiateOriginal()
     {
         Debug.Log("UserCollection: Instantiate ori, count: "+_items.Count);
-        if (_items.Count % 2 == 0)
-        {
-            GameObject ori = Instantiate(itemPrefab, content.transform);
-            RawImage thePic = ori.transform.Find("Item").gameObject.transform.Find("ItemImg").gameObject.GetComponent<RawImage>();
-            Texture2D loadedObject = Resources.Load("Felicia/guitar") as Texture2D;
-            if (loadedObject == null)
-            {
-                throw new FileNotFoundException("...no file found - please check the configuration");
-            }
-            thePic.texture = loadedObject;
-            ori.transform.Find("Item").gameObject.transform.Find("ItemName").gameObject.GetComponent<TextMeshProUGUI>().text = "Original skin";
-        }
-        else
-        {
-            secondItemObj.SetActive(true);
-            RawImage thePic = secondItemObj.transform.Find("ItemImg").gameObject.GetComponent<RawImage>();
-            Texture2D loadedObject = Resources.Load("Felicia/guitar") as Texture2D;
-            if (loadedObject == null)
-            {
-                throw new FileNotFoundException("...no file found - please check the configuration");
-            }
-            thePic.texture = loadedObject;
-            secondItemObj.transform.Find("ItemName").gameObject.GetComponent<TextMeshProUGUI>().text = "Original skin";
+        InstantiateItems(original, content.transform, _items.Count + 1);
+        //if (_items.Count % 2 == 0)
+        //{
+        //    GameObject ori = Instantiate(itemPrefab, content.transform);
+        //    RawImage thePic = ori.transform.Find("Item").gameObject.transform.Find("ItemImg").gameObject.GetComponent<RawImage>();
+        //    Texture2D loadedObject = Resources.Load("Felicia/guitar") as Texture2D;
+        //    if (loadedObject == null)
+        //    {
+        //        throw new FileNotFoundException("...no file found - please check the configuration");
+        //    }
+        //    thePic.texture = loadedObject;
+        //    ori.transform.Find("Item").gameObject.transform.Find("ItemName").gameObject.GetComponent<TextMeshProUGUI>().text = "Original skin";
+        //}
+        //else
+        //{
+        //    secondItemObj.SetActive(true);
+        //    RawImage thePic = secondItemObj.transform.Find("ItemImg").gameObject.GetComponent<RawImage>();
+        //    Texture2D loadedObject = Resources.Load("Felicia/guitar") as Texture2D;
+        //    if (loadedObject == null)
+        //    {
+        //        throw new FileNotFoundException("...no file found - please check the configuration");
+        //    }
+        //    thePic.texture = loadedObject;
+        //    secondItemObj.transform.Find("ItemName").gameObject.GetComponent<TextMeshProUGUI>().text = "Original skin";
 
-        }
+        //}
 
 
 

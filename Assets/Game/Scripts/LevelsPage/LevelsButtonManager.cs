@@ -25,6 +25,16 @@ public class LevelsButtonManager : MonoBehaviour
         lvlBtn.onClick.AddListener(StartLevel);
     }
 
+    public void disableBtn()
+    {
+        lvlBtn.interactable = false;
+    }
+
+    public void enableBtn()
+    {
+        lvlBtn.interactable = true;
+    }
+
     public void StartLevel()
     {
         string levelNo = levelInfo.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;

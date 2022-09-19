@@ -497,7 +497,7 @@ public class GameManager : MonoBehaviour
 
                 // TEST IN ANDROID USES Application.persistentDataPath+"/Midifiles.mid"
                 //string path = Path.Combine(Application.dataPath + "/Resources/Materials/Midi", "MidiFiles.mid").Replace("\\", "/");
-                string path = Application.persistentDataPath + "/MidiFiles.mid";
+                string path = Application.persistentDataPath + "/FIT3162Files/MidiFiles.mid";
                 //StartCoroutine(isDownloading(Convert.ToString(task.Result), path));
                 isDownloading(Convert.ToString(task.Result), path);
                 ConvertToNotes(_path);

@@ -11,17 +11,25 @@ using UnityEngine.UI;
 public class Score : MonoBehaviour
 {
     [SerializeField] GameResult result;
+
+    [SerializeField] GameObject warningPanel;
+
     [SerializeField] TextMeshProUGUI score;
     [SerializeField] TextMeshProUGUI songTitle;
+    [SerializeField] TextMeshProUGUI reward;
+
     [SerializeField] Button restart;
     [SerializeField] Button feedback;
     [SerializeField] Button back;
+    [SerializeField] Button confirmWarning;
+    [SerializeField] Button undoWarning;
+
     [SerializeField] Level level;
     [SerializeField] User user;
     [SerializeField] Song song;
 
     private FirebaseFirestore _db;
-    private int _scoreThreshold, _midScore, _highScore;
+    private int _scoreThreshold, _midScore, _highScore, _tmpCoin;
 
     // Start is called before the first frame update
     void Start()
@@ -32,23 +40,35 @@ public class Score : MonoBehaviour
         _midScore = 50000;
         _highScore = 80000;
 
+        UpdateCoin();
+        reward.text = _tmpCoin + "";
+
         _db = Operations.db;
         Debug.Log("initialized firestore");
 
         restart.onClick.AddListener(Restart);
         feedback.onClick.AddListener(Feedback);
-        back.onClick.AddListener(Save);
+        back.onClick.AddListener(()=>
+        {
+            warningPanel.SetActive(true);
+        });
+
+        undoWarning.onClick.AddListener(() =>
+        {
+            warningPanel.SetActive(false);
+        });
+        confirmWarning.onClick.AddListener(Save);
     }
 
     private void UpdateCoin()
     {
         if (result.score >= _highScore)
         {
-            user.Coin += 10;
+            _tmpCoin = 10;
         }
         else if (result.score >= _midScore)
         {
-            user.Coin += 4;
+            _tmpCoin = 4;
         }
     }
 
@@ -63,13 +83,17 @@ public class Score : MonoBehaviour
             //if (result.score > _scoreThreshold)
             //{
             //    user.GameRuns += 1;
-            //    UpdateCoin();
+            //    user.Coin+=_tmpCoin;
             //}
+
+            //TESTING
             user.GameRuns += 1;
-            _db.Collection("User").Document(user.Id).UpdateAsync("Game_run", user.GameRuns).ContinueWithOnMainThread(task => {
+            _db.Collection("User").Document(user.Id).UpdateAsync("Game_run", user.GameRuns).ContinueWithOnMainThread(task =>
+            {
                 Debug.Log(
                         "Updated user Game_run in User.");
             });
+            //user.Coin += 10;
             {
                 //DocumentReference docRef = _db.Collection("User").Document(user.Id);
                 //docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
@@ -91,15 +115,21 @@ public class Score : MonoBehaviour
                 //});
                 //Debug.Log()
             }
-        }catch(Exception e)
-        {
-            Debug.Log("Score error: "+e);
         }
-        
-        int exp = (int)((level.MaxExp * 0.8f) / level.SongIds.Count) * (Math.Max(result.score, result.prevScore)/ 100000);
-        user.Exp += exp;
-        Debug.Log("Score: player exp:" + user.Exp);
-        _db.Collection("User").Document(user.Id).UpdateAsync("Exp", user.Exp);
+        catch (Exception e)
+        {
+            Debug.Log("Score error: " + e);
+        }
+
+        // only increase exp and coin if the current user level matches the level's level
+        if (user.Level == Convert.ToInt32(level.LevelId))
+        {
+            user.Coin += _tmpCoin;
+            int exp = (int)((level.MaxExp * 0.8f) / level.SongIds.Count) * (Math.Max(result.score, result.prevScore) / 100000);
+            user.Exp += exp;
+            Debug.Log("Score: player exp:" + user.Exp);
+            _db.Collection("User").Document(user.Id).UpdateAsync("Exp", user.Exp);
+        }
 
         SceneManager.LoadScene("EachPlanetPage");
 
@@ -121,6 +151,6 @@ public class Score : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }
