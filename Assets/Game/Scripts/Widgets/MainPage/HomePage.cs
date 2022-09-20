@@ -9,6 +9,7 @@ public class HomePage : MonoBehaviour, Refresh
     [SerializeField] Button levelPage;
     [SerializeField] Button storePage;
     [SerializeField] Button itemColPage;
+    [SerializeField] Button userAchiev;
     [SerializeField] ProfPanel profPanel;
     // Start is called before the first frame update
     void Start()
@@ -20,7 +21,14 @@ public class HomePage : MonoBehaviour, Refresh
             Debug.Log("Go to UserItems");
             SceneManager.LoadScene("UserItems");
         });
+        userAchiev.onClick.AddListener(() =>
+        {
+            Debug.Log("Go to AchievementsPage");
+            SceneManager.LoadScene("AchievementsPage");
+        });
     }
+
+
 
     private void GoToPage()
     {

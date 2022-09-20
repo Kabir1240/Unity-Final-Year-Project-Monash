@@ -79,63 +79,79 @@ public class StoreManager : MonoBehaviour
 
     private void AddToUser()
     {
-        //if (user.Coin >= _boughtPrice)
-        //{
-        //    Debug.Log("StoreManager: enough money");
-        //    user.Coin -= _boughtPrice;
-        //    //update coin in database
-        //    foreach (Item item in _boughtItems.Values)
-        //    {
-        //        user.addItems(item);
-
-        //        Dictionary<string, object> newItem = new Dictionary<string, object>{
-        //            { "Category", item.Category},
-        //            { "Name", item.Name},
-        //            { "Image", item.Img}};
-        //        _db.Collection("User").Document(user.Id).Collection("Items").Document(item.Id).SetAsync(newItem).ContinueWithOnMainThread(task =>
-        //        {
-        //            Debug.Log("StoreManager: Created new Item in Items collection in User");
-        //        });
-        //    }
-
-        //    // fetch item images and save them to the persistent path (using the item name)
-        //    // then in UserCollection, don't need to fetch foto from database anymore
-        //    // then on button click, change the assetmanager path
-        //    // then on gameplay, load the picture in assetmanager path first
-        //}
-        //else
-        //{
-        //    warningCoin.SetActive(true);
-        //}
-
-        // FOR TESTING
-        Debug.Log("StoreManager: enough money");
-        user.Coin -= _boughtPrice;
-        foreach (Item item in _boughtItems.Values)
+        if (user.Coin >= _boughtPrice)
         {
-            user.addItems(item);
-            Dictionary<string, object> newItem = new Dictionary<string, object>{
+            Debug.Log("StoreManager: enough money");
+            user.Coin -= _boughtPrice;
+            //update coin in database
+            foreach (Item item in _boughtItems.Values)
+            {
+                user.addItems(item);
+
+                Dictionary<string, object> newItem = new Dictionary<string, object>{
                     { "Category", item.Category},
                     { "Name", item.Name},
                     { "Image", item.Img}};
-            _db.Collection("User").Document(user.Id).Collection("Items").Document(item.Id).SetAsync(newItem).ContinueWithOnMainThread(task =>
-            {
-                Debug.Log("StoreManager: Created new Item in Items collection in User");
-            });
-            //ConnectDatabase.GetInstance().NewUserItem(item);
+                _db.Collection("User").Document(user.Id).Collection("Items").Document(item.Id).SetAsync(newItem).ContinueWithOnMainThread(task =>
+                {
+                    Debug.Log("StoreManager: Created new Item in Items collection in User");
+                });
 
-            //saving image to persistent data path (if coin is enough)
-            GameObject currItem = _boughtItemsObj[item.Id];
-            Texture2D tex = (Texture2D)currItem.transform.Find("Item").gameObject.transform.Find("ItemImg").gameObject.GetComponent<RawImage>().texture;
-            byte[] texBytes = tex.EncodeToJPG(50);
-            //UNCOMMENT THIS IF NOT TESTING
-            //File.WriteAllBytes(Application.persistentDataPath + "/FIT3162Files/"+item.Name+".jpg", texBytes);
-            Debug.Log("StoreManager: file saved at path " + Application.persistentDataPath + "/FIT3162Files/" + item.Name + ".jpg");
-            File.WriteAllBytes(Application.persistentDataPath + "/FIT3162Files/" + item.Name + ".jpg", texBytes);
+                if (!File.Exists(Application.persistentDataPath + "/FIT3162Files/" + item.Name + ".jpg"))
+                {
+                    GameObject currItem = _boughtItemsObj[item.Id];
+                    Texture2D tex = (Texture2D)currItem.transform.Find("Item").gameObject.transform.Find("ItemImg").gameObject.GetComponent<RawImage>().texture;
+                    byte[] texBytes = tex.EncodeToJPG(50);
+                    //UNCOMMENT THIS IF NOT TESTING
+                    //File.WriteAllBytes(Application.persistentDataPath + "/FIT3162Files/"+item.Name+".jpg", texBytes);
+                    Debug.Log("StoreManager: file saved at path " + Application.persistentDataPath + "/FIT3162Files/" + item.Name + ".jpg");
+                    File.WriteAllBytes(Application.persistentDataPath + "/FIT3162Files/" + item.Name + ".jpg", texBytes);
+                }
+                
 
+            }
+
+            // fetch item images and save them to the persistent path (using the item name)
+            // then in UserCollection, don't need to fetch foto from database anymore
+            // then on button click, change the assetmanager path
+            // then on gameplay, load the picture in assetmanager path first
+
+            SceneManager.LoadScene("MainPage");
+        }
+        else
+        {
+            warningCoin.SetActive(true);
         }
 
-        SceneManager.LoadScene("MainPage");
+        //// FOR TESTING
+        //Debug.Log("StoreManager: enough money");
+        //user.Coin -= _boughtPrice;
+        //foreach (Item item in _boughtItems.Values)
+        //{
+        //    user.addItems(item);
+        //    Dictionary<string, object> newItem = new Dictionary<string, object>{
+        //            { "Category", item.Category},
+        //            { "Name", item.Name},
+        //            { "Image", item.Img}};
+        //    _db.Collection("User").Document(user.Id).Collection("Items").Document(item.Id).SetAsync(newItem).ContinueWithOnMainThread(task =>
+        //    {
+        //        Debug.Log("StoreManager: Created new Item in Items collection in User");
+        //    });
+        //    //ConnectDatabase.GetInstance().NewUserItem(item);
+
+        //    //saving image to persistent data path (if coin is enough)
+        //    if (!File.Exists(Application.persistentDataPath + "/FIT3162Files/" + item.Name + ".jpg"))
+        //    {
+        //        GameObject currItem = _boughtItemsObj[item.Id];
+        //        Texture2D tex = (Texture2D)currItem.transform.Find("Item").gameObject.transform.Find("ItemImg").gameObject.GetComponent<RawImage>().texture;
+        //        byte[] texBytes = tex.EncodeToJPG(50);
+        //        //UNCOMMENT THIS IF NOT TESTING
+        //        //File.WriteAllBytes(Application.persistentDataPath + "/FIT3162Files/"+item.Name+".jpg", texBytes);
+        //        Debug.Log("StoreManager: file saved at path " + Application.persistentDataPath + "/FIT3162Files/" + item.Name + ".jpg");
+        //        File.WriteAllBytes(Application.persistentDataPath + "/FIT3162Files/" + item.Name + ".jpg", texBytes);
+        //    }
+
+        //}
 
     }
 

@@ -28,9 +28,6 @@ public class ProgressBar : MonoBehaviour
         float length = (_progressBarContainer.size.x * 0.96f) * (currUser.Exp / _maxExp);
         Debug.Log(length);
         Debug.Log("user exp: " + currUser.Exp);
-        //Debug.Log(_currentUser.Exp / _maxExp);
-        //Debug.Log(_progressBarContainer.size.x * 0.96f);
-        //Debug.Log(_progressBar.size.y);
         _progressBar.size = new Vector2(length, _progressBar.size.y);
     }
 
@@ -39,48 +36,21 @@ public class ProgressBar : MonoBehaviour
         _db = db;
         _currentUser = currUser;
         _lvlNo.text = _currentUser.Level.ToString();
-        Debug.Log("Went here");
-        Debug.Log(_currentUser.UserName + " " + _currentUser.Level);
+        //Debug.Log("Went here");
+        Debug.Log("ProgressBar: "+_currentUser.UserName + " " + _currentUser.Level);
 
         // length of progress bar will be a certain fixed length * (_currentUser.Exp/current level max exp)
         // get the user's current level
-        DocumentReference userRef = _db.Collection("Level").Document(""+_currentUser.Level);
-        Debug.Log(userRef.ToString());
-        //_maxExp = (float)userRef.get("Max_Exp");
 
-        userRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
-        {
-            Debug.Log("went progress bar 2");
-            DocumentSnapshot snapshot = task.Result;
-            Debug.Log("result: " + snapshot.Exists);
-            if (snapshot.Exists)
-            {
-                Debug.Log("went progress bar 3");
-                Dictionary<string, object> dbData = snapshot.ToDictionary();
-                int currMaxExp = Convert.ToInt32(dbData["Max_Exp"]);
-                //Debug.Log(currMaxExp);
-                _maxExp = (float) currMaxExp;
-                Debug.Log("got max exp: " + _maxExp);
-                float length = (_progressBarContainer.size.x * 0.96f) * (_currentUser.Exp / _maxExp);
-                Debug.Log(length);
-                Debug.Log("user exp: " + _currentUser.Exp);
-                //Debug.Log(_currentUser.Exp / _maxExp);
-                //Debug.Log(_progressBarContainer.size.x * 0.96f);
-                //Debug.Log(_progressBar.size.y);
-                _progressBar.size = new Vector2(length, _progressBar.size.y);
-                
-            }
-            else
-            {
-                Debug.Log(String.Format("Document {0} does not exist!", snapshot.Id));
-            }
-        });
+        _maxExp = (float)currUser.MaxExp;
+        Debug.Log("ProgressBar: got max exp: " + _maxExp);
+        float length = (_progressBarContainer.size.x * 0.96f) * (_currentUser.Exp / _maxExp);
+
+        //Debug.Log("user exp: " + _currentUser.Exp);
+
+        _progressBar.size = new Vector2(length, _progressBar.size.y);
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
 }

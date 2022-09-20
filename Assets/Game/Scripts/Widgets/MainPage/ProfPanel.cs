@@ -31,11 +31,29 @@ public class ProfPanel : MonoBehaviour
     [SerializeField] private ProgressBar _progress;
     [SerializeField] private TextMeshProUGUI _reward;
 
+    //TESTING PURPOSES DELETE THIS
+    public void addCoin()
+    {
+        Debug.Log("TEST: addCoin, coin: " + _currentUser.Coin + 10);
+        _currentUser.Coin += 10;
+    }
+
+    public void addLevel()
+    {
+        Debug.Log("TEST: addLevel, lvl: " + _currentUser.Level + 1);
+        _currentUser.Level += 1;
+    }
+    public void addGameRun()
+    {
+        Debug.Log("TEST: addGameRun, run: " + _currentUser.GameRuns + 1);
+        _currentUser.GameRuns += 1;
+    }
     public void Refresh()
     {
         _progress.UpdateBar(_currentUser);
         _reward.text = _currentUser.Coin.ToString();
         _usernameUI.text = "@" + _currentUser.UserName;
+        //_currentUser.updateDb();
     }
 
     void Start()
@@ -45,10 +63,12 @@ public class ProfPanel : MonoBehaviour
         //minSwipeDistX = 0.7f;
         //transformAmount = 0.35f;
 
+        Debug.Log("Prof Panel: coin: " + _currentUser.Coin);
         _db = Operations.db;
         _progress.InitializeBar(_db, _currentUser);
         _reward.text = _currentUser.Coin.ToString();
         _usernameUI.text = "@"+_currentUser.UserName;
+        //_currentUser.updateDb();
     }
 
 

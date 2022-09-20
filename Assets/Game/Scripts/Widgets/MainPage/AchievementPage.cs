@@ -26,6 +26,7 @@ public class AchievementPage : MonoBehaviour
     private void InstantiateAllAchiev()
     {
         int count = 1;
+        Debug.Log("AchievementPage: count values: " + user.Achieved.Values.Count);
         foreach (List<Achievement> achiev in user.Achieved.Values)
         {
             foreach (Achievement achieved in achiev)

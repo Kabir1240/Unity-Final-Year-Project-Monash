@@ -2042,6 +2042,7 @@ MonoBehaviour:
   _levels: {fileID: 7600240927112547898, guid: 7c29c9893a0e3494aa4a4401fce85af3, type: 3}
   _levelsParent: {fileID: 244123409}
   _back: {fileID: 522217755}
+  user: {fileID: 11400000, guid: 69b7ef9e27dfbe74ea876387b8aa6af2, type: 2}
 --- !u!4 &1948965955
 Transform:
   m_ObjectHideFlags: 0

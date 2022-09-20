@@ -34,7 +34,7 @@ public class UserCollection : MonoBehaviour
         //_db = FirebaseFirestore.DefaultInstance;
         //storage = FirebaseStorage.DefaultInstance;
         //storageRef = storage.GetReferenceFromUrl("gs://fit3162-33646.appspot.com/");
-        
+
         _db = Operations.db;
         storageRef = Operations.storageRef;
 
@@ -55,7 +55,7 @@ public class UserCollection : MonoBehaviour
 
     private void InstantiateOriginal()
     {
-        Debug.Log("UserCollection: Instantiate ori, count: "+_items.Count);
+        Debug.Log("UserCollection: Instantiate ori, count: " + _items.Count);
         InstantiateItems(original, content.transform, _items.Count + 1);
         //if (_items.Count % 2 == 0)
         //{
@@ -109,7 +109,29 @@ public class UserCollection : MonoBehaviour
 
             StorageReference imagesRef = storageRef.Child(currItem.Category).Child(currItem.Img);
             RawImage thePic = secondItemObj.transform.Find("ItemImg").gameObject.GetComponent<RawImage>();
-            Operations.GetInstance().DownloadImage(thePic, imagesRef);
+            if (currItem.Id == "")
+            {
+                Texture2D loadedObject = Resources.Load("Felicia/guitar") as Texture2D;
+                if (loadedObject == null)
+                {
+                    throw new FileNotFoundException("...no file found - please check the configuration");
+                }
+                thePic.texture = loadedObject;
+            }
+            else
+            {
+                if (!File.Exists(Application.persistentDataPath + "/FIT3162Files/" + currItem.Name + ".jpg"))
+                {
+                    Operations.GetInstance().DownloadImage(thePic, imagesRef);
+                }
+                else
+                {
+                    StartCoroutine(Operations.GetInstance().isDownloading("file://"+Application.persistentDataPath + "/FIT3162Files/" + currItem.Name + ".jpg", thePic));
+                }
+
+
+            }
+            //Operations.GetInstance().DownloadImage(thePic, imagesRef);
             //downloadImage(secondItemObj, currItem);
             return secondItemObj;
         }
@@ -123,8 +145,30 @@ public class UserCollection : MonoBehaviour
 
             StorageReference imagesRef = storageRef.Child(currItem.Category).Child(currItem.Img);
             RawImage thePic = boughtItem.GetFirst().transform.Find("ItemImg").gameObject.GetComponent<RawImage>();
-            
-            Operations.GetInstance().DownloadImage(thePic, imagesRef);
+
+            if (currItem.Id == "")
+            {
+                Texture2D loadedObject = Resources.Load("Felicia/guitar") as Texture2D;
+                if (loadedObject == null)
+                {
+                    throw new FileNotFoundException("...no file found - please check the configuration");
+                }
+                thePic.texture = loadedObject;
+            }
+            else
+            {
+                if (!File.Exists(Application.persistentDataPath + "/FIT3162Files/" + currItem.Name + ".jpg"))
+                {
+                    Operations.GetInstance().DownloadImage(thePic, imagesRef);
+                }
+                else
+                {
+                    StartCoroutine(Operations.GetInstance().isDownloading("file://" + Application.persistentDataPath + "/FIT3162Files/" + currItem.Name + ".jpg", thePic));
+                }
+
+            }
+
+            //Operations.GetInstance().DownloadImage(thePic, imagesRef);
             //downloadImage(boughtItem.GetFirst(), currItem);
             secondItemObj = boughtItem.GetSecond();
             return item;

@@ -14,17 +14,21 @@ using UnityEngine.SceneManagement;
 
 public class FlashcardManager : MonoBehaviour
 {
-    private Dictionary<string, FlashcardInterface> _types = new Dictionary<string, FlashcardInterface>();
     [SerializeField] List<GameObject> interfaces;
     [SerializeField] private GameObject _initialPos;
     [SerializeField] private GameObject _parent;
     [SerializeField] private ModuleLevel lvl;
+    [SerializeField] private Level planetLvl;
     [SerializeField] Button backBtn;
+    [SerializeField] TextMeshProUGUI currLevel;
+    [SerializeField] ProgressBarCourse slider;
+
     //[SerializeField] private test_rawimg script;
 
     private FirebaseFirestore _db;
     private List<Dictionary<string,object>> _flashcardsArray;
     private List<GameObject> _flashcardObjectsArray;
+    private Dictionary<string, FlashcardInterface> _types = new Dictionary<string, FlashcardInterface>();
     private string _lvlTitle, _subheading;
     private int _pointer;
 
@@ -57,19 +61,18 @@ public class FlashcardManager : MonoBehaviour
 
         Debug.Log("added all the types");
 
+        // sets up the total flashcards
+        //slider.setTotal(_flashcardsArray.Count - 1);
+        currLevel.text = planetLvl.LevelId + "";
+
         _flashcardsArray = new List<Dictionary<string, object>>();
         _flashcardObjectsArray = new List<GameObject>();
 
         backBtn.onClick.AddListener(BackToEachPlanet);
 
         LoadData();
+        
 
-    }
-
-    public int TotalFlashcards()
-    {
-        Debug.Log("total: " + _flashcardsArray.Count);
-        return _flashcardsArray.Count;
     }
 
     public int GetPointer()
@@ -80,6 +83,7 @@ public class FlashcardManager : MonoBehaviour
     public bool Next()
     {
         Debug.Log("Next flashcard");
+        slider.Next();
         // hide the current flashcard
         GameObject currentObj = _flashcardObjectsArray[_pointer];
         currentObj.SetActive(false);
@@ -130,6 +134,7 @@ public class FlashcardManager : MonoBehaviour
     public bool Previous()
     {
         Debug.Log("Prev flashcard");
+        slider.Prev();
         // hide the current flashcard
         GameObject currentObj = _flashcardObjectsArray[_pointer];
         currentObj.SetActive(false);
@@ -219,7 +224,7 @@ public class FlashcardManager : MonoBehaviour
                     _flashcardObjectsArray.Add(null);
                 }
             }
-
+            slider.setTotal(_flashcardsArray.Count - 1);
             // instantiate the first flashcard
             InstantiateCard((Dictionary<string, object>)_flashcardsArray[0]);
         });
