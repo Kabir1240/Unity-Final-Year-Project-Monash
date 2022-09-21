@@ -1,12 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ProgressBarCourse : MonoBehaviour
 {
-    [SerializeField] FlashcardManager manager;
+    //[SerializeField] FlashcardManager manager;
     [SerializeField] Slider slider;
+    [SerializeField] TextMeshProUGUI percentage;
     private float total, current;
 
 
@@ -18,9 +21,9 @@ public class ProgressBarCourse : MonoBehaviour
         total = 0;
     }
 
-    public void setTotal()
+    public void setTotal(int total)
     {
-        total = manager.TotalFlashcards()-1;
+        this.total = total;
     }
 
     public void Next()
@@ -38,7 +41,8 @@ public class ProgressBarCourse : MonoBehaviour
     private void updateSlider()
     {
         slider.value = current/total * 100;
-        Debug.Log("slider: "+slider.value);
+        percentage.text = Math.Round(slider.value) + "";
+        //Debug.Log("slider: "+slider.value);
     }
 
 }

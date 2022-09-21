@@ -20,14 +20,14 @@ public class AchievPrefab : MonoBehaviour
     {
         currItem = achiev;
         itemName.text = currItem.Name;
-        date1.text = achiev.AchievedDate.ToString();
+        date1.text = achiev.AchievedDate;
     }
 
     public void SetUI2(Achievement achiev)
     {
         currItem2 = achiev;
         itemName2.text = currItem2.Name;
-        date2.text = achiev.AchievedDate.ToString();
+        date2.text = achiev.AchievedDate;
     }
 
     public GameObject GetSecond()

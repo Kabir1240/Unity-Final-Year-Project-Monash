@@ -51,7 +51,7 @@ PlayerSettings:
   m_MTRendering: 1
   mipStripping: 0
   numberOfMipsStripped: 0
-  m_StackTraceTypes: 020000000200000002000000020000000200000001000000
+  m_StackTraceTypes: 010000000100000001000000010000000100000001000000
   iosShowActivityIndicatorOnLoading: -1
   androidShowActivityIndicatorOnLoading: -1
   iosUseCustomAppBackgroundBehavior: 0
@@ -252,7 +252,7 @@ PlayerSettings:
   AndroidTargetDevices: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: E:/MONASH/YEAR3/sem2/FIT3162/user.keystore
+  AndroidKeystoreName: D:/MONASH/YEAR3/sem2/FIT3162/user.keystore
   AndroidKeyaliasName: ourkey
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 0

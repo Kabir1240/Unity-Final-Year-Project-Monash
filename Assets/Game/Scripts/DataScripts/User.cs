@@ -1,3 +1,4 @@
+using Firebase.Extensions;
 using Firebase.Firestore;
 using System;
 using System.Collections;
@@ -16,6 +17,9 @@ public class User : ScriptableObject
     private int level = 0;
     private int coin = 0;
     private int gameRuns = 0;
+    private int maxExp = 0;
+    private int points = 0;
+    private bool changed = false;
 
     private Dictionary<string, List<Achievement>> achieved = new Dictionary<string, List<Achievement>>();
     private Dictionary<string, Item> boughtItems = new Dictionary<string, Item>();
@@ -23,17 +27,19 @@ public class User : ScriptableObject
     public string Id { get => id; set => id = value; }
     public string UserName { get => userName; set => userName = value; }
     public string Email { get => email; set => email = value; }
-    public int Accuracy { get => accuracy; set => accuracy = onChange(value, "accuracy"); }
-    public int Exp { get => exp; set => exp = onChange(value, "exp"); }
-    public int Level { get => level; set => level = onChange(value, "level"); }
-    public int Coin { get => coin; set => coin = value; }
-    public int GameRuns { get => gameRuns; set => gameRuns = onChange(value, "gameRuns"); }
+    public int Accuracy { get => accuracy; set => accuracy = onChange(value, "Accuracy"); }
+    public int Exp { get => exp; set => exp = onChange(value, "Exp"); }
+    public int Level { get => level; set => level = onChange(value, "Level"); }
+    public int Coin { get => coin; set => coin = change(value); }
+    public int GameRuns { get => gameRuns; set => gameRuns = onChange(value, "Game_run"); }
     public Dictionary<string, List<Achievement>> Achieved { get => achieved; }
     public Dictionary<string, Item> BoughtItems { get => boughtItems; }
+    public int MaxExp { get => maxExp; set => maxExp = value; }
+    public int Points { get => points; set => points = change(value); }
 
     //public Dictionary<string, List<Achievement>> Observers { get => observers; set => observers = value; }
 
-    public void SetUserData(string id, Dictionary<string, object> userDataDb)
+    public void SetUserData(string id, Dictionary<string, object> userDataDb, int maxExp)
     {
         this.id = id;
         userName = Convert.ToString(userDataDb["Username"]);
@@ -43,15 +49,24 @@ public class User : ScriptableObject
         level = Convert.ToInt32(userDataDb["Level"]);
         coin = Convert.ToInt32(userDataDb["Coin"]);
         gameRuns = Convert.ToInt32(userDataDb["Game_run"]);
+        points = Convert.ToInt32(userDataDb["Points"]);
+        this.maxExp = maxExp;
+    }
+
+    // changes that doesn't trigger an achievement but triggers an update
+    public int change(int value)
+    {
+        changed = true;
+        return value;
     }
 
     public int onChange(int value, string attribute)
     {
         try
         {
-            Debug.Log("User " + attribute + " being changed to: " + value);
+            Debug.Log("User: User " + attribute + " being changed to: " + value);
             List<Achievement> currAchivements = AchievementManager.instance.AllAchievements[attribute];
-            Debug.Log("USer currAchievements: " + currAchivements.Count);
+            Debug.Log("User: currAchievements: " + currAchivements.Count);
             foreach (Achievement currAchieve in currAchivements)
             {
                 if (currAchieve.isAchieved(value))
@@ -61,6 +76,7 @@ public class User : ScriptableObject
                         AchievementManager.instance.achieved(currAchieve);
                         exp += currAchieve.Exp;
                         achieved[attribute].Add(currAchieve);
+
                     }
 
                 }
@@ -71,8 +87,37 @@ public class User : ScriptableObject
             Debug.Log("User error: " + e);
 
         }
+
+        if (exp > maxExp)
+        {
+            level += 1;
+        }
+        changed = true;
         return value;
 
+    }
+
+    // only called through achievement manager and score where the user values are changed from
+    public void updateDb()
+    {
+        Debug.Log("User: update DB");
+        if (changed)
+        {
+            DocumentReference userRef = Operations.db.Collection("User").Document(id);
+            Dictionary<string, object> updates = new Dictionary<string, object>
+            { { "Accuracy", accuracy},
+            { "Exp", exp},
+            { "Game_run", gameRuns},
+            { "Level", level},
+            { "Coin", coin},
+            {"Points", points } };
+
+            userRef.UpdateAsync(updates).ContinueWithOnMainThread(task =>
+            {
+                Debug.Log("User: Updated the User id: " + id + "game_run: " + gameRuns + " lvl: " + level + " coin: " + coin + " exp: " + exp + " points: " + points);
+            });
+            changed = false;
+        }
     }
 
     public void resetAchieved()

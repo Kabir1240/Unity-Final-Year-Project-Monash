@@ -8,7 +8,7 @@ public class Achievement {
 
     private string name, assetAttribute, assetName, id, date;
     private int target, exp, coin;
-    private System.DateTime achievedDate;
+    private string achievedDate;
     private int currTar;
     public PropertiesName[] mRelatedProperties;
     public bool unlocked { get; set; }
@@ -20,7 +20,7 @@ public class Achievement {
     public int Target { get => target; }
     public int Exp { get => exp; }
     public int Coin { get => coin; }
-    public DateTime AchievedDate { get => achievedDate; }
+    public string AchievedDate { get => achievedDate; }
     public int CurrTar { get => currTar; set => currTar = value; }
 
     public Achievement(string name, string assetAttribute, string assetName, int target, int exp, int coin, int currTar, string id)
@@ -35,14 +35,13 @@ public class Achievement {
         this.currTar = currTar;
     }
 
-    public Achievement(string id, string name, string assetAttribute, string assetName, string date, int coin)
+    public Achievement(string id, string name, string assetAttribute, string assetName, string date)
     {
         this.id = id;
         this.name = name;
         this.assetAttribute = assetAttribute;
         this.assetName = assetName;
         this.date = date;
-        this.coin = coin;
     }
 
     public string toString()
@@ -56,7 +55,7 @@ public class Achievement {
         Debug.Log("checking is Achieved");
         if (receivedTar >= Target)
         {
-            achievedDate = DateTime.Now;
+            achievedDate = DateTime.Now.ToShortDateString();
             return true;
         }
         else

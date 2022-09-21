@@ -162,7 +162,7 @@ public class Operations : MonoBehaviour
 
     // source: https://answers.unity.com/questions/1122905/how-do-you-download-image-to-uiimage.html
     // the one without www: https://github.com/Vikings-Tech/FirebaseStorageTutorial/blob/master/Assets/Scripts/ImageLoader.cs
-    private IEnumerator isDownloading(string url, RawImage rawImg)
+    public IEnumerator isDownloading(string url, RawImage rawImg)
     {
 
         Debug.Log("Download URL: " + url);

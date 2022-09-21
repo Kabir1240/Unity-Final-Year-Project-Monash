@@ -16,6 +16,7 @@ public class Score : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI score;
     [SerializeField] TextMeshProUGUI songTitle;
+    [SerializeField] TextMeshProUGUI roundHighest;
     [SerializeField] TextMeshProUGUI reward;
 
     [SerializeField] Button restart;
@@ -40,7 +41,10 @@ public class Score : MonoBehaviour
         _midScore = 50000;
         _highScore = 80000;
 
-        UpdateCoin();
+        if (result.score >= result.prevScore)
+        {
+            UpdateCoin();
+        }
         reward.text = _tmpCoin + "";
 
         _db = Operations.db;
@@ -48,7 +52,7 @@ public class Score : MonoBehaviour
 
         restart.onClick.AddListener(Restart);
         feedback.onClick.AddListener(Feedback);
-        back.onClick.AddListener(()=>
+        back.onClick.AddListener(() =>
         {
             warningPanel.SetActive(true);
         });
@@ -62,6 +66,7 @@ public class Score : MonoBehaviour
 
     private void UpdateCoin()
     {
+        Debug.Log("Score: coin updated");
         if (result.score >= _highScore)
         {
             _tmpCoin = 10;
@@ -72,27 +77,37 @@ public class Score : MonoBehaviour
         }
     }
 
+    private void ResultReset()
+    {
+        int[] accuracy = { 0, 0, 0, 0 };
+        result.accuracy = accuracy;
+        result.score = 0;
+        result.noteInfo = new List<NoteInfo>();
+        result.replay = false;
+        result.prevScore = 0;
+    }
+
     private void Save()
     {
         Debug.Log("save");
-        result.replay = false;
         try
         {
             Debug.Log(user.GameRuns);
             //FOR TESTING THIS WILL BE COMMENTED
             //if (result.score > _scoreThreshold)
             //{
+            //    user.Points += 1;
             //    user.GameRuns += 1;
-            //    user.Coin+=_tmpCoin;
             //}
 
             //TESTING
             user.GameRuns += 1;
-            _db.Collection("User").Document(user.Id).UpdateAsync("Game_run", user.GameRuns).ContinueWithOnMainThread(task =>
-            {
-                Debug.Log(
-                        "Updated user Game_run in User.");
-            });
+            user.Points += 1;
+            //_db.Collection("User").Document(user.Id).UpdateAsync("Game_run", user.GameRuns).ContinueWithOnMainThread(task =>
+            //{
+            //    Debug.Log(
+            //            "Updated user Game_run in User.");
+            //});
             //user.Coin += 10;
             {
                 //DocumentReference docRef = _db.Collection("User").Document(user.Id);
@@ -128,9 +143,10 @@ public class Score : MonoBehaviour
             int exp = (int)((level.MaxExp * 0.8f) / level.SongIds.Count) * (Math.Max(result.score, result.prevScore) / 100000);
             user.Exp += exp;
             Debug.Log("Score: player exp:" + user.Exp);
-            _db.Collection("User").Document(user.Id).UpdateAsync("Exp", user.Exp);
+            //_db.Collection("User").Document(user.Id).UpdateAsync("Exp", user.Exp);
         }
-
+        user.updateDb();
+        ResultReset();
         SceneManager.LoadScene("EachPlanetPage");
 
     }

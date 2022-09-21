@@ -121,28 +121,24 @@ public class AchievementManager : MonoBehaviour
             foreach (DocumentSnapshot documentSnapshot in allFlashcardsQuerySnapshot.Documents)
             {
                 Dictionary<string, object> achievement = documentSnapshot.ToDictionary();
-                if (Convert.ToString(achievement["Name"]) != "dummy")
-                {
-                    Achievement currAchievement = new Achievement(documentSnapshot.Id, Convert.ToString(achievement["Name"]), Convert.ToString(achievement["AssetAttribute"]), Convert.ToString(achievement["AssetName"]), Convert.ToString(achievement["Date"]), Convert.ToInt32(achievement["Coin"]));
-                    user.addAchievements(currAchievement);
-                }
+                Achievement currAchievement = new Achievement(documentSnapshot.Id, Convert.ToString(achievement["Name"]), Convert.ToString(achievement["AssetAttribute"]), Convert.ToString(achievement["AssetName"]), Convert.ToString(achievement["Date"]));
+                user.addAchievements(currAchievement);
+                
                 
 
             }
         });
     }
-    public void addGameRun()
-    {
-        user.GameRuns += 1;
-    }
+
+    
     private void getAllUserAttribute()
     {
 
-        _allAchievements.Add("accuracy", new List<Achievement>());
-        _allAchievements.Add("exp", new List<Achievement>());
-        _allAchievements.Add("level", new List<Achievement>());
-        _allAchievements.Add("coin", new List<Achievement>());
-        _allAchievements.Add("gameRuns", new List<Achievement>());
+        _allAchievements.Add("Accuracy", new List<Achievement>());
+        _allAchievements.Add("Exp", new List<Achievement>());
+        _allAchievements.Add("Level", new List<Achievement>());
+        _allAchievements.Add("Coin", new List<Achievement>());
+        _allAchievements.Add("Game_run", new List<Achievement>());
 
     }
 
@@ -158,9 +154,10 @@ public class AchievementManager : MonoBehaviour
         try
         {
             user.Coin += achievement.Coin;
+            user.updateDb();
             Dictionary<string, object> newAchiev = new Dictionary<string, object>{
             { "Name", achievement.Name },
-            { "Date", achievement.AchievedDate.ToString() },
+            { "Date", achievement.AchievedDate },
             { "AssetAttribute", achievement.AssetAttribute },
             { "AssetName", achievement.AssetName }};
 

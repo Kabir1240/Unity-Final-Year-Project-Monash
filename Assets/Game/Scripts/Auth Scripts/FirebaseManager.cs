@@ -54,7 +54,7 @@ public class FirebaseManager : MonoBehaviour
             if (dependencyStatus == DependencyStatus.Available)
             {
                 app = Firebase.FirebaseApp.DefaultInstance;
-                
+
                 InitializeFirebase();
             }
             else
@@ -155,6 +155,7 @@ public class FirebaseManager : MonoBehaviour
 
     private void GetInitialUser(FirebaseUser user)
     {
+
         Debug.Log("user id: " + user.UserId);
         DocumentReference docRef = db.Collection("User").Document(user.UserId);
         docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
@@ -167,14 +168,42 @@ public class FirebaseManager : MonoBehaviour
                 Dictionary<string, object> userDataDb = snapshot.ToDictionary();
                 try
                 {
-                    userData.SetUserData(snapshot.Id, userDataDb);
-                    fetchAllUserItem();
-                    SceneManager.LoadScene("MainPage");
+                    // get max exp
+                    GetMaxLevel(userDataDb, snapshot.Id);
                 }
                 catch (Exception e)
                 {
                     Debug.Log("FirebaseManager: " + e);
                 }
+
+            }
+            else
+            {
+                Debug.Log(String.Format("Document {0} does not exist!", snapshot.Id));
+            }
+        });
+    }
+
+    private void GetMaxLevel(Dictionary<string, object> userDataDb, string id)
+    {
+        DocumentReference userRef = db.Collection("Level").Document("" + Convert.ToInt32(userDataDb["Level"]));
+        Debug.Log(userRef.ToString());
+        int maxExp;
+
+        userRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            DocumentSnapshot snapshot = task.Result;
+            Debug.Log("FirebaseManager: max exp result: " + snapshot.Exists);
+            if (snapshot.Exists)
+            {
+                Dictionary<string, object> dbData = snapshot.ToDictionary();
+                int currMaxExp = Convert.ToInt32(dbData["Max_Exp"]);
+                maxExp = currMaxExp;
+                Debug.Log("got max exp: " + maxExp);
+
+                userData.SetUserData(id, userDataDb, maxExp);
+                fetchAllUserItem();
+                SceneManager.LoadScene("MainPage");
 
             }
             else
@@ -195,19 +224,18 @@ public class FirebaseManager : MonoBehaviour
         { "Game_run", 0},
         { "Level", 1},
         { "Username", uname},
-        { "Coin", 0}};
+        { "Coin", 0},
+        {"Points",0 } };
         docRef.SetAsync(newUser).ContinueWithOnMainThread(task =>
         {
             Debug.Log(task.IsCanceled || task.IsFaulted);
             Debug.Log($"Added user: {user.UserId} to the User document");
-            //SceneManager.LoadScene("MainPage");
-            userData.SetUserData(user.UserId, newUser);
+
+            // !! CHANGE THIS IS THE LEVEL 1'S MAX EXP IS CHANGED !!
+            userData.SetUserData(user.UserId, newUser, 200);
             userData.resetItems();
             SceneManager.LoadScene("MainPage");
         });
-
-        //SetUserData(user.UserId, 0, user.Email, 0,0,1,0, uname);
-        //SceneManager.LoadScene("MainPage");
     }
 
     private IEnumerator LoginLogic(string _email, string _password)

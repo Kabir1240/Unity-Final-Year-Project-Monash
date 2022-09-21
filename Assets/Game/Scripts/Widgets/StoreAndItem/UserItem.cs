@@ -19,6 +19,8 @@ public class UserItem : MonoBehaviour
     void Start()
     {
         // on button click, change the AssetManager for guitar to a new path of image
+        chooseFirst.onClick.AddListener(ChooseFirst);
+        chooseSecond.onClick.AddListener(ChooseSecond);
         
     }
 
@@ -27,12 +29,31 @@ public class UserItem : MonoBehaviour
         //NTAR HARUS BISA BEDAIN GITU
         if (currItem.Id == "")
         {
+            Debug.Log("UserItem: ChooseFirst: Felicia/guitar");
             assetManager.guitarImageLoc = "Felicia/guitar";
             assetManager.guitarOri = true;
         }
         else
         {
-            assetManager.guitarImageLoc = Application.dataPath + "/FIT3162Files/" + currItem.Name + ".jpg";
+            Debug.Log("UserItem: ChooseFirst: "+ Application.persistentDataPath + "/FIT3162Files/" + currItem.Name + ".jpg");
+            assetManager.guitarImageLoc = Application.persistentDataPath + "/FIT3162Files/" + currItem.Name + ".jpg";
+            assetManager.guitarOri = false;
+        }
+    }
+
+    private void ChooseSecond()
+    {
+        //NTAR HARUS BISA BEDAIN GITU
+        if (currItem2.Id == "")
+        {
+            Debug.Log("UserItem: ChooseSecond: Felicia/guitar");
+            assetManager.guitarImageLoc = "Felicia/guitar";
+            assetManager.guitarOri = true;
+        }
+        else
+        {
+            Debug.Log("UserItem: ChooseSecond: " + Application.persistentDataPath + "/FIT3162Files/" + currItem.Name + ".jpg");
+            assetManager.guitarImageLoc = Application.persistentDataPath + "/FIT3162Files/" + currItem.Name + ".jpg";
             assetManager.guitarOri = false;
         }
     }
