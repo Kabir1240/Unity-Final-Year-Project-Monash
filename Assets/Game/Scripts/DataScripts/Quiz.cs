@@ -6,4 +6,5 @@ using UnityEngine;
 public class Quiz : ScriptableObject
 {
     public string quiz_id = "placeholder_id";
+    public Dictionary<string, object> quizData;
 }

@@ -257,7 +257,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6969727673512100905}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6066507314640166215}
+        m_TargetAssemblyTypeName: QuizButtonManager, Assembly-CSharp
+        m_MethodName: CheckAnswer
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &6066507314640166215
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -270,3 +282,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 563f098d5d77dee438e85927779f816d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  module: {fileID: 11400000, guid: 5c0e4761c4d42454589f29ac419e0338, type: 2}
+  quiz: {fileID: 11400000, guid: d9d9f7e66f2bb7f43b9848d6208a05ed, type: 2}
+  quizBtnText: {fileID: 6969727672388019270}
