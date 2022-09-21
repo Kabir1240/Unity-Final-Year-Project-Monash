@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,12 +11,12 @@ public class QuizManager : MonoBehaviour
 {
     [SerializeField] private ModuleLevel module; //current module data asset
     [SerializeField] private Quiz quiz; //quiz data asset
-    [SerializeField] private TMP_Text _question; //text field that shows the question
-    [SerializeField] private GameObject _options; //prefab
-    [SerializeField] private GameObject _optionsParent; //parent of the options
+    [SerializeField] private TMP_Text question; //text field that shows the question
+    [SerializeField] private GameObject optionsChild; //prefab
+    [SerializeField] private Transform optionsParent; //parent of the options
 
     private FirebaseFirestore _db;
-    private Dictionary<string, object> quizData;
+    
 
     void Awake()
     {
@@ -24,35 +25,35 @@ public class QuizManager : MonoBehaviour
         GetQuizData();
     }
 
-    bool GetQuizData()
+    void GetQuizData()
     {
-        bool retVal = true;
+        Dictionary<string, object> quizData;
         List<object> options;
         DocumentReference docRef = _db.Collection("Modules").Document(module.Module_id).Collection("Quiz").Document(quiz.quiz_id);
-        docRef.GetSnapshotAsync().ContinueWith((task) =>
+        docRef.GetSnapshotAsync().ContinueWithOnMainThread((task) =>
         {
         var snapshot = task.Result;
         if (snapshot.Exists)
         {
             quizData = snapshot.ToDictionary();
-            CreateInterface();
+            CreateInterface(quizData);
         }
         else
         {
             ShowScore();
         }
         });
-        return retVal;
     }
 
-    void CreateInterface()
+    void CreateInterface(Dictionary<string, object> quizData)
     {
-        _question.text = quizData["Question"].ToString();
+        question.text = quizData["Question"].ToString();
+        GameObject newOption;
         List<object> options = (List<object>)quizData["Options"];
         for (int i = 0; i < options.Count; i++)
         {
-            GameObject newOption = Instantiate(_options, _optionsParent.transform);
-            newOption.transform.Find("Option").GetComponent<TMP_Text>().text = options[i].ToString();
+            newOption = Instantiate(optionsChild, optionsParent);
+            newOption.GetComponentInChildren<TMP_Text>().text = Convert.ToString(options[i]);
         }
     }
 

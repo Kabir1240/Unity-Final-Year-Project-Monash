@@ -2236,9 +2236,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   module: {fileID: 11400000, guid: 5c0e4761c4d42454589f29ac419e0338, type: 2}
   quiz: {fileID: 11400000, guid: d9d9f7e66f2bb7f43b9848d6208a05ed, type: 2}
-  _question: {fileID: 1901572887}
-  _options: {fileID: 6969727673512100910, guid: c50c029097ca85445970f135eb02540c, type: 3}
-  _optionsParent: {fileID: 1158305177}
+  question: {fileID: 1901572887}
+  optionsChild: {fileID: 6969727673512100910, guid: c50c029097ca85445970f135eb02540c, type: 3}
+  optionsParent: {fileID: 1158305178}
 --- !u!4 &1387898338
 Transform:
   m_ObjectHideFlags: 0
