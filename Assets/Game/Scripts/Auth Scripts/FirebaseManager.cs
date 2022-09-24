@@ -66,6 +66,7 @@ public class FirebaseManager : MonoBehaviour
         //db = FirebaseFirestore.DefaultInstance;
         Operations.InitializeDb();
         db = Operations.db;
+        Debug.Log("FirebaseManager db: " + db);
     }
 
     private void InitializeFirebase()

@@ -40,7 +40,9 @@ public class Operations : MonoBehaviour
     {
         Debug.Log("Initializing..");
         db = FirebaseFirestore.DefaultInstance;
+        Debug.Log("db object: " + db);
         storage = FirebaseStorage.DefaultInstance;
+        Debug.Log("storage object: " + storage);
         storageRef = storage.GetReferenceFromUrl("gs://fit3162-33646.appspot.com/");
     }
 
