@@ -41,7 +41,7 @@ public class ProgressBarCourse : MonoBehaviour
     private void updateSlider()
     {
         slider.value = current/total * 100;
-        percentage.text = Math.Round(slider.value) + "";
+        percentage.text = Math.Round(slider.value) + "%";
         //Debug.Log("slider: "+slider.value);
     }
 
