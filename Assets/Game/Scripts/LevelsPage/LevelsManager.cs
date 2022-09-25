@@ -40,49 +40,13 @@ public class LevelsManager : MonoBehaviour
         allLevelsQuery.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             QuerySnapshot allLevelsQuerySnapshot = task.Result;
-            Debug.Log("task: " + task.IsCompletedSuccessfully);
-            Debug.Log("task count: " + allLevelsQuerySnapshot.Count);
+            Debug.Log("LevelsManager: task: " + task.IsCompletedSuccessfully);
+            Debug.Log("LevelsManager: task count: " + allLevelsQuerySnapshot.Count);
             foreach (DocumentSnapshot documentSnapshot in allLevelsQuerySnapshot.Documents)
             {
                 if (documentSnapshot.Exists)
                 {
-                    //LevelsButtonManager btn1 = newLevel.transform.Find("Level1").GetComponent<LevelsButtonManager>();
-                    //LevelsButtonManager btn2 = newLevel.transform.Find("Level2").GetComponent<LevelsButtonManager>();
                     Dictionary<string, object> level = documentSnapshot.ToDictionary();
-                    {
-                        //if (currentLevel == 1)
-                        //{
-                        //    //string levelNo = level["LevelNo"].ToString();
-                        //    //string levelNo = documentSnapshot.Id;
-
-                        //    ////string title = level["Title"].ToString();
-                        //    //newLevel.transform.Find("Level1").transform.Find("Level").GetChild(0).GetComponent<TextMeshProUGUI>().text = levelNo;
-                        //    //newLevel.transform.Find("Level1").transform.Find("ModuleInfo").GetChild(0).GetComponent<TextMeshProUGUI>().text = documentSnapshot.Id;
-
-                        //    //newLevel.transform.Find("Level1").transform.Find("ModuleInfo").GetChild(1).GetComponent<TextMeshProUGUI>().text = title;
-                        //    currentLevel+=1;
-                        //}
-                        //else if (currentLevel > 0 && currentLevel%2 == 0)
-                        //{
-                        //    string levelNo = level["LevelNo"].ToString();
-                        //    string title = level["Title"].ToString();
-                        //    newLevel.transform.Find("Level2").gameObject.SetActive(true);
-                        //    newLevel.transform.Find("Level2").transform.Find("Level").GetChild(0).GetComponent<TextMeshProUGUI>().text = levelNo;
-                        //    newLevel.transform.Find("Level2").transform.Find("ModuleInfo").GetChild(0).GetComponent<TextMeshProUGUI>().text = documentSnapshot.Id;
-                        //    newLevel.transform.Find("Level2").transform.Find("ModuleInfo").GetChild(1).GetComponent<TextMeshProUGUI>().text = title;
-                        //    currentLevel+=1;
-                        //}
-                        //else
-                        //{
-                        //    newLevel = Instantiate(Levels, LevelsParent);
-                        //    string levelNo = level["LevelNo"].ToString();
-                        //    string title = level["Title"].ToString();
-                        //    newLevel.transform.Find("Level1").transform.Find("Level").GetChild(0).GetComponent<TextMeshProUGUI>().text = levelNo;
-                        //    newLevel.transform.Find("Level1").transform.Find("ModuleInfo").GetChild(0).GetComponent<TextMeshProUGUI>().text = documentSnapshot.Id;
-                        //    newLevel.transform.Find("Level1").transform.Find("ModuleInfo").GetChild(1).GetComponent<TextMeshProUGUI>().text = title;
-                        //    currentLevel+=1;
-                        //}
-                    }
                     try
                     {
                         if (currentLevel == 1)
@@ -91,6 +55,7 @@ public class LevelsManager : MonoBehaviour
                             //newLevel.transform.Find("Level1").transform.Find("ModuleInfo").GetChild(1).GetComponent<TextMeshProUGUI>().text = title;
                             btn1.CurrId = documentSnapshot.Id;
                             btn1.ModuleId = level["Module"].ToString();
+                            btn1.Max_exp = Convert.ToInt32(level["MaxExp"]);
                             List<object> songs = level["Songs"] as List<object>;
                             List<string> currSongArr = new List<string>();
                             foreach (object song in songs)
@@ -113,6 +78,7 @@ public class LevelsManager : MonoBehaviour
                             //newLevel.transform.Find("Level2").transform.Find("ModuleInfo").GetChild(1).GetComponent<TextMeshProUGUI>().text = title;
                             btn2.CurrId = documentSnapshot.Id;
                             btn2.ModuleId = level["Module"].ToString();
+                            btn2.Max_exp = Convert.ToInt32(level["MaxExp"]);
                             List<object> songs = level["Songs"] as List<object>;
                             List<string> currSongArr = new List<string>();
                             foreach (object song in songs)

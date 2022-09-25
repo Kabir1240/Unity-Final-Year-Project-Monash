@@ -21,6 +21,7 @@ public class FlashcardManager : MonoBehaviour
     [SerializeField] private Level planetLvl;
     [SerializeField] Button backBtn;
     [SerializeField] TextMeshProUGUI currLevel;
+    [SerializeField] GameObject quizReminder;
     [SerializeField] ProgressBarCourse slider;
 
     //[SerializeField] private test_rawimg script;
@@ -44,13 +45,8 @@ public class FlashcardManager : MonoBehaviour
         //initialize all the flashcard types in the inspector
 
         _initialPos.SetActive(false);
-        //_db = FirebaseFirestore.DefaultInstance;
-        //storage = FirebaseStorage.DefaultInstance;
-        //storageRef = storage.GetReferenceFromUrl("gs://fit3162-33646.appspot.com/");
 
         _db = Operations.db;
-        //storageRef = ConnectDatabase.storageRef;
-        Debug.Log("initialized firestore");
 
         // initialize _types
         _types.Add("title", interfaces[0].GetComponent<FlashcardInterface>());
@@ -62,7 +58,6 @@ public class FlashcardManager : MonoBehaviour
         Debug.Log("added all the types");
 
         // sets up the total flashcards
-        //slider.setTotal(_flashcardsArray.Count - 1);
         currLevel.text = planetLvl.LevelId + "";
 
         _flashcardsArray = new List<Dictionary<string, object>>();
@@ -126,6 +121,7 @@ public class FlashcardManager : MonoBehaviour
         if(_pointer + 1 == _flashcardObjectsArray.Count)
         {
             Debug.Log("Reached end");
+            quizReminder.SetActive(true);
             return false;
         }
         return true;
@@ -138,6 +134,7 @@ public class FlashcardManager : MonoBehaviour
         // hide the current flashcard
         GameObject currentObj = _flashcardObjectsArray[_pointer];
         currentObj.SetActive(false);
+        quizReminder.SetActive(false);
 
         //increment the pointer
         if (_pointer -1 >= 0)

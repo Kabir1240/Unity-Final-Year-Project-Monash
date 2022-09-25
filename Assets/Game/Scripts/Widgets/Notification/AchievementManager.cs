@@ -138,7 +138,7 @@ public class AchievementManager : MonoBehaviour
         _allAchievements.Add("Exp", new List<Achievement>());
         _allAchievements.Add("Level", new List<Achievement>());
         _allAchievements.Add("Coin", new List<Achievement>());
-        _allAchievements.Add("Game_run", new List<Achievement>());
+        _allAchievements.Add("GameRun", new List<Achievement>());
 
     }
 

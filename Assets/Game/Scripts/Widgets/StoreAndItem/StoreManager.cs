@@ -101,11 +101,12 @@ public class StoreManager : MonoBehaviour
                 {
                     GameObject currItem = _boughtItemsObj[item.Id];
                     Texture2D tex = (Texture2D)currItem.transform.Find("Item").gameObject.transform.Find("ItemImg").gameObject.GetComponent<RawImage>().texture;
-                    byte[] texBytes = tex.EncodeToJPG(50);
-                    //UNCOMMENT THIS IF NOT TESTING
-                    //File.WriteAllBytes(Application.persistentDataPath + "/FIT3162Files/"+item.Name+".jpg", texBytes);
-                    Debug.Log("StoreManager: file saved at path " + Application.persistentDataPath + "/FIT3162Files/" + item.Name + ".jpg");
-                    File.WriteAllBytes(Application.persistentDataPath + "/FIT3162Files/" + item.Name + ".jpg", texBytes);
+                    Operations.GetInstance().SaveTexture(tex, item.Name);
+                    //byte[] texBytes = tex.EncodeToJPG(50);
+                    ////UNCOMMENT THIS IF NOT TESTING
+                    ////File.WriteAllBytes(Application.persistentDataPath + "/FIT3162Files/"+item.Name+".jpg", texBytes);
+                    //Debug.Log("StoreManager: file saved at path " + Application.persistentDataPath + "/FIT3162Files/" + item.Name + ".jpg");
+                    //File.WriteAllBytes(Application.persistentDataPath + "/FIT3162Files/" + item.Name + ".jpg", texBytes);
                 }
                 
 

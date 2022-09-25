@@ -200,12 +200,18 @@ public class FirebaseManager : MonoBehaviour
             if (snapshot.Exists)
             {
                 Dictionary<string, object> dbData = snapshot.ToDictionary();
-                int currMaxExp = Convert.ToInt32(dbData["Max_Exp"]);
+                int currMaxExp = Convert.ToInt32(dbData["MaxExp"]);
                 maxExp = currMaxExp;
                 Debug.Log("got max exp: " + maxExp);
+                try
+                {
+                    userData.SetUserData(id, userDataDb, maxExp);
+                    fetchAllUserItem();
+                }catch(Exception e){
+                    Debug.Log(e);
+                }
 
-                userData.SetUserData(id, userDataDb, maxExp);
-                fetchAllUserItem();
+
                 SceneManager.LoadScene("MainPage");
 
             }
@@ -224,7 +230,8 @@ public class FirebaseManager : MonoBehaviour
         { "Accuracy", 0},
         { "Email", user.Email },
         { "Exp", 0},
-        { "Game_run", 0},
+        { "GameRun", 0},
+        { "QuizPass", false},
         { "Level", 1},
         { "Username", uname},
         { "Coin", 0},

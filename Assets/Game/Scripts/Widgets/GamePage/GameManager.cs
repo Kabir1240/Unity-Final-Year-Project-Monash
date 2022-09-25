@@ -89,7 +89,7 @@ public class GameManager : MonoBehaviour
             _replayI = 0;
             NoteDetails = result.noteInfo;
             score.text = result.score.ToString();
-            Debug.Log("GameManager: replaying note count: "+NoteDetails.Count);
+            Debug.Log("GameManager: replaying note count: " + NoteDetails.Count);
             ReplayGamePlay();
         }
         else
@@ -241,9 +241,9 @@ public class GameManager : MonoBehaviour
             //laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(currNote.NoteName.ToString(), currNote.Octave.ToString(), currNote.NoteNumber, currSong.speed, _currI, 0, new Vector3(0, 0, 0));
             if (CheckNoteName(currNote))
             {
-                currNoteName = currNoteName[0]+"#";
+                currNoteName = currNoteName[0] + "#";
             }
-            
+
 
             if (NoteDetails[_currI].Data.getAccuracyType() != "missed")
             {
@@ -262,7 +262,7 @@ public class GameManager : MonoBehaviour
                     //noteName = currNote.NoteName.ToString();
                     //noteOctave = currNote.Octave.ToString();
                     laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(currNoteName, currNote.Octave.ToString(), currNote.NoteNumber, currSong.speed, _currI, 0, new Vector3(0, 0, 0));
-                    
+
                     currNote = new Note((SevenBitNumber)NoteDetails[_currI].Data.getNoteNumber());
                     noteName = currNote.NoteName.ToString();
                     noteOctave = currNote.Octave.ToString();
@@ -413,17 +413,17 @@ public class GameManager : MonoBehaviour
             if (!task.IsFaulted && !task.IsCanceled)
             {
                 Debug.Log("Download URL: " + task.Result);
-            //StartCoroutine(isDownloading(Convert.ToString(task.Result), _parent.transform.Find("FlashcardContentImage(Clone)").gameObject));
+                //StartCoroutine(isDownloading(Convert.ToString(task.Result), _parent.transform.Find("FlashcardContentImage(Clone)").gameObject));
 
-            // TEST IN ANDROID USES Application.persistentDataPath+"/SongFile.wav"
-            //string path = Path.Combine(Application.dataPath + "/Resources/Materials/Midi", "SongFile.wav").Replace("\\", "/");
-            string path = Application.persistentDataPath + "/SongFile.wav";
-            //StartCoroutine(isDownloading(Convert.ToString(task.Result), path));
-            isDownloading(Convert.ToString(task.Result), path);
+                // TEST IN ANDROID USES Application.persistentDataPath+"/SongFile.wav"
+                //string path = Path.Combine(Application.dataPath + "/Resources/Materials/Midi", "SongFile.wav").Replace("\\", "/");
+                string path = Application.persistentDataPath + "/SongFile.wav";
+                //StartCoroutine(isDownloading(Convert.ToString(task.Result), path));
+                isDownloading(Convert.ToString(task.Result), path);
                 _doneSong = true;
-            // set it to the audiosource
+                // set it to the audiosource
 
-        }
+            }
         });
     }
 
@@ -437,13 +437,13 @@ public class GameManager : MonoBehaviour
             if (!task.IsFaulted && !task.IsCanceled)
             {
                 Debug.Log("GameManager: Download URL: " + task.Result);
-            //StartCoroutine(isDownloading(Convert.ToString(task.Result), _parent.transform.Find("FlashcardContentImage(Clone)").gameObject));
+                //StartCoroutine(isDownloading(Convert.ToString(task.Result), _parent.transform.Find("FlashcardContentImage(Clone)").gameObject));
 
-            // TEST IN ANDROID USES Application.persistentDataPath+"/Midifiles.mid"
-            //string path = Path.Combine(Application.dataPath + "/Resources/Materials/Midi", "MidiFiles.mid").Replace("\\", "/");
-            string path = Application.persistentDataPath + "/FIT3162Files/MidiFiles.mid";
-            //StartCoroutine(isDownloading(Convert.ToString(task.Result), path));
-            isDownloading(Convert.ToString(task.Result), path);
+                // TEST IN ANDROID USES Application.persistentDataPath+"/Midifiles.mid"
+                //string path = Path.Combine(Application.dataPath + "/Resources/Materials/Midi", "MidiFiles.mid").Replace("\\", "/");
+                string path = Application.persistentDataPath + "/FIT3162Files/MidiFiles.mid";
+                //StartCoroutine(isDownloading(Convert.ToString(task.Result), path));
+                isDownloading(Convert.ToString(task.Result), path);
                 ConvertToNotes(_path);
                 BaseScore();
             }
@@ -546,7 +546,7 @@ public class GameManager : MonoBehaviour
         int perfect = 100000 / NoteDetails.Count;
         int great = (int)(0.88 * perfect);
         int good = (int)(0.88 * great);
-        Debug.Log("GameManager: score perfect: "+perfect+", great: "+great+", good: "+good);
+        Debug.Log("GameManager: score perfect: " + perfect + ", great: " + great + ", good: " + good);
 
         _accuracy.Add("perfect", perfect);
         _accuracy.Add("great", great);

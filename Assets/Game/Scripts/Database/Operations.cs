@@ -66,6 +66,16 @@ public class Operations : MonoBehaviour
         return instance;
     }
 
+    public void SaveTexture(Texture2D tex, string name)
+    {
+        //Texture2D tex = (Texture2D)currItem.transform.Find("Item").gameObject.transform.Find("ItemImg").gameObject.GetComponent<RawImage>().texture;
+        byte[] texBytes = tex.EncodeToJPG(50);
+        //UNCOMMENT THIS IF NOT TESTING
+        //File.WriteAllBytes(Application.persistentDataPath + "/FIT3162Files/"+item.Name+".jpg", texBytes);
+        Debug.Log("StoreManager: file saved at path " + Application.persistentDataPath + "/FIT3162Files/" + name + ".jpg");
+        File.WriteAllBytes(Application.persistentDataPath + "/FIT3162Files/" + name + ".jpg", texBytes);
+    }
+
     //public List<Item> fetchAllUserItem()
     //{
     //    currUser.resetItems();

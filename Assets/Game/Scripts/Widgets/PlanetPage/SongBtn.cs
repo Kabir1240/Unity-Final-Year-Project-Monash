@@ -40,6 +40,18 @@ public class SongBtn : MonoBehaviour
 
     }
 
+    public void toggle(bool quizPass)
+    {
+        if (quizPass)
+        {
+            thisBtn.interactable = true;
+        }
+        else
+        {
+            thisBtn.interactable = false;
+        }
+    }
+
     private void GoToGamePage()
     {
         song.Title = title;

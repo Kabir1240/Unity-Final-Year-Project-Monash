@@ -20,6 +20,7 @@ public class ListSong : MonoBehaviour
 
     [SerializeField] Button modulebtn; // button to go to module page
     [SerializeField] Button back; // button to go to all levels page
+    [SerializeField] Button quizBtn; // button to go to quiz page
 
     [SerializeField] TextMeshProUGUI moduleTitle; // the current level's module title
     [SerializeField] TextMeshProUGUI planet; // the current level's name
@@ -30,7 +31,8 @@ public class ListSong : MonoBehaviour
     [SerializeField] Level level; // Level Data Asset
     [SerializeField] Song song; // Song Data Asset
     [SerializeField] ModuleLevel moduleLvl; // Module Level Data Asset
-    
+    [SerializeField] User user; // User Data Asset
+
     private GameObject _songList; // the song list prefab
     private FirebaseFirestore _db; // the reference to database
     //private SongBtn songData;
@@ -46,7 +48,11 @@ public class ListSong : MonoBehaviour
         {
             LoadScene("PlanetMainPage");
         });
-        Debug.Log("ListSong: level obj" + level.LevelId + ", song count: " + level.SongIds.Count);
+        Debug.Log("ListSong: level obj" + level.LevelId + ", song count: " + level.SongIds.Count + " quiz pass: " + user.QuizPass);
+        quizBtn.onClick.AddListener(() =>
+        {
+            SceneManager.LoadScene("Quiz");
+        });
         StartCoroutine(InstantiateSongList());
         ModuleData();
 
@@ -134,6 +140,13 @@ public class ListSong : MonoBehaviour
                 songData.WavLocation = song["Sound"].ToString();
                 songData.Difficulty = Convert.ToInt32(song["Difficulty"]);
                 songData.SetUI();
+
+                // only triggered if the current level's quiz is not passed yet so it shouldn't affect other unlocked level's songs
+                if (user.Level == Convert.ToInt32(level.LevelId))
+                {
+                    songData.toggle(user.QuizPass);
+                }
+
                 //GameObject button = (GameObject)Instantiate(_songList, contentList.transform);
 
                 //button.transform.parent = _songList;

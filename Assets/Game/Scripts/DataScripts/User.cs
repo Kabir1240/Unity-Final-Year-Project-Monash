@@ -20,6 +20,7 @@ public class User : ScriptableObject
     private int maxExp = 0;
     private int points = 0;
     private bool changed = false;
+    private bool quizPass = false;
 
     private Dictionary<string, List<Achievement>> achieved = new Dictionary<string, List<Achievement>>();
     private Dictionary<string, Item> boughtItems = new Dictionary<string, Item>();
@@ -31,11 +32,12 @@ public class User : ScriptableObject
     public int Exp { get => exp; set => exp = onChange(value, "Exp"); }
     public int Level { get => level; set => level = onChange(value, "Level"); }
     public int Coin { get => coin; set => coin = change(value); }
-    public int GameRuns { get => gameRuns; set => gameRuns = onChange(value, "Game_run"); }
+    public int GameRuns { get => gameRuns; set => gameRuns = onChange(value, "GameRun"); }
     public Dictionary<string, List<Achievement>> Achieved { get => achieved; }
     public Dictionary<string, Item> BoughtItems { get => boughtItems; }
     public int MaxExp { get => maxExp; set => maxExp = value; }
     public int Points { get => points; set => points = change(value); }
+    public bool QuizPass { get => quizPass; set => quizPass = value; }
 
     //public Dictionary<string, List<Achievement>> Observers { get => observers; set => observers = value; }
 
@@ -48,8 +50,9 @@ public class User : ScriptableObject
         exp = Convert.ToInt32(userDataDb["Exp"]);
         level = Convert.ToInt32(userDataDb["Level"]);
         coin = Convert.ToInt32(userDataDb["Coin"]);
-        gameRuns = Convert.ToInt32(userDataDb["Game_run"]);
+        gameRuns = Convert.ToInt32(userDataDb["GameRun"]);
         points = Convert.ToInt32(userDataDb["Points"]);
+        quizPass = Convert.ToBoolean(userDataDb["QuizPass"]);
         this.maxExp = maxExp;
     }
 
@@ -88,14 +91,52 @@ public class User : ScriptableObject
 
         }
 
-        if (exp > maxExp)
-        {
-            level += 1;
-        }
+        CheckExp();
         changed = true;
         return value;
 
     }
+
+    public void CheckExp()
+    {
+        if (exp > maxExp)
+        {
+            level += 1;
+            exp = exp - maxExp;
+            maxExp += 100;
+            changed = true;
+            //updateLevel();
+        }
+    }
+
+    public void updateQuizPass()
+    {
+        Debug.Log("User: update quiz pass field");
+        CheckExp();
+        DocumentReference userRef = Operations.db.Collection("User").Document(id);
+        Dictionary<string, object> updates = new Dictionary<string, object>
+            {{ "QuizPass", quizPass},
+        { "Exp", exp},
+        { "Level", level}};
+
+        userRef.UpdateAsync(updates).ContinueWithOnMainThread(task =>
+        {
+            Debug.Log("User: Updated the User id: " + id + " quiz pass: " + quizPass + " exp: "+exp+" level: "+level);
+        });
+    }
+
+    //public void updateExp()
+    //{
+    //    Debug.Log("User: update exp field");
+    //    DocumentReference userRef = Operations.db.Collection("User").Document(id);
+    //    Dictionary<string, object> updates = new Dictionary<string, object>
+    //        {{ "Exp", exp}};
+
+    //    userRef.UpdateAsync(updates).ContinueWithOnMainThread(task =>
+    //    {
+    //        Debug.Log("User: Updated the User id: " + id + " exp: " + exp);
+    //    });
+    //}
 
     // only called through achievement manager and score where the user values are changed from
     public void updateDb()
@@ -107,14 +148,14 @@ public class User : ScriptableObject
             Dictionary<string, object> updates = new Dictionary<string, object>
             { { "Accuracy", accuracy},
             { "Exp", exp},
-            { "Game_run", gameRuns},
+            { "GameRun", gameRuns},
             { "Level", level},
             { "Coin", coin},
             {"Points", points } };
 
             userRef.UpdateAsync(updates).ContinueWithOnMainThread(task =>
             {
-                Debug.Log("User: Updated the User id: " + id + "game_run: " + gameRuns + " lvl: " + level + " coin: " + coin + " exp: " + exp + " points: " + points);
+                Debug.Log("User: Updated the User id: " + id + "gameRun: " + gameRuns + " lvl: " + level + " coin: " + coin + " exp: " + exp + " points: " + points);
             });
             changed = false;
         }
