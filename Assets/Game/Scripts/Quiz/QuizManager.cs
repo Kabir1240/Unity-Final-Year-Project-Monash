@@ -235,7 +235,7 @@ public class QuizManager : MonoBehaviour
         {
             Debug.Log("QuizManager: quiz done");
             gameOver = true;
-            if (score == allQuiz.Count)
+            if (score == allQuiz.Count && level.LevelId == user.Level.ToString())
             {
                 user.QuizPass = true;
                 int exp = (int)(level.MaxExp * 0.2f);
