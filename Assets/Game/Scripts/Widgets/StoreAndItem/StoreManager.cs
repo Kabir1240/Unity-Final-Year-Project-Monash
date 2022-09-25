@@ -83,7 +83,7 @@ public class StoreManager : MonoBehaviour
         {
             Debug.Log("StoreManager: enough money");
             user.Coin -= _boughtPrice;
-            //update coin in database
+            user.updateDb();
             foreach (Item item in _boughtItems.Values)
             {
                 user.addItems(item);
@@ -301,7 +301,15 @@ public class StoreManager : MonoBehaviour
         RawImage thePic = item.transform.Find("Item").gameObject.transform.Find("ItemImg").gameObject.GetComponent<RawImage>();
         StorageReference imagesRef = storageRef.Child(currItem.Category).Child(currItem.Img);
 
-        Operations.GetInstance().DownloadImage(thePic, imagesRef);
+        if(File.Exists(Application.persistentDataPath + "/FIT3162Files/" + currItem.Name + ".jpg"))
+        {
+            StartCoroutine(Operations.GetInstance().isDownloading("file://" + Application.persistentDataPath + "/FIT3162Files/" + currItem.Name + ".jpg", thePic));
+        }
+        else
+        {
+            Operations.GetInstance().DownloadImage(thePic, imagesRef);
+        }
+        
         //downloadImage(item, currItem);
         if (user.BoughtItems.ContainsKey(currItem.Id))
         {

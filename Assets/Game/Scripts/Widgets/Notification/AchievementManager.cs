@@ -117,7 +117,7 @@ public class AchievementManager : MonoBehaviour
             Debug.Log("AchievementManager: getting all user achievements");
             QuerySnapshot allFlashcardsQuerySnapshot = task.Result;
             Debug.Log("AchievementManager: user achievements count: " + allFlashcardsQuerySnapshot.Count);
-            Debug.Log("AchievementManager: user achiev task status: " + task.IsCompletedSuccessfully);
+            //Debug.Log("AchievementManager: user achiev task status: " + task.IsCompletedSuccessfully);
             foreach (DocumentSnapshot documentSnapshot in allFlashcardsQuerySnapshot.Documents)
             {
                 Dictionary<string, object> achievement = documentSnapshot.ToDictionary();

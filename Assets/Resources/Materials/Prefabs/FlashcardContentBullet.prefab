@@ -222,6 +222,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 591585471369288677, guid: 1f2caf356dbd4e84484f86d77c73e93b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 2160.1414
+      objectReference: {fileID: 0}
+    - target: {fileID: 591585471369288677, guid: 1f2caf356dbd4e84484f86d77c73e93b, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 37.7588
+      objectReference: {fileID: 0}
+    - target: {fileID: 591585471369288677, guid: 1f2caf356dbd4e84484f86d77c73e93b, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -93.149414
+      objectReference: {fileID: 0}
+    - target: {fileID: 591585471369288677, guid: 1f2caf356dbd4e84484f86d77c73e93b, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 456.1206
+      objectReference: {fileID: 0}
     - target: {fileID: 917816539271252757, guid: 1f2caf356dbd4e84484f86d77c73e93b, type: 3}
       propertyPath: m_Name
       value: FlashcardContentBullet

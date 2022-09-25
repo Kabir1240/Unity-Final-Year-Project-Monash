@@ -36,17 +36,20 @@ public class ProfPanel : MonoBehaviour
     {
         Debug.Log("TEST: addCoin, coin: " + _currentUser.Coin + 10);
         _currentUser.Coin += 10;
+        _currentUser.updateDb();
     }
 
     public void addLevel()
     {
         Debug.Log("TEST: addLevel, lvl: " + _currentUser.Level + 1);
         _currentUser.Level += 1;
+        _currentUser.updateDb();
     }
     public void addGameRun()
     {
         Debug.Log("TEST: addGameRun, run: " + _currentUser.GameRuns + 1);
         _currentUser.GameRuns += 1;
+        _currentUser.updateDb();
     }
     public void Refresh()
     {

@@ -53,6 +53,7 @@ public class FirebaseManager : MonoBehaviour
 
             if (dependencyStatus == DependencyStatus.Available)
             {
+                Debug.Log("check and fix dependency");
                 app = Firebase.FirebaseApp.DefaultInstance;
 
                 InitializeFirebase();
@@ -64,13 +65,14 @@ public class FirebaseManager : MonoBehaviour
         });
 
         //db = FirebaseFirestore.DefaultInstance;
-        Operations.InitializeDb();
-        db = Operations.db;
-        Debug.Log("FirebaseManager db: " + db);
+        //Operations.InitializeDb();
+        //db = Operations.db;
+        //Debug.Log("FirebaseManager db: " + db);
     }
 
     private void InitializeFirebase()
     {
+        Operations.InitializeDb();
         auth = FirebaseAuth.DefaultInstance;
         auth.StateChanged += AuthStateChanged;
         AuthStateChanged(this, null);
@@ -117,7 +119,7 @@ public class FirebaseManager : MonoBehaviour
     private void fetchAllUserItem()
     {
         userData.resetItems();
-        CollectionReference userAchiev = db.Collection("User").Document(userData.Id).Collection("Items");
+        CollectionReference userAchiev = Operations.db.Collection("User").Document(userData.Id).Collection("Items");
         userAchiev.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             Debug.Log("FirebaseManager: getting all user items");
@@ -158,7 +160,7 @@ public class FirebaseManager : MonoBehaviour
     {
 
         Debug.Log("user id: " + user.UserId);
-        DocumentReference docRef = db.Collection("User").Document(user.UserId);
+        DocumentReference docRef = Operations.db.Collection("User").Document(user.UserId);
         docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             Debug.Log("getting snapshot");
@@ -187,7 +189,7 @@ public class FirebaseManager : MonoBehaviour
 
     private void GetMaxLevel(Dictionary<string, object> userDataDb, string id)
     {
-        DocumentReference userRef = db.Collection("Level").Document("" + Convert.ToInt32(userDataDb["Level"]));
+        DocumentReference userRef = Operations.db.Collection("Level").Document("" + Convert.ToInt32(userDataDb["Level"]));
         Debug.Log(userRef.ToString());
         int maxExp;
 
@@ -217,7 +219,7 @@ public class FirebaseManager : MonoBehaviour
     private void NewUser(FirebaseUser user, string uname)
     {
         Debug.Log("Creating new user with id: " + user.UserId);
-        DocumentReference docRef = db.Collection("User").Document(user.UserId);
+        DocumentReference docRef = Operations.db.Collection("User").Document(user.UserId);
         Dictionary<string, object> newUser = new Dictionary<string, object>{
         { "Accuracy", 0},
         { "Email", user.Email },

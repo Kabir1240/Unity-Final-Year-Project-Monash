@@ -20,6 +20,15 @@ public class Operations : MonoBehaviour
     public static StorageReference storageRef;
     //[SerializeField] User currUser;
     //private FirebaseApp app;
+
+    //holding a reference to every data asset so they don't get unloaded and changes can be persistent
+    [SerializeField] private User user;
+    [SerializeField] private Level level;
+    [SerializeField] private AssetManager asset;
+    [SerializeField] private Song song;
+    [SerializeField] private ModuleLevel modLevel; // might not be needed
+    //[SerializeField] private
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -28,6 +37,12 @@ public class Operations : MonoBehaviour
         {
             Debug.Log("name: " + gameObject.name);
             instance = this;
+            //Debug.Log("Initializing..");
+            //db = FirebaseFirestore.DefaultInstance;
+            //Debug.Log("db object: " + db);
+            //storage = FirebaseStorage.DefaultInstance;
+            //Debug.Log("storage object: " + storage);
+            //storageRef = storage.GetReferenceFromUrl("gs://fit3162-33646.appspot.com/");
         }
         else if (instance != this)
         {

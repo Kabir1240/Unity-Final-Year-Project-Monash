@@ -17,11 +17,11 @@ public class ProgressBar : MonoBehaviour
     private float _maxExp;
     //private bool done = false;
 
-    //// Start is called before the first frame update
-    //void Start()
-    //{
-
-    //}
+    // Start is called before the first frame update
+    void Start()
+    {
+        Debug.Log("Score: User data before: coin: " + _currentUser.Coin + ", exp: " + _currentUser.Exp + ", gamerun: " + _currentUser.GameRuns);
+    }
 
     public void UpdateBar(User currUser)
     {

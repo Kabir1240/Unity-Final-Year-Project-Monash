@@ -90,6 +90,7 @@ public class Score : MonoBehaviour
     private void Save()
     {
         Debug.Log("save");
+        Debug.Log("Score: User data before: coin: " + user.Coin + ", exp: " + user.Exp + ", gamerun: " + user.GameRuns);
         try
         {
             Debug.Log(user.GameRuns);
