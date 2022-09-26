@@ -28,7 +28,7 @@ public class LeaderboardManager : MonoBehaviour
         QuerySnapshot allUsersQuerySnapshot = task.Result;
         foreach (DocumentSnapshot documentSnapshot in allUsersQuerySnapshot.Documents)
         {
-            if (documentSnapshot.Exists)
+            if (documentSnapshot.Exists && i <=10)
             {
                 GameObject newLBRung = Instantiate(LBRung, LBRungParent);
                 Dictionary<string, object> user = documentSnapshot.ToDictionary();
