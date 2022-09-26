@@ -48,9 +48,12 @@ public class QuizManager : MonoBehaviour
 
     private void Update()
     {
-        if (gameOver && canvasAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1 && !canvasAnimator.IsInTransition(0))
+        // if (gameOver && !canvasAnimator.GetCurrentAnimatorStateInfo(0).IsName("wrongAnim") && !canvasAnimator.GetCurrentAnimatorStateInfo(0).IsName("CorrectAnim"))
+        
+        if (gameOver)
         {
-            EndQuiz();
+            Invoke("EndQuiz", 7f);
+            // EndQuiz();
             //Debug.Log("EndQuiz");
         }
     }
@@ -180,6 +183,9 @@ public class QuizManager : MonoBehaviour
     public void CorrectAnswer()
     {
         Debug.Log("QuizManager: correct answer");
+        // update advice
+        advice.text = "";
+
         // Right answer animation
         canvasAnimator.Play("CorrectAnim");
 
@@ -209,6 +215,7 @@ public class QuizManager : MonoBehaviour
             score += 1;
             scoreText.text = score + "";
         }
+
         quizPointer += 1;
         // add 1 to total
         //string oldTotal = total.text;

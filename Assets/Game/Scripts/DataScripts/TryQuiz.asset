@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e261d92eb2671da4eb73511c74e34dfc, type: 3}
   m_Name: TryQuiz
   m_EditorClassIdentifier: 
-  quiz_id: 0001
+  advice: 
+  answer: 0
+  options: []
+  question: 
