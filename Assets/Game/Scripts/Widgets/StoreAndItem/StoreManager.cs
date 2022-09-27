@@ -83,7 +83,7 @@ public class StoreManager : MonoBehaviour
         {
             Debug.Log("StoreManager: enough money");
             user.Coin -= _boughtPrice;
-            user.updateDb();
+            user.updateCoin();
             foreach (Item item in _boughtItems.Values)
             {
                 user.addItems(item);

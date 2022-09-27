@@ -14,6 +14,7 @@ public class PrevBtn : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("Button went to start");
         btn.onClick.AddListener(TaskOnClick);
         btn.interactable = false;
         firstClick = false;

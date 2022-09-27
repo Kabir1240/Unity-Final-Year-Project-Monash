@@ -104,9 +104,28 @@ public class User : ScriptableObject
             level += 1;
             exp = exp - maxExp;
             maxExp += 100;
+            quizPass = false;
+            nextLevel();
             changed = true;
             //updateLevel();
         }
+    }
+
+    private void nextLevel()
+    {
+        Debug.Log("User: update next level fields");
+        DocumentReference userRef = Operations.db.Collection("User").Document(id);
+        Dictionary<string, object> updates = new Dictionary<string, object>
+        {{ "QuizPass", quizPass},
+        { "Exp", exp},
+        { "Level", level},
+        { "MaxExp", maxExp} };
+
+        userRef.UpdateAsync(updates).ContinueWithOnMainThread(task =>
+        {
+            Debug.Log("User: Updated the User id: " + id + " quiz pass: " + quizPass + " exp: " + exp + " level: " + level+" maxexp: "+maxExp);
+        });
+        changed = false;
     }
 
     public void updateQuizPass()
@@ -115,7 +134,7 @@ public class User : ScriptableObject
         CheckExp();
         DocumentReference userRef = Operations.db.Collection("User").Document(id);
         Dictionary<string, object> updates = new Dictionary<string, object>
-            {{ "QuizPass", quizPass},
+        {{ "QuizPass", quizPass},
         { "Exp", exp},
         { "Level", level}};
 
@@ -123,6 +142,7 @@ public class User : ScriptableObject
         {
             Debug.Log("User: Updated the User id: " + id + " quiz pass: " + quizPass + " exp: "+exp+" level: "+level);
         });
+        changed = false;
     }
 
     //public void updateExp()
@@ -137,6 +157,21 @@ public class User : ScriptableObject
     //        Debug.Log("User: Updated the User id: " + id + " exp: " + exp);
     //    });
     //}
+
+    public void updateCoin()
+    {
+        Debug.Log("User: update coin field");
+        CheckExp();
+        DocumentReference userRef = Operations.db.Collection("User").Document(id);
+        Dictionary<string, object> updates = new Dictionary<string, object>
+        {{ "Coin", coin}};
+
+        userRef.UpdateAsync(updates).ContinueWithOnMainThread(task =>
+        {
+            Debug.Log("User: Updated the User id: " + id + " coin: " + coin);
+        });
+        changed = false;
+    }
 
     // only called through achievement manager and score where the user values are changed from
     public void updateDb()

@@ -14,6 +14,7 @@ public class NextBtn : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("Button went to start");
         btn.onClick.AddListener(TaskOnClick);
         lastClick = true;
 
@@ -21,6 +22,7 @@ public class NextBtn : MonoBehaviour
 
     void TaskOnClick()
     {
+        Debug.Log("clicked");
         // the first time next is clicked, thus we should enable the prev button
         if (!prev.firstClick)
         {

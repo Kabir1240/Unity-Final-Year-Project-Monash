@@ -19,6 +19,7 @@ public class ProgressBarCourse : MonoBehaviour
         slider.value = 0;
         current = 0;
         total = 0;
+        percentage.text = "0%";
     }
 
     public void setTotal(int total)
