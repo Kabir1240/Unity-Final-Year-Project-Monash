@@ -77,7 +77,7 @@ public class Score : MonoBehaviour
         }
 
         //Testing
-        _tmpCoin = 1;
+        //_tmpCoin = 1;
     }
 
     private void ResultReset()
@@ -98,15 +98,15 @@ public class Score : MonoBehaviour
         {
             //Debug.Log(user.GameRuns);
             //FOR TESTING THIS WILL BE COMMENTED
-            //if (result.score > _scoreThreshold)
-            //{
-            //    user.Points += 1;
-            //    user.GameRuns += 1;
-            //}
+            if (result.score > _scoreThreshold)
+            {
+                user.Points += 1;
+                user.GameRuns += 1;
+            }
 
             //TESTING
-            user.GameRuns += 1;
-            user.Points += 1;
+            //user.GameRuns += 1;
+            //user.Points += 1;
             //user.Coin += 10;
         }
         catch (Exception e)
@@ -118,12 +118,12 @@ public class Score : MonoBehaviour
         if (user.Level == Convert.ToInt32(level.LevelId))
         {
             user.Coin += _tmpCoin;
-            //int exp = (int)((level.MaxExp * 0.8f) / level.SongIds.Count) * (Math.Max(result.score, result.prevScore) / 100000);
+            int exp = (int)((level.MaxExp * 0.8f) / level.SongIds.Count) * (Math.Max(result.score, result.prevScore) / 100000);
             //FOR TESTING
-            int exp = 11;
+            //int exp = 11;
             user.Exp += exp;
             user.CheckExp();
-            Debug.Log("Score: player exp:" + user.Exp);
+            Debug.Log("Score: player exp:" + user.Exp + ", coin: "+user.Coin);
             //_db.Collection("User").Document(user.Id).UpdateAsync("Exp", user.Exp);
         }
         user.updateDb();

@@ -22,14 +22,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI comment;
     [SerializeField] GameObject multiplier;
     [SerializeField] Song currSong;
+    [SerializeField] Level lvl;
     [SerializeField] Lane[] laneObjects;
     [SerializeField] Button playSymbol;
     [SerializeField] GameResult result;
     [SerializeField] public TestTarsos pitch;
-    [SerializeField] Slider slider;
+    [SerializeField] ProgressBarCourse slider;
     [SerializeField] TextMeshProUGUI sliderPercentage;
     [SerializeField] RawImage guitar;
     [SerializeField] AssetManager assetManager;
+    [SerializeField] TextMeshProUGUI title, planetNo;
 
 
     public bool IsPlaying, IsPaused;
@@ -44,7 +46,7 @@ public class GameManager : MonoBehaviour
     private TempoMap _map;
     private Note[] _notes;
     private Dictionary<string, int> _accuracy = new Dictionary<string, int>();
-    private bool _doneSong, _doneMidi, _delayed;
+    private bool _doneSong, _doneMidi, _delayed, _error;
     private int _currI, _replayI, _currScore;
     private float _delay, _speed, _prevPause;
     private string _path;
@@ -79,7 +81,11 @@ public class GameManager : MonoBehaviour
         score.text = "0";
         Replay = false;
         _delayed = false;
+        _error = false;
         deltaTimeMan = Time.deltaTime;
+
+        title.text = currSong.Title;
+        planetNo.text = lvl.LevelId + "";
 
         LoadTexture();
 
@@ -89,6 +95,7 @@ public class GameManager : MonoBehaviour
             _replayI = 0;
             NoteDetails = result.noteInfo;
             score.text = result.score.ToString();
+            slider.setTotal(NoteDetails.Count*2);
             Debug.Log("GameManager: replaying note count: " + NoteDetails.Count);
             ReplayGamePlay();
         }
@@ -100,7 +107,7 @@ public class GameManager : MonoBehaviour
             GetMidi();
             GetSong();
 
-            InvokeRepeating("StartGame", 1.0f, 1.0f);
+            InvokeRepeating("StartGame", 1.0f, 2.0f);
         }
 
 
@@ -154,46 +161,12 @@ public class GameManager : MonoBehaviour
 
     private void ReplayGamePlay()
     {
-        //float expectedEndTime = 2766.0f / currSong.speed;
-        //float diffWithActual = NoteDetails[0].Data.getExpectedEndTime() - NoteDetails[0].Data.getEndTime();
-        //Debug.Log("diff: " + diffWithActual);
-        float delayExpected = 0.0f, delayActual = 0.0f;
 
-        //if (diffWithActual < 0)
-        //{
-        //    delayActual = diffWithActual;
-        //}
-        //else
-        //{
-        //    delayExpected = diffWithActual;
-        //}
-
-        StartCoroutine(ReplayInstantiateExpected(delayExpected));
+        StartCoroutine(ReplayInstantiateExpected());
         //StartCoroutine(ReplayInstantiateActual(delayActual));
 
 
     }
-
-
-    //private async void ReplayInstantiateExpected(float expectedDelay)
-    //{
-    //    Debug.Log("called1");
-    //    await Task.Delay((int)expectedDelay);
-    //    Debug.Log("called1");
-    //    //float speed = _speed * 0.8f;
-    //    while (currI < NoteDetails.Count)
-    //    {
-    //        Debug.Log(" i: " + currI + " _notes[i]: " + NoteDetails[currI] + " delay: " + expectedDelay);
-    //        Debug.Log("note number:" + NoteDetails[currI].NoteName);
-    //        Note currNote = new Note((SevenBitNumber)NoteDetails[currI].NoteNumber);
-    //        laneObjects[NoteDetails[currI].LaneNo1].InstantiateObj(currNote.NoteName.ToString(), currNote.Octave.ToString(), currNote.NoteNumber, _speed, currI, 0);
-    //        expectedDelay = (float)NoteDetails[currI].DelayTime;
-    //        currI += 1;
-    //        await Task.Delay((int)expectedDelay);
-    //        //_noteDetails[i].LaneAt.InstantiateObj(_notes[i].NoteName.ToString(), _notes[i].NoteNumber);
-    //        //delay = (float)_noteDetails[i].DelayTime;
-    //    }
-    //}
 
     private bool CheckNoteName(Note currNote)
     {
@@ -201,17 +174,11 @@ public class GameManager : MonoBehaviour
         return Regex.IsMatch(currNote.NoteName.ToString(), match);
     }
 
-    private IEnumerator ReplayInstantiateExpected(float expectedDelay)
+    private IEnumerator ReplayInstantiateExpected()
     {
-        //Debug.Log("called1");
-        //yield return new WaitForSeconds(expectedDelay / 1000.0f);
-        //Debug.Log("called1");
-        //float speed = _speed * 0.8f;
         while (_currI < NoteDetails.Count)
         {
-            // if expectedDelay<0, then the actual end time is longer than expected, else it is faster
-            //Debug.Log("Replay: pos expected end: " + NoteDetails[_currI].Data.getExpectedEndPos() + " actual end: " + NoteDetails[_currI].Data.ActualEndPos);
-            expectedDelay = NoteDetails[_currI].Data.getExpectedEndTime() - NoteDetails[_currI].Data.getEndTime();
+
             float tempDistance = NoteDetails[_currI].Data.getExpectedEndPos() - NoteDetails[_currI].Data.ActualEndPos;
 
             // ensuring that the biggest negative offset is -270.0f and a positive offset of 958.0f
@@ -226,19 +193,13 @@ public class GameManager : MonoBehaviour
 
             Vector3 distance = new Vector3(tempDistance, 0, 0);
 
-            Debug.Log("Replay i: " + _currI + " delay: " + expectedDelay + " distance: " + distance.x);
+            Debug.Log("Replay i: " + _currI +" distance: " + distance.x);
             Debug.Log("Replay i: " + _currI + " expected note number:" + NoteDetails[_currI].NoteNumber + " lane: " + NoteDetails[_currI].LaneNo1);
             Debug.Log("Replay i: " + _currI + " actual note number:" + NoteDetails[_currI].Data.getNoteNumber() + " lane: " + NoteDetails[_currI].Data.LaneNo);
-
-            // TESTING
-            //currNote = new Note((SevenBitNumber)40);
-            //laneObjects[5].InstantiateObj(currNote.NoteName.ToString(), currNote.Octave.ToString(), currNote.NoteNumber, currSong.speed, replayI, 0, distance);
-            //InstantiatedNotes[InstantiatedNotes.Count - 1].transform.Find("note").GetComponent<TextMeshProUGUI>().color = Color.blue;
 
             Note currNote;
             currNote = new Note((SevenBitNumber)NoteDetails[_currI].NoteNumber);
             string currNoteName = currNote.NoteName.ToString();
-            //laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(currNote.NoteName.ToString(), currNote.Octave.ToString(), currNote.NoteNumber, currSong.speed, _currI, 0, new Vector3(0, 0, 0));
             if (CheckNoteName(currNote))
             {
                 currNoteName = currNoteName[0] + "#";
@@ -258,9 +219,6 @@ public class GameManager : MonoBehaviour
                 string noteName, noteOctave;
                 if (NoteDetails[_currI].Data.getNoteNumber() != -1)
                 {
-                    //currNote = new Note((SevenBitNumber)NoteDetails[_currI].Data.getNoteNumber());
-                    //noteName = currNote.NoteName.ToString();
-                    //noteOctave = currNote.Octave.ToString();
                     laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(currNoteName, currNote.Octave.ToString(), currNote.NoteNumber, currSong.speed, _currI, 0, new Vector3(0, 0, 0));
 
                     currNote = new Note((SevenBitNumber)NoteDetails[_currI].Data.getNoteNumber());
@@ -280,10 +238,6 @@ public class GameManager : MonoBehaviour
                     InstantiatedNotes[InstantiatedNotes.Count - 1].transform.Find("note").GetComponent<TextMeshProUGUI>().color = Color.red;
 
                 }
-                //int currLaneNo = (NoteDetails[_currI].LaneNo1 - 1)<0?
-                //laneObjects[(NoteDetails[_currI].LaneNo1-1)%laneObjects.Length].InstantiateObj(noteName, noteOctave, currNote.NoteNumber, currSong.speed, _currI, 0, distance);
-                //InstantiatedNotes[InstantiatedNotes.Count - 1].SetActive(false);
-                //InstantiatedNotes[InstantiatedNotes.Count - 2].transform.Find("note").GetComponent<TextMeshProUGUI>().color = Color.red;
             }
             float delay = (float)NoteDetails[_currI].DelayTime;
             _currI += 1;
@@ -309,11 +263,8 @@ public class GameManager : MonoBehaviour
             PauseDuration += Time.time - _stopTime + 3;
             Debug.Log("PauseDuration: " + PauseDuration);
         }
-        //flowPanel.SetActive(false);
-        //playSymbol.gameObject.SetActive(false);
         if (IsPaused)
         {
-            //IsPaused = false;
             IsPlaying = false;
             StartCoroutine(PlayDelay());
         }
@@ -333,6 +284,10 @@ public class GameManager : MonoBehaviour
 
     private void StartGame()
     {
+        if (_error)
+        {
+            SceneManager.LoadScene("EachPlanetPage");
+        }
         if (!_doneSong || !_doneMidi)
         {
             return;
@@ -343,6 +298,7 @@ public class GameManager : MonoBehaviour
         //start instantiating the game objects based on the lane
         // possible way:
         _delay = 0;
+        slider.setTotal(NoteDetails.Count);
         //Debug.Log("_notes.Length: " + _notes.Length);
         Debug.Log("GameManager: _noteDetails.Length: " + NoteDetails.Count);
 
@@ -350,9 +306,9 @@ public class GameManager : MonoBehaviour
 
     public void GoToScore()
     {
-        Debug.Log("go to score");
+        Debug.Log("GameManager: go to score");
         pitch.Pause();
-        // TODO: upload score to the database
+
         if (!result.replay)
         {
             currSong.speed = _speed;
@@ -370,8 +326,7 @@ public class GameManager : MonoBehaviour
         {
             IsPaused = false;
             float tmpDelay = (_delay / 1000.0f) - (_stopTime - (NoteDetails[_currI - 1].Data.getStartTime() + _prevPause));
-            //Debug.Log("delay: " + (delay / 1000.0f));
-            //Debug.Log("tmpDelay: " + tmpDelay);
+
             if (tmpDelay > 0)
             {
                 yield return new WaitForSeconds(tmpDelay);
@@ -397,8 +352,7 @@ public class GameManager : MonoBehaviour
             _delay = (float)NoteDetails[_currI].DelayTime;
             _currI += 1;
             yield return new WaitForSeconds(_delay / 1000.0f);
-            //_noteDetails[i].LaneAt.InstantiateObj(_notes[i].NoteName.ToString(), _notes[i].NoteNumber);
-            //delay = (float)_noteDetails[i].DelayTime;
+
         }
 
     }
@@ -413,10 +367,7 @@ public class GameManager : MonoBehaviour
             if (!task.IsFaulted && !task.IsCanceled)
             {
                 Debug.Log("Download URL: " + task.Result);
-                //StartCoroutine(isDownloading(Convert.ToString(task.Result), _parent.transform.Find("FlashcardContentImage(Clone)").gameObject));
 
-                // TEST IN ANDROID USES Application.persistentDataPath+"/SongFile.wav"
-                //string path = Path.Combine(Application.dataPath + "/Resources/Materials/Midi", "SongFile.wav").Replace("\\", "/");
                 string path = Application.persistentDataPath + "/SongFile.wav";
                 //StartCoroutine(isDownloading(Convert.ToString(task.Result), path));
                 isDownloading(Convert.ToString(task.Result), path);
@@ -437,10 +388,7 @@ public class GameManager : MonoBehaviour
             if (!task.IsFaulted && !task.IsCanceled)
             {
                 Debug.Log("GameManager: Download URL: " + task.Result);
-                //StartCoroutine(isDownloading(Convert.ToString(task.Result), _parent.transform.Find("FlashcardContentImage(Clone)").gameObject));
 
-                // TEST IN ANDROID USES Application.persistentDataPath+"/Midifiles.mid"
-                //string path = Path.Combine(Application.dataPath + "/Resources/Materials/Midi", "MidiFiles.mid").Replace("\\", "/");
                 string path = Application.persistentDataPath + "/FIT3162Files/MidiFiles.mid";
                 //StartCoroutine(isDownloading(Convert.ToString(task.Result), path));
                 isDownloading(Convert.ToString(task.Result), path);
@@ -465,15 +413,11 @@ public class GameManager : MonoBehaviour
             if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
             {
                 Debug.Log(request.error);
+                _error = true;
             }
 
             else
             {
-                //byte[] midiInByte = ((DownloadHandlerFile)request.downloadHandler).data;
-                //BytesToMidiEventConverter converter = new BytesToMidiEventConverter();
-                //ICollection<MidiEvent> file = converter.ConvertMultiple(midiInByte);
-
-                //MidiFile midFile = MidiFile.Read(path);
 
                 while (!request.downloadHandler.isDone)
                 {
@@ -500,6 +444,8 @@ public class GameManager : MonoBehaviour
         catch (Exception e)
         {
             Debug.Log(e);
+            _error = true;
+            return;
         }
 
         //Debug.Log("stuck");
@@ -532,6 +478,8 @@ public class GameManager : MonoBehaviour
         catch (Exception e)
         {
             Debug.Log(e);
+            _error = true;
+            return;
         }
 
         //Debug.Log("PREPROCESS FINISH");
@@ -578,7 +526,7 @@ public class GameManager : MonoBehaviour
                     newInfo.LaneNo1 = currLane._id;
                     newInfo.Data = new NoteData();
                     NoteDetails.Add(newInfo);
-                    Debug.Log("GameManager: currNote: " + newInfo.NoteNumber + " start: " + newInfo.StartTime + " delay: " + newInfo.DelayTime + " lane: " + newInfo.LaneNo1);
+                    //Debug.Log("GameManager: currNote: " + newInfo.NoteNumber + " start: " + newInfo.StartTime + " delay: " + newInfo.DelayTime + " lane: " + newInfo.LaneNo1);
                     break;
                 }
             }
@@ -599,12 +547,12 @@ public class GameManager : MonoBehaviour
                 newInfo.LaneNo1 = currLane._id;
                 newInfo.Data = new NoteData();
                 NoteDetails.Add(newInfo);
-                Debug.Log("GameManager: currNote: " + newInfo.NoteNumber + " start: " + newInfo.StartTime + " delay: " + newInfo.DelayTime + " lane: " + newInfo.LaneNo1);
+                //Debug.Log("GameManager: currNote: " + newInfo.NoteNumber + " start: " + newInfo.StartTime + " delay: " + newInfo.DelayTime + " lane: " + newInfo.LaneNo1);
                 break;
             }
         }
 
-        Debug.Log("finished here");
+        //Debug.Log("finished here");
         return;
     }
 
@@ -653,45 +601,8 @@ public class GameManager : MonoBehaviour
 
     public void UpdateProgressBar()
     {
-        slider.value = _currI / NoteDetails.Count * 100;
-        sliderPercentage.text = "" + slider.value;
+        Debug.Log("GameManager: updatebar called");
+        slider.Next();
         //Debug.Log("slider: " + slider.value);
     }
-
-    //private void Restart()
-    //{
-    //    if (IsPlaying)
-    //    {
-    //        IsPlaying = false;
-    //        IsPaused = true;
-    //        _stopTime = Time.time;
-    //        Debug.Log("stopTime: " + _stopTime);
-    //        flowPanel.SetActive(true);
-    //        playSymbol.gameObject.SetActive(true);
-    //        pitch.Pause();
-    //    }
-    //    else
-    //    {
-    //        IsPlaying = true;
-    //        if (_stopTime > 0)
-    //        {
-    //            _prevPause = PauseDuration;
-    //            PauseDuration += Time.time - _stopTime + 3;
-    //            Debug.Log("PauseDuration: " + PauseDuration);
-    //        }
-    //        flowPanel.SetActive(false);
-    //        playSymbol.gameObject.SetActive(false);
-    //        if (IsPaused)
-    //        {
-    //            //IsPaused = false;
-    //            IsPlaying = false;
-    //            StartCoroutine(PlayDelay());
-    //        }
-    //        else
-    //        {
-    //            StartCoroutine(InstantiateNote());
-    //        }
-    //        //StartCoroutine(InstantiateNote());
-    //    }
-    //}
 }

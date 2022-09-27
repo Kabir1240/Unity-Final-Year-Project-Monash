@@ -1534,6 +1534,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b4ac83ebeba9b2409e9f49d934466dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  user: {fileID: 11400000, guid: 69b7ef9e27dfbe74ea876387b8aa6af2, type: 2}
+  level: {fileID: 11400000, guid: 9cda204a79417634dab4ad3a792d4af1, type: 2}
+  asset: {fileID: 11400000, guid: 37baf0fe7a76f044baa1cf2c112b1dbb, type: 2}
+  song: {fileID: 11400000, guid: 5e205783102cf6847b0e13874f25753b, type: 2}
+  modLevel: {fileID: 11400000, guid: 5c0e4761c4d42454589f29ac419e0338, type: 2}
 --- !u!4 &400801378
 Transform:
   m_ObjectHideFlags: 0

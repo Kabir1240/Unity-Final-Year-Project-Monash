@@ -21,6 +21,8 @@ public class AchievPrefab : MonoBehaviour
         currItem = achiev;
         itemName.text = currItem.Name;
         date1.text = achiev.AchievedDate;
+        //TESTING
+        Debug.Log("AchievPrefab: date1: " + date1.text);
     }
 
     public void SetUI2(Achievement achiev)
@@ -28,6 +30,7 @@ public class AchievPrefab : MonoBehaviour
         currItem2 = achiev;
         itemName2.text = currItem2.Name;
         date2.text = achiev.AchievedDate;
+        Debug.Log("AchievPrefab: date2: " + date2.text);
     }
 
     public GameObject GetSecond()

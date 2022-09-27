@@ -32,12 +32,14 @@ public class UserItem : MonoBehaviour
             Debug.Log("UserItem: ChooseFirst: Felicia/guitar");
             assetManager.guitarImageLoc = "Felicia/guitar";
             assetManager.guitarOri = true;
+            assetManager.guitarRef = "none";
         }
         else
         {
             Debug.Log("UserItem: ChooseFirst: "+ Application.persistentDataPath + "/FIT3162Files/" + currItem.Name + ".jpg");
             assetManager.guitarImageLoc = Application.persistentDataPath + "/FIT3162Files/" + currItem.Name + ".jpg";
             assetManager.guitarOri = false;
+            assetManager.guitarRef = currItem.Name;
         }
     }
 
@@ -49,12 +51,14 @@ public class UserItem : MonoBehaviour
             Debug.Log("UserItem: ChooseSecond: Felicia/guitar");
             assetManager.guitarImageLoc = "Felicia/guitar";
             assetManager.guitarOri = true;
+            assetManager.guitarRef = "none";
         }
         else
         {
-            Debug.Log("UserItem: ChooseSecond: " + Application.persistentDataPath + "/FIT3162Files/" + currItem.Name + ".jpg");
-            assetManager.guitarImageLoc = Application.persistentDataPath + "/FIT3162Files/" + currItem.Name + ".jpg";
+            Debug.Log("UserItem: ChooseSecond: " + Application.persistentDataPath + "/FIT3162Files/" + currItem2.Name + ".jpg");
+            assetManager.guitarImageLoc = Application.persistentDataPath + "/FIT3162Files/" + currItem2.Name + ".jpg";
             assetManager.guitarOri = false;
+            assetManager.guitarRef = currItem.Name;
         }
     }
     public void SetUI1(Item item)

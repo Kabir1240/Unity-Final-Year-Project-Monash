@@ -8,10 +8,11 @@ public class AssetManager : ScriptableObject
 {
     public string guitarImageLoc = "Felicia/guitar";
     public bool guitarOri = true;
-    public Image guitarImage = null;
+    public string guitarRef = "none";
+    //public Image guitarImage = null;
 
-    private void OnEnable()
-    {
-        hideFlags = HideFlags.DontUnloadUnusedAsset;
-    }
+    //private void OnEnable()
+    //{
+    //    hideFlags = HideFlags.DontUnloadUnusedAsset;
+    //}
 }

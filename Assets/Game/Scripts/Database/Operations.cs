@@ -76,96 +76,27 @@ public class Operations : MonoBehaviour
         File.WriteAllBytes(Application.persistentDataPath + "/FIT3162Files/" + name + ".jpg", texBytes);
     }
 
-    //public List<Item> fetchAllUserItem()
-    //{
-    //    currUser.resetItems();
-    //    List<Item> allItems = new List<Item>();
-    //    CollectionReference userAchiev = db.Collection("User").Document(currUser.Id).Collection("Items");
-    //    userAchiev.GetSnapshotAsync().ContinueWithOnMainThread(task =>
-    //    {
-    //        Debug.Log("FirebaseManager: getting all user items");
-    //        QuerySnapshot allFlashcardsQuerySnapshot = task.Result;
-    //        Debug.Log("FirebaseManager: user items count: " + allFlashcardsQuerySnapshot.Count);
-    //        Debug.Log("FirebaseManager: user items task status: " + task.IsCompletedSuccessfully);
-    //        try
-    //        {
-    //            foreach (DocumentSnapshot documentSnapshot in allFlashcardsQuerySnapshot.Documents)
-    //            {
-    //                Dictionary<string, object> item = documentSnapshot.ToDictionary();
-    //                Item currItem = new Item(documentSnapshot.Id, item["Category"].ToString(), item["Image"].ToString(), item["Name"].ToString());
-    //                Debug.Log("FirebaseManager: id " + documentSnapshot.Id + " item " + currItem.Name + ", image" + currItem.Img);
-    //                currUser.addItems(currItem);
-    //                allItems.Add(currItem);
+    // for ContentImage
+    public GameObject DownloadImageAndSave(RawImage rawImg, StorageReference imagesRef, string itemName)
+    {
+        //StorageReference imagesRef = storageRef.Child(item.Category).Child(item.Img);
 
-    //            }
-    //        }
-    //        catch (Exception e)
-    //        {
-    //            Debug.Log("FirebaseManager: " + e);
-    //        }
-    //    });
-    //    return allItems;
-    //}
+        // Fetch the download URL
+        imagesRef.GetDownloadUrlAsync().ContinueWithOnMainThread(task =>
+        {
+            if (!task.IsFaulted && !task.IsCanceled)
+            {
+                Debug.Log("Download URL: " + task.Result);
+                //StartCoroutine(isDownloading(Convert.ToString(task.Result), _parent.transform.Find("FlashcardContentImage(Clone)").gameObject));
+                StartCoroutine(isDownloadingAndSave(Convert.ToString(task.Result), rawImg, itemName));
 
-    //// User related changes are done directly through User Dataset
-    //public User GetInitialUser(FirebaseUser user)
-    //{
-    //    Debug.Log("user id: " + user.UserId);
-    //    DocumentReference docRef = db.Collection("User").Document(user.UserId);
-    //    docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
-    //    {
-    //        Debug.Log("getting snapshot");
-    //        DocumentSnapshot snapshot = task.Result;
-    //        if (snapshot.Exists)
-    //        {
-    //            Debug.Log(String.Format("Document data for {0} document:", snapshot.Id));
-    //            Dictionary<string, object> userDataDb = snapshot.ToDictionary();
-    //            try
-    //            {
-    //                currUser.SetUserData(snapshot.Id, userDataDb);
-    //                fetchAllUserItem();
-    //                SceneManager.LoadScene("MainPage");
-    //            }
-    //            catch (Exception e)
-    //            {
-    //                Debug.Log("FirebaseManager: " + e);
-    //            }
+            }
+        });
 
-    //        }
-    //        else
-    //        {
-    //            Debug.Log(String.Format("Document {0} does not exist!", snapshot.Id));
-    //        }
-    //    });
+        return null;
+    }
 
-    //    return currUser;
-    //}
 
-    //public void NewUser(FirebaseUser user, string uname)
-    //{
-    //    Debug.Log("Creating new user with id: " + user.UserId);
-    //    DocumentReference docRef = db.Collection("User").Document(user.UserId);
-    //    Dictionary<string, object> newUser = new Dictionary<string, object>{
-    //    { "Accuracy", 0},
-    //    { "Email", user.Email },
-    //    { "Exp", 0},
-    //    { "Game_run", 0},
-    //    { "Level", 1},
-    //    { "Username", uname},
-    //    { "Coin", 0}};
-    //    docRef.SetAsync(newUser).ContinueWithOnMainThread(task =>
-    //    {
-    //        Debug.Log(task.IsCanceled || task.IsFaulted);
-    //        Debug.Log($"Added user: {user.UserId} to the User document");
-    //        //SceneManager.LoadScene("MainPage");
-    //        currUser.SetUserData(user.UserId, newUser);
-    //        currUser.resetItems();
-    //        SceneManager.LoadScene("MainPage");
-    //    });
-
-    //    //SetUserData(user.UserId, 0, user.Email, 0,0,1,0, uname);
-    //    //SceneManager.LoadScene("MainPage");
-    //}
 
     // for ContentImage
     public GameObject DownloadImage(RawImage rawImg, StorageReference imagesRef)
@@ -209,6 +140,33 @@ public class Operations : MonoBehaviour
                 rawImg.texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
             }
            
+        }
+
+    }
+
+    public IEnumerator isDownloadingAndSave(string url, RawImage rawImg, string itemName)
+    {
+
+        Debug.Log("Download URL: " + url);
+        UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
+        yield return request.SendWebRequest();
+        Debug.Log("finished request");
+        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+        {
+            Debug.Log(request.error);
+        }
+
+        else
+        {
+            if (rawImg != null)
+            {
+                Debug.Log(SceneManager.GetActiveScene().name + " pic: " + rawImg);
+                rawImg.texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+                Texture2D tex = (Texture2D)rawImg.texture;
+                SaveTexture(tex, itemName);
+
+            }
+
         }
 
     }

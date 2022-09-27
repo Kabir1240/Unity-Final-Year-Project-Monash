@@ -114,7 +114,7 @@ public class SingleNote : MonoBehaviour
     {
         manager.DestroyedNotes += 1;
         Debug.Log("destroyed: " + manager.DestroyedNotes);
-        //manager.UpdateProgressBar();
+        manager.UpdateProgressBar();
         Destroy(obj);
     }
 }

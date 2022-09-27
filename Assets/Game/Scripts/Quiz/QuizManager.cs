@@ -46,17 +46,17 @@ public class QuizManager : MonoBehaviour
     private List<QuizData> allQuiz;
     private int quizPointer, score;
 
-    private void Update()
-    {
-        // if (gameOver && !canvasAnimator.GetCurrentAnimatorStateInfo(0).IsName("wrongAnim") && !canvasAnimator.GetCurrentAnimatorStateInfo(0).IsName("CorrectAnim"))
+    //private void Update()
+    //{
+    //    // if (gameOver && !canvasAnimator.GetCurrentAnimatorStateInfo(0).IsName("wrongAnim") && !canvasAnimator.GetCurrentAnimatorStateInfo(0).IsName("CorrectAnim"))
         
-        if (gameOver)
-        {
-            Invoke("EndQuiz", 7f);
-            // EndQuiz();
-            //Debug.Log("EndQuiz");
-        }
-    }
+    //    if (gameOver)
+    //    {
+    //        Invoke("EndQuiz", 7f);
+    //        // EndQuiz();
+    //        //Debug.Log("EndQuiz");
+    //    }
+    //}
     void Awake()
     {
         Debug.Log("QuizManager: " + module.Module_id);
@@ -249,7 +249,7 @@ public class QuizManager : MonoBehaviour
                 user.Exp += exp;
                 user.updateQuizPass();
             }
-
+            Invoke("EndQuiz", 7f);
 
             //while(canvasAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1 || canvasAnimator.IsInTransition(0))
             //{

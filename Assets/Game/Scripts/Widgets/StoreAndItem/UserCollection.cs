@@ -122,7 +122,10 @@ public class UserCollection : MonoBehaviour
             {
                 if (!File.Exists(Application.persistentDataPath + "/FIT3162Files/" + currItem.Name + ".jpg"))
                 {
-                    Operations.GetInstance().DownloadImage(thePic, imagesRef);
+                    //Operations.GetInstance().DownloadImage(thePic, imagesRef);
+                    //Texture2D tex = (Texture2D)thePic.texture;
+                    //Operations.GetInstance().SaveTexture(tex, currItem.Name);
+                    Operations.GetInstance().DownloadImageAndSave(thePic, imagesRef, currItem.Name);
                 }
                 else
                 {
@@ -159,7 +162,7 @@ public class UserCollection : MonoBehaviour
             {
                 if (!File.Exists(Application.persistentDataPath + "/FIT3162Files/" + currItem.Name + ".jpg"))
                 {
-                    Operations.GetInstance().DownloadImage(thePic, imagesRef);
+                    Operations.GetInstance().DownloadImageAndSave(thePic, imagesRef, currItem.Name);
                 }
                 else
                 {
