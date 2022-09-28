@@ -38,7 +38,7 @@ public class SingleNote : MonoBehaviour
             {
                 manager.NoteDetails[index].Data.setAccuracyType("great");
             }
-            else if (transform.localPosition.x >= 1141.0f && transform.localPosition.x < 1161.0f)
+            else if (transform.localPosition.x >= 1121.0f && transform.localPosition.x < 1161.0f)
             {
                 manager.NoteDetails[index].Data.setAccuracyType("perfect");
                 manager.NoteDetails[index].Data.setExpectedEndTime(Time.time - manager.PauseDuration);

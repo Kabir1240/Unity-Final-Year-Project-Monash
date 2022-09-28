@@ -14,6 +14,12 @@ using TMPro;
 using Firebase.Extensions;
 using System;
 
+/**
+ * This class is the controller for the EachPlanetLevelPage where it holds
+ * all the logic to instantiate the contents of each level, as well as
+ * adding logic to the interactable UI elements
+ */
+
 public class ListSong : MonoBehaviour
 {
     List<string> SongList;

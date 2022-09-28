@@ -13,45 +13,53 @@ using Melanchall.DryWetMidi.Interaction;
 using Melanchall.DryWetMidi.Common;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 
+/**
+ * This class is the controller class for the Game Page and it handles all the
+ * game logic, as well as the logic to instantiate the game states
+ */
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI score;
+    // UI
+    [SerializeField] TextMeshProUGUI score; 
     [SerializeField] TextMeshProUGUI comment;
+    [SerializeField] TextMeshProUGUI title, planetNo;
+    [SerializeField] TextMeshProUGUI sliderPercentage;
+
     [SerializeField] GameObject multiplier;
+    [SerializeField] Button playSymbol; // play button
+    [SerializeField] RawImage guitar; // guitar image container
+
+    // Data Asset
+    [SerializeField] AssetManager assetManager;
     [SerializeField] Song currSong;
     [SerializeField] Level lvl;
-    [SerializeField] Lane[] laneObjects;
-    [SerializeField] Button playSymbol;
     [SerializeField] GameResult result;
-    [SerializeField] public TestTarsos pitch;
+
+    // Custom UI related class
+    [SerializeField] Lane[] laneObjects; // lane objects container
     [SerializeField] ProgressBarCourse slider;
-    [SerializeField] TextMeshProUGUI sliderPercentage;
-    [SerializeField] RawImage guitar;
-    [SerializeField] AssetManager assetManager;
-    [SerializeField] TextMeshProUGUI title, planetNo;
+
+    // Sound processing library
+    [SerializeField] public TestTarsos pitch;
 
 
     public bool IsPlaying, IsPaused;
-    public List<NoteInfo> NoteDetails;
     public float PauseDuration;
     public int DestroyedNotes;
     public bool Replay;
-    public float deltaTimeMan;
     public List<GameObject> InstantiatedNotes;
+    public List<NoteInfo> NoteDetails;
 
     private FirebaseFirestore _db;
     private TempoMap _map;
-    private Note[] _notes;
     private Dictionary<string, int> _accuracy = new Dictionary<string, int>();
     private bool _doneSong, _doneMidi, _delayed, _error;
     private int _currI, _replayI, _currScore;
     private float _delay, _speed, _prevPause;
     private string _path;
     private float _startTime, _stopTime;
-    private Color _errorColor;
 
     FirebaseStorage storage;
     StorageReference storageRef;
@@ -82,7 +90,6 @@ public class GameManager : MonoBehaviour
         Replay = false;
         _delayed = false;
         _error = false;
-        deltaTimeMan = Time.deltaTime;
 
         title.text = currSong.Title;
         planetNo.text = lvl.LevelId + "";
@@ -205,12 +212,18 @@ public class GameManager : MonoBehaviour
                 currNoteName = currNoteName[0] + "#";
             }
 
-
+            GameObject child;
             if (NoteDetails[_currI].Data.getAccuracyType() != "missed")
             {
                 Note actualNote = new Note((SevenBitNumber)NoteDetails[_currI].Data.getNoteNumber());
-                laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(currNoteName, currNote.Octave.ToString(), currNote.NoteNumber, currSong.speed, _currI, 0, new Vector3(0, 0, 0));
-                laneObjects[NoteDetails[_currI].Data.LaneNo].InstantiateObj(actualNote.NoteName.ToString(), actualNote.Octave.ToString(), actualNote.NoteNumber, currSong.speed, _replayI, 0, distance);
+                child = laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(currNoteName, currNote.Octave.ToString(), currNote.NoteNumber, currSong.speed, _currI, 0, new Vector3(0, 0, 0));
+                child.GetComponent<SingleNote>().manager = this;
+                InstantiatedNotes.Add(child);
+
+                child = laneObjects[NoteDetails[_currI].Data.LaneNo].InstantiateObj(actualNote.NoteName.ToString(), actualNote.Octave.ToString(), actualNote.NoteNumber, currSong.speed, _replayI, 0, distance);
+                child.GetComponent<SingleNote>().manager = this;
+                InstantiatedNotes.Add(child);
+
                 InstantiatedNotes[InstantiatedNotes.Count - 1].transform.Find("note").GetComponent<TextMeshProUGUI>().color = Color.blue;
             }
             else
@@ -219,13 +232,18 @@ public class GameManager : MonoBehaviour
                 string noteName, noteOctave;
                 if (NoteDetails[_currI].Data.getNoteNumber() != -1)
                 {
-                    laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(currNoteName, currNote.Octave.ToString(), currNote.NoteNumber, currSong.speed, _currI, 0, new Vector3(0, 0, 0));
+                    child = laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(currNoteName, currNote.Octave.ToString(), currNote.NoteNumber, currSong.speed, _currI, 0, new Vector3(0, 0, 0));
+                    child.GetComponent<SingleNote>().manager = this;
+                    InstantiatedNotes.Add(child);
 
                     currNote = new Note((SevenBitNumber)NoteDetails[_currI].Data.getNoteNumber());
                     noteName = currNote.NoteName.ToString();
                     noteOctave = currNote.Octave.ToString();
 
-                    laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(noteName, noteOctave, currNote.NoteNumber, currSong.speed, _currI, 0, distance);
+                    child = laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(noteName, noteOctave, currNote.NoteNumber, currSong.speed, _currI, 0, distance);
+                    child.GetComponent<SingleNote>().manager = this;
+                    InstantiatedNotes.Add(child);
+
                     InstantiatedNotes[InstantiatedNotes.Count - 1].transform.Find("note").GetComponent<TextMeshProUGUI>().color = Color.red;
 
                 }
@@ -233,8 +251,14 @@ public class GameManager : MonoBehaviour
                 {
                     noteName = "X";
                     noteOctave = "X";
-                    laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(noteName, noteOctave, currNote.NoteNumber, currSong.speed, _currI, 0, new Vector3(0, 0, 0));
-                    laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(currNoteName, currNote.Octave.ToString(), currNote.NoteNumber, currSong.speed, _currI, 0, new Vector3(0, 0, 0));
+                    child = laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(noteName, noteOctave, currNote.NoteNumber, currSong.speed, _currI, 0, new Vector3(0, 0, 0));
+                    child.GetComponent<SingleNote>().manager = this;
+                    InstantiatedNotes.Add(child);
+
+                    child = laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(currNoteName, currNote.Octave.ToString(), currNote.NoteNumber, currSong.speed, _currI, 0, new Vector3(0, 0, 0));
+                    child.GetComponent<SingleNote>().manager = this;
+                    InstantiatedNotes.Add(child);
+
                     InstantiatedNotes[InstantiatedNotes.Count - 1].transform.Find("note").GetComponent<TextMeshProUGUI>().color = Color.red;
 
                 }
@@ -336,6 +360,7 @@ public class GameManager : MonoBehaviour
         }
         pitch.BtnOnClick();
 
+        GameObject child;
         while (_currI < NoteDetails.Count && IsPlaying)
         {
             //Debug.Log(" i: " + currI + " _notes[i]: " + NoteDetails[currI].NoteName.ToString() + " delay: " + (delay / 1000.0f));
@@ -345,7 +370,9 @@ public class GameManager : MonoBehaviour
                 _startTime = currTime;
             }
             Note currNote = new Note(NoteDetails[_currI].NoteNumber);
-            laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(currNote.NoteName.ToString(), currNote.Octave.ToString(), currNote.NoteNumber, _speed, _currI, currTime, new Vector3(0, 0, 0));
+            child = laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(currNote.NoteName.ToString(), currNote.Octave.ToString(), currNote.NoteNumber, _speed, _currI, currTime, new Vector3(0, 0, 0));
+            child.GetComponent<SingleNote>().manager = this;
+            InstantiatedNotes.Add(child);
 
             NoteDetails[_currI].Data.setStartTime(currTime);
             //Debug.Log(" i: " + currI+"starttime: " + NoteDetails[currI].Data.getStartTime() + " pause: " + PauseDuration);
@@ -458,7 +485,7 @@ public class GameManager : MonoBehaviour
         // getting the speed in seconds
         _speed = 1 / (tempo.MicrosecondsPerQuarterNote * (4 / speed.Denominator) / speed.Numerator / 1000000.0f);
         //Debug.Log("tempo: " + _map.GetTempoAtTime((MidiTimeSpan)0));
-        //Debug.Log("speed: " + _speed);
+        Debug.Log("speed: " + _speed);
 
         foreach (Lane laneObj in laneObjects)
         {

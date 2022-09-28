@@ -14,7 +14,7 @@ public class Lane : MonoBehaviour
     [SerializeField] private List<string> _noteParseRestrictions;
     [SerializeField] private RectTransform _laneObj;
     //[SerializeField] public Canvas _parentCanvas;
-    [SerializeField] public GameManager manager;
+    //[SerializeField] public GameManager manager;
     [SerializeField] private GameObject _parentobj;
 
     public List<Note> noteRestrictions = new List<Note>();
@@ -60,7 +60,7 @@ public class Lane : MonoBehaviour
         return false;
     }
 
-    public void InstantiateObj(string noteName, string noteOctave, SevenBitNumber noteNumber, float speed, int index, float time, Vector3 distance){
+    public GameObject InstantiateObj(string noteName, string noteOctave, SevenBitNumber noteNumber, float speed, int index, float time, Vector3 distance){
         // instantiate the note object here
         // in the note object's update, we will update the speed according
         // to the tempo
@@ -72,8 +72,9 @@ public class Lane : MonoBehaviour
         child.transform.localScale = new Vector3(1, 1, 1);
         child.GetComponent<SingleNote>().speed = speed;
         child.GetComponent<SingleNote>().index = index;
-        child.GetComponent<SingleNote>().manager = manager;
-        manager.InstantiatedNotes.Add(child);
+        //child.GetComponent<SingleNote>().manager = manager;
+        return child;
+        //manager.InstantiatedNotes.Add(child);
     }
 
     //public void InstantiateObjsDistance(NoteInfo info, float speed, int index, Vector3 distance)

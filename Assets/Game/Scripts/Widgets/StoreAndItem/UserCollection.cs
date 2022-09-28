@@ -100,6 +100,8 @@ public class UserCollection : MonoBehaviour
     private GameObject InstantiateItems(Item currItem, Transform parentTransform, int index)
     {
         UserItem boughtItem = null;
+        //TESTING
+        Debug.Log("UserCollection: currItem id: " + currItem.Id);
         if (index % 2 == 0)
         {
             Debug.Log("UserCollection: instantiating second ");
@@ -120,6 +122,9 @@ public class UserCollection : MonoBehaviour
             }
             else
             {
+                //TESTING
+                Debug.Log("UserCollection: file exists: " + File.Exists(Application.persistentDataPath + "/FIT3162Files/" + currItem.Name + ".jpg"));
+
                 if (!File.Exists(Application.persistentDataPath + "/FIT3162Files/" + currItem.Name + ".jpg"))
                 {
                     //Operations.GetInstance().DownloadImage(thePic, imagesRef);
@@ -160,6 +165,7 @@ public class UserCollection : MonoBehaviour
             }
             else
             {
+                Debug.Log("UserCollection: file exists: " + File.Exists(Application.persistentDataPath + "/FIT3162Files/" + currItem.Name + ".jpg"));
                 if (!File.Exists(Application.persistentDataPath + "/FIT3162Files/" + currItem.Name + ".jpg"))
                 {
                     Operations.GetInstance().DownloadImageAndSave(thePic, imagesRef, currItem.Name);

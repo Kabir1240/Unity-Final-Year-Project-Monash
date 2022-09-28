@@ -21,9 +21,9 @@ public class LevelsManager : MonoBehaviour
     private FirebaseFirestore _db;
     void Awake()
     {
-        //_db = Operations.db;
+        _db = Operations.db;
         //TESTING PURPOSES
-        _db = FirebaseFirestore.DefaultInstance;
+        //_db = FirebaseFirestore.DefaultInstance;
         _back.onClick.AddListener(()=>
         {
             SceneManager.LoadScene("MainPage");
