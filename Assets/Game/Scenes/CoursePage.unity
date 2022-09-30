@@ -753,8 +753,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1745019827}
-  - {fileID: 360131758}
   - {fileID: 1315324669}
+  - {fileID: 360131758}
   - {fileID: 519968430}
   - {fileID: 2089573855}
   - {fileID: 1022100493}
@@ -789,7 +789,7 @@ MonoBehaviour:
   _parent: {fileID: 526795399}
   lvl: {fileID: 11400000, guid: 5c0e4761c4d42454589f29ac419e0338, type: 2}
   planetLvl: {fileID: 11400000, guid: 9cda204a79417634dab4ad3a792d4af1, type: 2}
-  backBtn: {fileID: 0}
+  backBtn: {fileID: 1745019830}
   currLevel: {fileID: 898244981}
   quizReminder: {fileID: 880976405}
   slider: {fileID: 1022100495}
@@ -1503,7 +1503,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 526795403}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
@@ -1855,7 +1855,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 133.9999, y: -100.99998}
+  m_AnchoredPosition: {x: 133.99988, y: -101}
   m_SizeDelta: {x: 5.119995, y: 5.119995}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1745019828

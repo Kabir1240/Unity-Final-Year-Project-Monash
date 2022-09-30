@@ -51,6 +51,16 @@ public class Operations : MonoBehaviour
         }
     }
 
+    void Start()
+    {
+        // to prevent the assets from being unloaded;
+        string ref1 = user.Id;
+        string ref2 = level.LevelId;
+        string ref3 = asset.guitarImageLoc;
+        string ref4 = modLevel.Module_id;
+
+    }
+
     public static void InitializeDb()
     {
         Debug.Log("Initializing..");

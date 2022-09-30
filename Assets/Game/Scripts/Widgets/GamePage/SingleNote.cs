@@ -67,11 +67,11 @@ public class SingleNote : MonoBehaviour
             }
 
             //Debug.Log("destroyed: " + manager.DestroyedNotes);
-            if (manager.DestroyedNotes == manager.NoteDetails.Count)
+            /*if (manager.DestroyedNotes == manager.NoteDetails.Count)
             {
                 //Debug.Log("went here");
                 manager.GoToScore();
-            }
+            }*/
         }
         else if(manager.Replay)
         {
@@ -84,11 +84,11 @@ public class SingleNote : MonoBehaviour
             }
 
             //Debug.Log("destroyed replay: " + manager.DestroyedNotes);
-            if (manager.DestroyedNotes == manager.NoteDetails.Count*2)
+            /*if (manager.DestroyedNotes == manager.NoteDetails.Count*2)
             {
                 //Debug.Log("went here");
                 manager.GoToScore();
-            }
+            }*/
         }
     }
 
@@ -102,7 +102,7 @@ public class SingleNote : MonoBehaviour
             manager.NoteDetails[index].Data.ActualEndPos = transform.localPosition.x;
             manager.NoteDetails[index].Data.setExpectedEndPos(1145.0f);
             manager.InstantiatedNotes.RemoveAt(0);
-            Debug.Log("consumed: start at " + manager.NoteDetails[index].Data.getStartTime() + " end at " + manager.NoteDetails[index].Data.getEndTime());
+            //Debug.Log("consumed: start at " + manager.NoteDetails[index].Data.getStartTime() + " end at " + manager.NoteDetails[index].Data.getEndTime());
             //manager.DestroyedNotes += 1;
             //Destroy(gameObject);
             DestroyObj(gameObject);
@@ -115,6 +115,11 @@ public class SingleNote : MonoBehaviour
         manager.DestroyedNotes += 1;
         Debug.Log("destroyed: " + manager.DestroyedNotes);
         manager.UpdateProgressBar();
+        if ((manager.Replay&&manager.DestroyedNotes == manager.NoteDetails.Count * 2) || manager.DestroyedNotes == manager.NoteDetails.Count)
+        {
+            //Debug.Log("went here");
+            manager.GoToScore();
+        }
         Destroy(obj);
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 //[CreateAssetMenu(fileName = "Create Achievement", menuName = "Achievement")]
 public class Achievement {
 
-    private string name, assetAttribute, assetName, id, date;
+    private string name, assetAttribute, assetName, id;
     private int target, exp, coin;
     private string achievedDate;
     private int currTar;
@@ -14,7 +14,7 @@ public class Achievement {
     public bool unlocked { get; set; }
     public string Name { get => name; }
     public string Id { get => id; }
-    public string Date { get => date; }
+    //public string Date { get => date; }
     public string AssetAttribute { get => assetAttribute; }
     public string AssetName { get => assetName; }
     public int Target { get => target; }
@@ -41,7 +41,7 @@ public class Achievement {
         this.name = name;
         this.assetAttribute = assetAttribute;
         this.assetName = assetName;
-        this.date = date;
+        this.achievedDate = date;
     }
 
     public string toString()

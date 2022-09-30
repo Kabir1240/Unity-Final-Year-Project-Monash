@@ -31,7 +31,7 @@ public class AchievementPage : MonoBehaviour
         {
             foreach (Achievement achieved in achiev)
             {
-                Debug.Log("AcheivementPage:  id " + achieved.Id + " item " + achieved.Name);
+                Debug.Log("AcheivementPage:  id " + achieved.Id + " item " + achieved.Name + " date: " + achieved.AchievedDate); ;
                 InstantiateItems(achieved, content.transform, count);
                 count += 1;
             }

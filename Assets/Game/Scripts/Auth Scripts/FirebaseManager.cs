@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Firebase.Extensions;
 using System;
 using UnityEngine.SceneManagement;
+using System.IO;
 
 public class FirebaseManager : MonoBehaviour
 {
@@ -40,6 +41,17 @@ public class FirebaseManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+            string path = Application.persistentDataPath + "/FIT3162Files";
+            if (!Directory.Exists(path))
+            {
+                Debug.Log("created directory "+path);
+                Directory.CreateDirectory(path);
+            }
+            else
+            {
+                Debug.Log("directory exists: " + path);
+            }
+                
         }
         else if (instance != this)
         {

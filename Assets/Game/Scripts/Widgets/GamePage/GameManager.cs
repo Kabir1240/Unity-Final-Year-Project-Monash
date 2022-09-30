@@ -177,7 +177,8 @@ public class GameManager : MonoBehaviour
 
     private bool CheckNoteName(Note currNote)
     {
-        string match = @"_Sharp";
+        Debug.Log("currNote name: " + currNote.NoteName);
+        string match = @".Sharp";
         return Regex.IsMatch(currNote.NoteName.ToString(), match);
     }
 
@@ -370,7 +371,12 @@ public class GameManager : MonoBehaviour
                 _startTime = currTime;
             }
             Note currNote = new Note(NoteDetails[_currI].NoteNumber);
-            child = laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(currNote.NoteName.ToString(), currNote.Octave.ToString(), currNote.NoteNumber, _speed, _currI, currTime, new Vector3(0, 0, 0));
+            string noteName = currNote.NoteName.ToString();
+            if (CheckNoteName(currNote))
+            {
+                noteName = noteName[0] + "#";
+            }
+            child = laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(noteName, currNote.Octave.ToString(), currNote.NoteNumber, _speed, _currI, currTime, new Vector3(0, 0, 0));
             child.GetComponent<SingleNote>().manager = this;
             InstantiatedNotes.Add(child);
 
