@@ -18,6 +18,7 @@ public class AchievementManager : MonoBehaviour
     public Dictionary<string, List<Achievement>> AllAchievements { get => _allAchievements; }
     //private Dictionary<string, int> _userFields = new Dictionary<string, int>();
     private FirebaseFirestore _db;
+    //private bool _userAchievReset;
 
 
     #region singleton
@@ -25,7 +26,7 @@ public class AchievementManager : MonoBehaviour
 
     void Awake()
     {
-        DontDestroyOnLoad(this);
+        //DontDestroyOnLoad(this);
         if (instance == null)
         {
             _allAchievements = new Dictionary<string, List<Achievement>>();
@@ -35,6 +36,7 @@ public class AchievementManager : MonoBehaviour
             // FETCH USER ACHIEVEMENTS
             fetchAllUserAchiev();
             instance = this;
+            DontDestroyOnLoad(this);
         }
         else if (instance != this)
         {
@@ -108,7 +110,7 @@ public class AchievementManager : MonoBehaviour
         });
     }
 
-    private void fetchAllUserAchiev()
+    public void fetchAllUserAchiev()
     {
         user.resetAchieved();
         CollectionReference userAchiev = _db.Collection("User").Document(user.Id).Collection("Achievements");
@@ -117,20 +119,20 @@ public class AchievementManager : MonoBehaviour
             Debug.Log("AchievementManager: getting all user achievements");
             QuerySnapshot allFlashcardsQuerySnapshot = task.Result;
             Debug.Log("AchievementManager: user achievements count: " + allFlashcardsQuerySnapshot.Count);
-            //Debug.Log("AchievementManager: user achiev task status: " + task.IsCompletedSuccessfully);
-            foreach (DocumentSnapshot documentSnapshot in allFlashcardsQuerySnapshot.Documents)
+                //Debug.Log("AchievementManager: user achiev task status: " + task.IsCompletedSuccessfully);
+                foreach (DocumentSnapshot documentSnapshot in allFlashcardsQuerySnapshot.Documents)
             {
                 Dictionary<string, object> achievement = documentSnapshot.ToDictionary();
                 Achievement currAchievement = new Achievement(documentSnapshot.Id, Convert.ToString(achievement["Name"]), Convert.ToString(achievement["AssetAttribute"]), Convert.ToString(achievement["AssetName"]), Convert.ToString(achievement["Date"]));
                 user.addAchievements(currAchievement);
-                
-                
+
+
 
             }
         });
     }
 
-    
+
     private void getAllUserAttribute()
     {
 
@@ -161,9 +163,10 @@ public class AchievementManager : MonoBehaviour
             { "AssetAttribute", achievement.AssetAttribute },
             { "AssetName", achievement.AssetName }};
 
-            _db.Collection("User").Document(user.Id).Collection("Achievements").Document(achievement.Id).SetAsync(newAchiev).ContinueWithOnMainThread(task=> {
-                Debug.Log("AchievementManager: addition user task: " + (task.IsFaulted||task.IsCanceled));
-                
+            _db.Collection("User").Document(user.Id).Collection("Achievements").Document(achievement.Id).SetAsync(newAchiev).ContinueWithOnMainThread(task =>
+            {
+                Debug.Log("AchievementManager: addition user task: " + (task.IsFaulted || task.IsCanceled));
+
             });
 
             Refresh currRefresh = GameObject.FindGameObjectWithTag("NotificationLayer").transform.GetComponent<Refresh>();
@@ -185,7 +188,7 @@ public class AchievementManager : MonoBehaviour
         //Scene currScene = SceneManager.GetActiveScene();
         GameObject currNotifLayer = GameObject.Find("NotificationManager");
 
-        Debug.Log("AchievementManager: in call notification, currNotifLayer: "+currNotifLayer);
+        Debug.Log("AchievementManager: in call notification, currNotifLayer: " + currNotifLayer);
         yield return currNotifLayer.GetComponent<NotificationManager>().ShowNotification(name, exp);
 
     }

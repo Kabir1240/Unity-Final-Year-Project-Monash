@@ -123,7 +123,7 @@ public class FlashcardManager : MonoBehaviour
         if(_pointer + 1 == _flashcardObjectsArray.Count)
         {
             //Debug.Log("FlashcardManager: Reached end");
-            if (!user.QuizPass)
+            if (!user.QuizPass && (planetLvl.LevelId == user.Level+""))
             {
                 quizReminder.SetActive(true);
             }
