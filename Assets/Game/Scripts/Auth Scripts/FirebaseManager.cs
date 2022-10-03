@@ -23,17 +23,21 @@ public class FirebaseManager : MonoBehaviour
     [Space(5F)]
 
     [Header("Login References")]
+    [SerializeField] private GameObject loginUI;
     [SerializeField] private TMP_InputField loginEmail;
     [SerializeField] private TMP_InputField loginPassword;
     [SerializeField] private TMP_Text loginOutputText;
     [Space(5F)]
 
     [Header("Register References")]
+    [SerializeField] private GameObject registerUI;
     [SerializeField] private TMP_InputField registerUsername;
     [SerializeField] private TMP_InputField registerEmail;
     [SerializeField] private TMP_InputField registerPassword;
     [SerializeField] private TMP_InputField registerConfirmPassword;
     [SerializeField] private TMP_Text registerOutputText;
+
+    [SerializeField] private TMP_Text loadingScreen;
 
     private void Awake()
     {
@@ -306,11 +310,13 @@ public class FirebaseManager : MonoBehaviour
             if (user.IsEmailVerified)
             {
                 Debug.Log("user email verified");
+                // Show loading screen to tell the user to wait
                 yield return new WaitForSeconds(1f);
                 //GetUser(auth.CurrentUser);
                 //AuthSceneManager.instance.ChangeScene(1);
 
             }
+            LoadingScreen();
             GetInitialUser(auth.CurrentUser);
             //GetInitialUser(auth.CurrentUser);
             //SceneManager.LoadScene("MainPage");
@@ -422,5 +428,13 @@ public class FirebaseManager : MonoBehaviour
     private void LoadMainPage()
     {
         SceneManager.LoadScene("MainPage");
+    }
+
+    private void LoadingScreen()
+    {
+        registerUI.SetActive(false);
+        loginUI.SetActive(false);
+        FirebaseManager.instance.ClearOutputs();
+        loadingScreen.gameObject.SetActive(true);
     }
 }
