@@ -125,6 +125,9 @@ public class Score : MonoBehaviour
             user.CheckExp();
             Debug.Log("Score: player exp:" + user.Exp + ", coin: "+user.Coin);
             //_db.Collection("User").Document(user.Id).UpdateAsync("Exp", user.Exp);
+        }else if(user.Level != Convert.ToInt32(level.LevelId) && result.score > _scoreThreshold)
+        {
+            user.Coin += 2;
         }
         user.updateDb();
         ResultReset();

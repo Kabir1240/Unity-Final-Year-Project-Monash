@@ -16,12 +16,19 @@ public class ButtonScripts : MonoBehaviour
     [SerializeField] GameObject restartPanel;
     [SerializeField] Button confirm, goBack;
 
+    private bool restarting;
+
     // Start is called before the first frame update
     void Start()
     {
         restartPanel.SetActive(false);
         pauseBtn.onClick.AddListener(Flow);
-        playSymbol.onClick.AddListener(Flow);
+        playSymbol.onClick.AddListener(()=>
+        {
+            flowPanel.SetActive(false);
+            playSymbol.gameObject.SetActive(false);
+            manager.Play();
+        });
         playSymbol.interactable = false;
         backBtn.onClick.AddListener(() =>
         {
@@ -29,7 +36,12 @@ public class ButtonScripts : MonoBehaviour
             SceneManager.LoadScene("EachPlanetPage");
         });
         restart.onClick.AddListener(Restart);
-        goBack.onClick.AddListener(Restart);
+        goBack.onClick.AddListener(()=>
+        {
+            restartPanel.SetActive(false);
+            restarting = false;
+            manager.Play();
+        });
         confirm.onClick.AddListener(() =>
         {
             if (manager.RestartState())
@@ -40,6 +52,8 @@ public class ButtonScripts : MonoBehaviour
             }
             
         });
+
+        restarting = false;
 
         if (manager.Replay)
         {
@@ -52,34 +66,44 @@ public class ButtonScripts : MonoBehaviour
 
     private void Flow()
     {
+
         if (manager.IsPlaying)
         {
             flowPanel.SetActive(true);
             playSymbol.gameObject.SetActive(true);
             manager.Pause();
         }
-        else
-        {
-            flowPanel.SetActive(false);
-            playSymbol.gameObject.SetActive(false);
-            manager.Play();
-            //StartCoroutine(InstantiateNote());
-        }
+        //else
+        //{
+        //    flowPanel.SetActive(false);
+        //    playSymbol.gameObject.SetActive(false);
+        //    manager.Play();
+        //    //StartCoroutine(InstantiateNote());
+        //}
+    }
+
+    private void unBlock()
+    {
+        restart.interactable = true;
+        backBtn.interactable = true;
+        pauseBtn.interactable = true;
     }
 
     private void Restart()
     {
-        if (manager.IsPlaying)
-        {
-            restartPanel.SetActive(true);
-            manager.Pause();
-        }
-        else
-        {
-            restartPanel.SetActive(false);
-            manager.Play();
-            
-            //StartCoroutine(InstantiateNote());
-        }
+            if (manager.IsPlaying&&!restarting)
+            {
+                restartPanel.SetActive(true);
+                restarting = true;
+                manager.Pause();
+            }
+            //else
+            //{
+            //    restartPanel.SetActive(false);
+            //    restarting = false;
+            //    manager.Play();
+
+            //    //StartCoroutine(InstantiateNote());
+            //}
     }
 }

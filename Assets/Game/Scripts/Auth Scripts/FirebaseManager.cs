@@ -256,7 +256,7 @@ public class FirebaseManager : MonoBehaviour
             // !! CHANGE THIS IS THE LEVEL 1'S MAX EXP IS CHANGED !!
             userData.SetUserData(user.UserId, newUser, 200);
             userData.resetItems();
-            SceneManager.LoadScene("MainPage");
+            //SceneManager.LoadScene("MainPage");
         });
     }
 
