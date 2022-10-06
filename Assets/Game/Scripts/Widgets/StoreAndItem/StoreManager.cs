@@ -97,16 +97,22 @@ public class StoreManager : MonoBehaviour
                     Debug.Log("StoreManager: Created new Item in Items collection in User");
                 });
 
-                if (!File.Exists(Application.persistentDataPath + "/FIT3162Files/" + item.Name + ".jpg"))
+                try
                 {
-                    GameObject currItem = _boughtItemsObj[item.Id];
-                    Texture2D tex = (Texture2D)currItem.transform.Find("Item").gameObject.transform.Find("ItemImg").gameObject.GetComponent<RawImage>().texture;
-                    Operations.GetInstance().SaveTexture(tex, item.Name);
-                    //byte[] texBytes = tex.EncodeToJPG(50);
-                    ////UNCOMMENT THIS IF NOT TESTING
-                    ////File.WriteAllBytes(Application.persistentDataPath + "/FIT3162Files/"+item.Name+".jpg", texBytes);
-                    //Debug.Log("StoreManager: file saved at path " + Application.persistentDataPath + "/FIT3162Files/" + item.Name + ".jpg");
-                    //File.WriteAllBytes(Application.persistentDataPath + "/FIT3162Files/" + item.Name + ".jpg", texBytes);
+                    if (!File.Exists(Application.persistentDataPath + "/FIT3162Files/" + item.Name + ".jpg"))
+                    {
+                        GameObject currItem = _boughtItemsObj[item.Id];
+                        Texture2D tex = (Texture2D)currItem.transform.Find("Item").gameObject.transform.Find("ItemImg").gameObject.GetComponent<RawImage>().texture;
+                        Operations.GetInstance().SaveTexture(tex, item.Name);
+                        //byte[] texBytes = tex.EncodeToJPG(50);
+                        ////UNCOMMENT THIS IF NOT TESTING
+                        ////File.WriteAllBytes(Application.persistentDataPath + "/FIT3162Files/"+item.Name+".jpg", texBytes);
+                        //Debug.Log("StoreManager: file saved at path " + Application.persistentDataPath + "/FIT3162Files/" + item.Name + ".jpg");
+                        //File.WriteAllBytes(Application.persistentDataPath + "/FIT3162Files/" + item.Name + ".jpg", texBytes);
+                    }
+                }catch(Exception e)
+                {
+                    Debug.Log("StoreManager: Tried buying an item when the pic has not loaded");
                 }
                 
 

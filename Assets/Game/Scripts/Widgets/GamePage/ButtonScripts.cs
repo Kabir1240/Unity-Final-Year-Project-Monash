@@ -8,13 +8,14 @@ public class ButtonScripts : MonoBehaviour
 {
     [SerializeField] Button pauseBtn;
     [SerializeField] GameObject flowPanel;
-    [SerializeField] Button playSymbol;
+    [SerializeField] Button playSymbol, instructionBtn;
     [SerializeField] Button backBtn;
     [SerializeField] Button restart;
-    [SerializeField] GameObject pauseSymbol;
+    [SerializeField] GameObject pauseSymbol, instructionContainer;
     [SerializeField] GameManager manager;
     [SerializeField] GameObject restartPanel;
     [SerializeField] Button confirm, goBack;
+    [SerializeField] Instructions instruction;
 
     private bool restarting;
 
@@ -51,6 +52,13 @@ public class ButtonScripts : MonoBehaviour
                 playSymbol.gameObject.SetActive(true);
             }
             
+        });
+
+        instructionBtn.onClick.AddListener(() =>
+        {
+            instructionContainer.SetActive(true);
+            instruction.Open();
+            instructionBtn.gameObject.SetActive(false);
         });
 
         restarting = false;

@@ -30,15 +30,15 @@ public class SingleNote : MonoBehaviour
         if (manager.IsPlaying && !manager.Replay)
         {
             transform.Translate(Vector3.right * Time.deltaTime * speed);
-            if (transform.localPosition.x >= 494.0f && transform.localPosition.x < 833.0f || transform.localPosition.x >= 1220.0f && transform.localPosition.x < 1369.0f)
+            if (transform.localPosition.x >= 494.0f && transform.localPosition.x < 833.0f || transform.localPosition.x >= 1263.0f && transform.localPosition.x < 1369.0f)
             {
                 manager.NoteDetails[index].Data.setAccuracyType("good");
             }
-            else if (transform.localPosition.x >= 833.0f && transform.localPosition.x < 1141.0f || transform.localPosition.x >= 1161.0f && transform.localPosition.x < 1220.0f)
+            else if (transform.localPosition.x >= 833.0f && transform.localPosition.x < 1141.0f || transform.localPosition.x >= 1184.0f && transform.localPosition.x < 1263.0f)
             {
                 manager.NoteDetails[index].Data.setAccuracyType("great");
             }
-            else if (transform.localPosition.x >= 1121.0f && transform.localPosition.x < 1161.0f)
+            else if (transform.localPosition.x >= 1131.0f && transform.localPosition.x < 1184.0f)
             {
                 manager.NoteDetails[index].Data.setAccuracyType("perfect");
                 manager.NoteDetails[index].Data.setExpectedEndTime(Time.time - manager.PauseDuration);
@@ -115,7 +115,7 @@ public class SingleNote : MonoBehaviour
         manager.DestroyedNotes += 1;
         Debug.Log("destroyed: " + manager.DestroyedNotes);
         manager.UpdateProgressBar();
-        if ((manager.Replay&&manager.DestroyedNotes == manager.NoteDetails.Count * 2) || manager.DestroyedNotes == manager.NoteDetails.Count)
+        if ((manager.Replay&&manager.DestroyedNotes == manager.NoteDetails.Count * 2) || (!manager.Replay&&manager.DestroyedNotes == manager.NoteDetails.Count))
         {
             //Debug.Log("went here");
             manager.GoToScore();
