@@ -93,7 +93,10 @@ public class Instructions : MonoBehaviour
 
     private void CloseCard()
     {
+        GameObject currentObj = cards[_pointer];
+        currentObj.SetActive(false);
         _container.SetActive(false);
+        nextBtn.interactable = true;
         instructionBtn.gameObject.SetActive(true);
     }
 

@@ -7159,6 +7159,7 @@ MonoBehaviour:
   - {fileID: 1376701371}
   slider: {fileID: 174583053}
   pitch: {fileID: 1686206564}
+  pauseAnim: {fileID: 1796643816}
   IsPlaying: 0
   IsPaused: 0
   PauseDuration: 0
@@ -7203,7 +7204,7 @@ MonoBehaviour:
   restartPanel: {fileID: 361060176}
   confirm: {fileID: 422682690}
   goBack: {fileID: 1010194074}
-  instruction: {fileID: 0}
+  instruction: {fileID: 601732389}
 --- !u!95 &1686206566
 Animator:
   serializedVersion: 4
@@ -7778,6 +7779,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1796643815}
   - component: {fileID: 1796643816}
+  - component: {fileID: 1796643817}
   m_Layer: 0
   m_Name: Pause
   m_TagString: Untagged
@@ -7823,6 +7825,20 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1796643817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1796643814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c296cfb406904624692a49f4f8e5b00e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  manager: {fileID: 1686206563}
+  pause: {fileID: 1796643816}
 --- !u!1001 &1838359272
 PrefabInstance:
   m_ObjectHideFlags: 0

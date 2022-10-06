@@ -44,6 +44,9 @@ public class GameManager : MonoBehaviour
     // Sound processing library
     [SerializeField] public TestTarsos pitch;
 
+    //Animation
+    [SerializeField] private Animator pauseAnim;
+
 
     public bool IsPlaying, IsPaused;
     public float PauseDuration;
@@ -221,7 +224,13 @@ public class GameManager : MonoBehaviour
                 child.GetComponent<SingleNote>().manager = this;
                 InstantiatedNotes.Add(child);
 
-                child = laneObjects[NoteDetails[_currI].Data.LaneNo].InstantiateObj(actualNote.NoteName.ToString(), actualNote.Octave.ToString(), actualNote.NoteNumber, currSong.speed, _replayI, 0, distance);
+                string actualNoteName = actualNote.NoteName.ToString();
+                if (CheckNoteName(actualNote))
+                {
+                    actualNoteName = actualNoteName[0] + "#";
+                }
+
+                child = laneObjects[NoteDetails[_currI].Data.LaneNo].InstantiateObj(actualNoteName, actualNote.Octave.ToString(), actualNote.NoteNumber, currSong.speed, _replayI, 0, distance);
                 child.GetComponent<SingleNote>().manager = this;
                 InstantiatedNotes.Add(child);
 
@@ -240,6 +249,10 @@ public class GameManager : MonoBehaviour
                     currNote = new Note((SevenBitNumber)NoteDetails[_currI].Data.getNoteNumber());
                     noteName = currNote.NoteName.ToString();
                     noteOctave = currNote.Octave.ToString();
+                    if (CheckNoteName(currNote))
+                    {
+                        noteName = noteName[0] + "#";
+                    }
 
                     child = laneObjects[NoteDetails[_currI].LaneNo1].InstantiateObj(noteName, noteOctave, currNote.NoteNumber, currSong.speed, _currI, 0, distance);
                     child.GetComponent<SingleNote>().manager = this;
@@ -290,8 +303,12 @@ public class GameManager : MonoBehaviour
         }
         if (IsPaused)
         {
+            Debug.Log("went pause");
+            pauseAnim.gameObject.SetActive(true);
             IsPlaying = false;
-            StartCoroutine(PlayDelay());
+            pauseAnim.Play("pauseAnim");
+            //StartCoroutine(PlayDelay());
+
         }
         else
         {
@@ -299,9 +316,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private IEnumerator PlayDelay()
+    public void PlayDelay()
     {
-        yield return new WaitForSeconds(3);
+        //yield return new WaitForSeconds(3);
         IsPlaying = true;
         StartCoroutine(InstantiateNote());
 
@@ -343,7 +360,7 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("ScorePage");
     }
 
-    private IEnumerator InstantiateNote()
+    public IEnumerator InstantiateNote()
     {
         // if paused, it is possible that it happens in the middle of a delay, thus to ensure that the length between notes
         // are still kept as actual, an additional delay check is needed
