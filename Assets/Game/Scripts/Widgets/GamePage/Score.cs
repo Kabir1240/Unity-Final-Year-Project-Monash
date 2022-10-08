@@ -35,6 +35,8 @@ public class Score : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //TESTING 80K AND 50K
+        result.score = 56784;
         score.text = result.score.ToString();
         songTitle.text = song.Title;
         _scoreThreshold = 20000;
@@ -43,7 +45,11 @@ public class Score : MonoBehaviour
 
         if (result.score >= result.prevScore)
         {
-            UpdateCoin();
+            UpdateCoin(result.score);
+        }
+        else
+        {
+            UpdateCoin(result.prevScore);
         }
         reward.text = _tmpCoin + "";
 
@@ -64,20 +70,28 @@ public class Score : MonoBehaviour
         confirmWarning.onClick.AddListener(Save);
     }
 
-    private void UpdateCoin()
+    private void UpdateCoin(int score)
     {
         Debug.Log("Score: coin updated");
-        if (result.score >= _highScore)
+        if (user.Level == Convert.ToInt32(level.LevelId))
         {
-            _tmpCoin = 10;
+            if (score >= _highScore)
+            {
+                _tmpCoin = 10;
+            }
+            else if (score >= _midScore)
+            {
+                _tmpCoin = 5;
+            }
+            else if(score > _scoreThreshold)
+            {
+                _tmpCoin = 3;
+            }
         }
-        else if (result.score >= _midScore)
+        else if (user.Level != Convert.ToInt32(level.LevelId) && result.score > _scoreThreshold)
         {
-            _tmpCoin = 4;
+            _tmpCoin = 2;
         }
-
-        //Testing
-        //_tmpCoin = 1;
     }
 
     private void ResultReset()
@@ -94,11 +108,13 @@ public class Score : MonoBehaviour
     {
         Debug.Log("save");
         Debug.Log("Score: User data before: coin: " + user.Coin + ", exp: " + user.Exp + ", gamerun: " + user.GameRuns);
+        int highestScore = Math.Max(result.score, result.prevScore);
+
         try
         {
             //Debug.Log(user.GameRuns);
             //FOR TESTING THIS WILL BE COMMENTED
-            if (result.score > _scoreThreshold)
+            if (highestScore > _scoreThreshold)
             {
                 user.Points += 1;
                 user.GameRuns += 1;
@@ -118,7 +134,8 @@ public class Score : MonoBehaviour
         if (user.Level == Convert.ToInt32(level.LevelId))
         {
             user.Coin += _tmpCoin;
-            int exp = (int)((level.MaxExp * 0.8f) / level.SongIds.Count) * (Math.Max(result.score, result.prevScore) / 100000);
+            int exp = (int) Math.Floor(((level.MaxExp * 0.8f) / level.SongIds.Count) * (highestScore / 100000.0f));
+            Debug.Log("Score: exp increase: " + exp);
             //FOR TESTING
             //int exp = 11;
             user.Exp += exp;

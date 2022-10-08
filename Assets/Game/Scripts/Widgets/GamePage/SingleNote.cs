@@ -57,7 +57,7 @@ public class SingleNote : MonoBehaviour
                 removed = true;
             }
             // if the note is no longer visible
-            if (transform.localPosition.x >= 1573.0f)
+            if (transform.localPosition.x >= 1490.0f)
             {
                 //manager.NoteDetails[index].Data.setEndTime(Time.time - manager.PauseDuration);
                 Debug.Log("consumed: start at " + manager.NoteDetails[index].Data.getStartTime() + " end at " + manager.NoteDetails[index].Data.getEndTime() + " expected: "+ manager.NoteDetails[index].Data.getExpectedEndTime());
@@ -76,7 +76,7 @@ public class SingleNote : MonoBehaviour
         else if(manager.Replay)
         {
             transform.Translate(Vector3.right * Time.deltaTime * speed);
-            if (transform.localPosition.x >= 1573.0f)
+            if (transform.localPosition.x >= 1490.0f)
             {
                 //manager.DestroyedNotes += 1;
                 //Destroy(gameObject);
@@ -100,7 +100,7 @@ public class SingleNote : MonoBehaviour
         {
             manager.NoteDetails[index].Data.setEndTime(Time.time - manager.PauseDuration);
             manager.NoteDetails[index].Data.ActualEndPos = transform.localPosition.x;
-            manager.NoteDetails[index].Data.setExpectedEndPos(1145.0f);
+            manager.NoteDetails[index].Data.setExpectedEndPos(1156.0f);
             manager.InstantiatedNotes.RemoveAt(0);
             //Debug.Log("consumed: start at " + manager.NoteDetails[index].Data.getStartTime() + " end at " + manager.NoteDetails[index].Data.getEndTime());
             //manager.DestroyedNotes += 1;
