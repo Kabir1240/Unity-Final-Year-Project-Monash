@@ -61,7 +61,8 @@ public class GameManager : MonoBehaviour
     private bool _doneSong, _doneMidi, _delayed, _error;
     private int _currI, _replayI, _currScore;
     private float _delay, _speed, _prevPause;
-    private string _path;
+    //private string _path;
+    string path;
     private float _startTime, _stopTime;
 
     FirebaseStorage storage;
@@ -93,6 +94,7 @@ public class GameManager : MonoBehaviour
         Replay = false;
         _delayed = false;
         _error = false;
+        path = Application.persistentDataPath + "/FIT3162Files/MidiFiles.mid";
 
         title.text = currSong.Title;
         planetNo.text = lvl.LevelId + "";
@@ -154,7 +156,7 @@ public class GameManager : MonoBehaviour
 
         NoteDetails = new List<NoteInfo>();
         InstantiatedNotes = new List<GameObject>();
-        ConvertToNotes(_path);
+        ConvertToNotes(path);
         IsPlaying = false;
         IsPaused = false;
         _currI = 0;
@@ -166,6 +168,7 @@ public class GameManager : MonoBehaviour
         score.text = "0";
         Replay = false;
         _delayed = false;
+        slider.restart();
         return true;
     }
 
@@ -418,9 +421,9 @@ public class GameManager : MonoBehaviour
             {
                 Debug.Log("Download URL: " + task.Result);
 
-                string path = Application.persistentDataPath + "/SongFile.wav";
+                string songPath = Application.persistentDataPath + "/SongFile.wav";
                 //StartCoroutine(isDownloading(Convert.ToString(task.Result), path));
-                isDownloading(Convert.ToString(task.Result), path);
+                isDownloading(Convert.ToString(task.Result), songPath);
                 _doneSong = true;
                 // set it to the audiosource
 
@@ -439,10 +442,9 @@ public class GameManager : MonoBehaviour
             {
                 Debug.Log("GameManager: Download URL: " + task.Result);
 
-                string path = Application.persistentDataPath + "/FIT3162Files/MidiFiles.mid";
                 //StartCoroutine(isDownloading(Convert.ToString(task.Result), path));
                 isDownloading(Convert.ToString(task.Result), path);
-                ConvertToNotes(_path);
+                ConvertToNotes(path);
                 BaseScore();
             }
         });
@@ -475,7 +477,7 @@ public class GameManager : MonoBehaviour
                     // might need to make a loading page
                 }
                 Debug.Log("GameManager: File downloaded at: " + path);
-                _path = path;
+                //_path = path;
 
             }
         }
@@ -485,10 +487,10 @@ public class GameManager : MonoBehaviour
     // Converts the Midi file to an array of notes
     private void ConvertToNotes(string filePath)
     {
-        //Debug.Log("GameManager: converting to notes of file: " + filePath);
+        Debug.Log("GameManager: converting to notes of file: " + filePath);
         try
         {
-            Midi = MidiFile.Read(_path);
+            Midi = MidiFile.Read(filePath);
             //Midi = MidiFile.Read(Directory.GetCurrentDirectory() + "/Assets/Resources/Materials/Midi/MidiFiles.mid");
         }
         catch (Exception e)

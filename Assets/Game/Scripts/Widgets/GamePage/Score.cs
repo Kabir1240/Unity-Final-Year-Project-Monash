@@ -35,8 +35,6 @@ public class Score : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //TESTING 80K AND 50K
-        result.score = 56784;
         score.text = result.score.ToString();
         songTitle.text = song.Title;
         _scoreThreshold = 20000;
