@@ -45,6 +45,7 @@ public class Instructions : MonoBehaviour
         // hide the current flashcard
         GameObject currentObj = cards[_pointer];
         currentObj.SetActive(false);
+        //Debug.Log("Pointer: " + _pointer);
 
         //increment the pointer
         if (_pointer + 1 < cards.Count)
@@ -52,7 +53,8 @@ public class Instructions : MonoBehaviour
             if (_pointer+1 == 1)
             {
                 prevBtn.interactable = true;
-            }else if(_pointer+1 == cards.Count - 1)
+            }
+            if(_pointer+1 == cards.Count - 1)
             {
                 nextBtn.interactable = false;
             }
@@ -70,6 +72,7 @@ public class Instructions : MonoBehaviour
         // hide the current flashcard
         GameObject currentObj = cards[_pointer];
         currentObj.SetActive(false);
+        //Debug.Log("Pointer: " + _pointer);
 
         //decrement the pointer
         if (_pointer - 1 >= 0)
@@ -78,7 +81,7 @@ public class Instructions : MonoBehaviour
             {
                 nextBtn.interactable = true;
             }
-            else if (_pointer-1== 0)
+            if (_pointer-1== 0)
             {
                 prevBtn.interactable = false;
             }

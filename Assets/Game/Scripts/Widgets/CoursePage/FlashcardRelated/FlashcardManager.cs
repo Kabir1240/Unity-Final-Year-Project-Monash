@@ -67,7 +67,14 @@ public class FlashcardManager : MonoBehaviour
 
         backBtn.onClick.AddListener(BackToEachPlanet);
 
-        LoadData();
+        try
+        {
+            LoadData();
+        }catch(Exception e)
+        {
+            Debug.Log("FlashcardManager: error " + e);
+            SceneManager.LoadScene("EachPlanetPage");
+        }
         
 
     }

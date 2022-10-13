@@ -28,7 +28,14 @@ public class LevelsManager : MonoBehaviour
         {
             SceneManager.LoadScene("MainPage");
         });
-        InstantiateLevels();
+
+        try
+        {
+            InstantiateLevels();
+        }catch(Exception e)
+        {
+            Debug.Log("MainPage");
+        }
     }
 
     void InstantiateLevels()
@@ -108,6 +115,7 @@ public class LevelsManager : MonoBehaviour
                             //newLevel.transform.Find("Level1").transform.Find("ModuleInfo").GetChild(1).GetComponent<TextMeshProUGUI>().text = title;
                             btn1.CurrId = documentSnapshot.Id;
                             btn1.ModuleId = level["Module"].ToString();
+                            btn1.Max_exp = Convert.ToInt32(level["MaxExp"]);
                             List<object> songs = level["Songs"] as List<object>;
                             List<string> currSongArr = new List<string>();
                             foreach (object song in songs)

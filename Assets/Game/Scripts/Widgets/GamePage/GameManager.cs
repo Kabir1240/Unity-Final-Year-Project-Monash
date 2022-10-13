@@ -99,6 +99,9 @@ public class GameManager : MonoBehaviour
         title.text = currSong.Title;
         planetNo.text = lvl.LevelId + "";
 
+        // removed song feature
+        _doneSong = true;
+
         LoadTexture();
 
         if (result.replay)
@@ -117,7 +120,7 @@ public class GameManager : MonoBehaviour
             InstantiatedNotes = new List<GameObject>();
 
             GetMidi();
-            GetSong();
+            //GetSong();
 
             InvokeRepeating("StartGame", 1.0f, 2.0f);
         }
@@ -433,21 +436,29 @@ public class GameManager : MonoBehaviour
 
     private void GetMidi()
     {
-        StorageReference midiRef = storageRef.Child("Song").Child(currSong.MidiLocation);
-
-        // download the midi file
-        midiRef.GetDownloadUrlAsync().ContinueWithOnMainThread(task =>
+        try
         {
-            if (!task.IsFaulted && !task.IsCanceled)
+            StorageReference midiRef = storageRef.Child("Song").Child(currSong.MidiLocation);
+
+            // download the midi file
+            midiRef.GetDownloadUrlAsync().ContinueWithOnMainThread(task =>
             {
-                Debug.Log("GameManager: Download URL: " + task.Result);
+                if (!task.IsFaulted && !task.IsCanceled)
+                {
+                    Debug.Log("GameManager: Download URL: " + task.Result);
 
                 //StartCoroutine(isDownloading(Convert.ToString(task.Result), path));
                 isDownloading(Convert.ToString(task.Result), path);
-                ConvertToNotes(path);
-                BaseScore();
-            }
-        });
+                    ConvertToNotes(path);
+                    BaseScore();
+                }
+            });
+        }catch(Exception e)
+        {
+            Debug.Log("GameManager: error " + e);
+            _error = true;
+            SceneManager.LoadScene("EachPlanetPage");
+        }
 
     }
 

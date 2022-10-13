@@ -245,8 +245,21 @@ public class QuizManager : MonoBehaviour
             if (score == allQuiz.Count && level.LevelId == user.Level.ToString())
             {
                 user.QuizPass = true;
-                int exp = (int)(level.MaxExp * 0.2f);
+                int exp = 0;
+                if (Convert.ToInt32(level.LevelId) < 5)
+                {
+                    //Debug.Log("QuizManager: level < 5");
+                    exp = level.MaxExp;
+                    //Debug.Log("QuizManager: maxExp: " + level.MaxExp);
+                }
+                else
+                {
+                    exp = (int)(level.MaxExp*0.2f);
+                }
+                Debug.Log("QuizManager: exp: "+exp);
+
                 user.Exp += exp;
+                user.Coin += 5;
                 user.updateQuizPass();
             }
             Invoke("EndQuiz", 7f);

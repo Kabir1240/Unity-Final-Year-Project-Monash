@@ -136,7 +136,8 @@ public class User : ScriptableObject
         Dictionary<string, object> updates = new Dictionary<string, object>
         {{ "QuizPass", quizPass},
         { "Exp", exp},
-        { "Level", level}};
+        { "Level", level},
+        { "Coin", coin}};
 
         userRef.UpdateAsync(updates).ContinueWithOnMainThread(task =>
         {

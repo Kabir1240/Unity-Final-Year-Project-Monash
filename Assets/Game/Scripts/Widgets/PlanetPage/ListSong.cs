@@ -27,17 +27,20 @@ public class ListSong : MonoBehaviour
     [SerializeField] Button modulebtn; // button to go to module page
     [SerializeField] Button back; // button to go to all levels page
     [SerializeField] Button quizBtn; // button to go to quiz page
+    [SerializeField] Button instructionBtn;
 
     [SerializeField] TextMeshProUGUI moduleTitle; // the current level's module title
     [SerializeField] TextMeshProUGUI planet; // the current level's name
 
     [SerializeField] GameObject contentList; // the vertical group container for the songs
     [SerializeField] GameObject mainParent; // the root canvas
+    [SerializeField] GameObject instructionContainer;
 
     [SerializeField] Level level; // Level Data Asset
     [SerializeField] Song song; // Song Data Asset
     [SerializeField] ModuleLevel moduleLvl; // Module Level Data Asset
     [SerializeField] User user; // User Data Asset
+    [SerializeField] Instructions instruction;
 
     private GameObject _songList; // the song list prefab
     private FirebaseFirestore _db; // the reference to database
@@ -54,10 +57,16 @@ public class ListSong : MonoBehaviour
         {
             LoadScene("PlanetMainPage");
         });
-        Debug.Log("ListSong: level obj" + level.LevelId + ", song count: " + level.SongIds.Count + " quiz pass: " + user.QuizPass);
+        Debug.Log("ListSong: level obj" + level.LevelId + ", song count: " + level.SongIds.Count + " quiz pass: " + user.QuizPass+" lvl max exp: "+level.MaxExp);
         quizBtn.onClick.AddListener(() =>
         {
             SceneManager.LoadScene("Quiz");
+        });
+        instructionBtn.onClick.AddListener(() =>
+        {
+            instructionContainer.SetActive(true);
+            instruction.Open();
+            instructionBtn.gameObject.SetActive(false);
         });
         StartCoroutine(InstantiateSongList());
         ModuleData();
@@ -78,14 +87,21 @@ public class ListSong : MonoBehaviour
             Dictionary<string, object> module = documentSnapshot.ToDictionary();
             // adding the collection of flashcards to an arraylist so we can have random access
 
-            moduleLvl.Module_id = level.ModuleId;
-            moduleLvl.Title = module["Title"].ToString();
-
-            moduleTitle.text = moduleLvl.Title;
-            modulebtn.onClick.AddListener(() =>
+            try
             {
-                LoadScene("CoursePage");
-            });
+                moduleLvl.Module_id = level.ModuleId;
+                moduleLvl.Title = module["Title"].ToString();
+
+                moduleTitle.text = moduleLvl.Title;
+                modulebtn.onClick.AddListener(() =>
+                {
+                    LoadScene("CoursePage");
+                });
+            }catch(Exception e)
+            {
+                Debug.Log("ListSong: error " + e);
+                SceneManager.LoadScene("PlanetMainPage");
+            }
         });
     }
 
@@ -136,21 +152,27 @@ public class ListSong : MonoBehaviour
                 Debug.Log(String.Format("Document data for {0} document:", documentSnapshot.Id));
                 Dictionary<string, object> song = documentSnapshot.ToDictionary();
                 // adding the collection of flashcards to an arraylist so we can have random access
-
-                GameObject button = (GameObject)Instantiate(_songList, contentList.transform);
-                SongBtn songData = button.GetComponent<SongBtn>();
-                songData.SongId = documentSnapshot.Id;
-                songData.Title = song["Title"].ToString();
-                Debug.Log("title: " + song["Title"].ToString());
-                songData.MidiLocation = song["Midi"].ToString();
-                songData.WavLocation = song["Sound"].ToString();
-                songData.Difficulty = Convert.ToInt32(song["Difficulty"]);
-                songData.SetUI();
-
-                // only triggered if the current level's quiz is not passed yet so it shouldn't affect other unlocked level's songs
-                if (user.Level == Convert.ToInt32(level.LevelId))
+                try
                 {
-                    songData.toggle(user.QuizPass);
+                    GameObject button = (GameObject)Instantiate(_songList, contentList.transform);
+                    SongBtn songData = button.GetComponent<SongBtn>();
+                    songData.SongId = documentSnapshot.Id;
+                    songData.Title = song["Title"].ToString();
+                    Debug.Log("title: " + song["Title"].ToString());
+                    songData.MidiLocation = song["Midi"].ToString();
+                    songData.WavLocation = song["Sound"].ToString();
+                    songData.Difficulty = Convert.ToInt32(song["Difficulty"]);
+                    songData.SetUI();
+
+                    // only triggered if the current level's quiz is not passed yet so it shouldn't affect other unlocked level's songs
+                    if (user.Level == Convert.ToInt32(level.LevelId))
+                    {
+                        songData.toggle(user.QuizPass);
+                    }
+                }catch(Exception e)
+                {
+                    Debug.Log("ListSong: error " + e);
+                    SceneManager.LoadScene("PlanetMainPage");
                 }
 
                 //GameObject button = (GameObject)Instantiate(_songList, contentList.transform);

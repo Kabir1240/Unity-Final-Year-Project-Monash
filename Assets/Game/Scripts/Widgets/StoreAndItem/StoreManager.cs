@@ -74,7 +74,14 @@ public class StoreManager : MonoBehaviour
             SceneManager.LoadScene("MainPage");
         });
 
-        FetchFromDb();
+        try
+        {
+            FetchFromDb();
+        }catch(Exception e)
+        {
+            Debug.Log("StoreManager: error " + e);
+            SceneManager.LoadScene("MainPage");
+        }
     }
 
     private void AddToUser()

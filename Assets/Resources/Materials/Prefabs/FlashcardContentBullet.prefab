@@ -34,10 +34,10 @@ RectTransform:
   m_Father: {fileID: 2971610120105082237}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 0.5683333}
-  m_AnchoredPosition: {x: 15, y: 197}
-  m_SizeDelta: {x: 2381.21, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 15, y: -321}
+  m_SizeDelta: {x: -252.79004, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1257067810384487287
 MonoBehaviour:
@@ -176,9 +176,9 @@ MonoBehaviour:
   m_fontSize: 70
   m_fontSizeBase: 70
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 30
+  m_fontSizeMax: 70
   m_fontStyle: 0
   m_HorizontalAlignment: 8
   m_VerticalAlignment: 256
@@ -241,6 +241,14 @@ PrefabInstance:
     - target: {fileID: 917816539271252757, guid: 1f2caf356dbd4e84484f86d77c73e93b, type: 3}
       propertyPath: m_Name
       value: FlashcardContentBullet
+      objectReference: {fileID: 0}
+    - target: {fileID: 3219967851285596422, guid: 1f2caf356dbd4e84484f86d77c73e93b, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3433958367377477882, guid: 1f2caf356dbd4e84484f86d77c73e93b, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4481161457812943286, guid: 1f2caf356dbd4e84484f86d77c73e93b, type: 3}
       propertyPath: m_Pivot.x
@@ -342,6 +350,10 @@ PrefabInstance:
       propertyPath: m_enableAutoSizing
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6226615305147281911, guid: 1f2caf356dbd4e84484f86d77c73e93b, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1f2caf356dbd4e84484f86d77c73e93b, type: 3}
 --- !u!1 &1995572329273411550 stripped
@@ -362,45 +374,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flashcardObject: {fileID: 1995572329273411550}
-  titleObj: {fileID: 4649420782924242362}
-  subheadingObj: {fileID: 4876722411222739291}
-  pageNoObj: {fileID: 9192439229715137675}
+  titleObj: {fileID: 0}
+  subheadingObj: {fileID: 0}
+  pageNoObj: {fileID: 0}
   contentObj: {fileID: 2747788948317770216}
 --- !u!224 &2971610120105082237 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4481161457812943286, guid: 1f2caf356dbd4e84484f86d77c73e93b, type: 3}
   m_PrefabInstance: {fileID: 1661000547035843787}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4649420782924242362 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6308136407307751793, guid: 1f2caf356dbd4e84484f86d77c73e93b, type: 3}
-  m_PrefabInstance: {fileID: 1661000547035843787}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &4876722411222739291 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6098038837585585552, guid: 1f2caf356dbd4e84484f86d77c73e93b, type: 3}
-  m_PrefabInstance: {fileID: 1661000547035843787}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &9192439229715137675 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7538768442770606144, guid: 1f2caf356dbd4e84484f86d77c73e93b, type: 3}
-  m_PrefabInstance: {fileID: 1661000547035843787}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
