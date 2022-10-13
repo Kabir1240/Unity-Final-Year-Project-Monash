@@ -3334,7 +3334,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &986512380
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4293,7 +4293,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1146015871
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6062,7 +6062,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1146015875}
         m_TargetAssemblyTypeName: RegisterHideShowPassword, Assembly-CSharp
-        m_MethodName: HideShowRegisterPassword
+        m_MethodName: HideShowRegisterConfirmPassword
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
