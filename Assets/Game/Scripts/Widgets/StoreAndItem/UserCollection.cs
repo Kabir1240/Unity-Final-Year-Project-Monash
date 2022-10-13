@@ -16,8 +16,9 @@ public class UserCollection : MonoBehaviour
     //[SerializeField] GameObject collectionPanel; // the collection panel
     //[SerializeField] GameObject collectionContent; // horizontal content group
     [SerializeField] GameObject itemPrefab; // the item prefab
-    [SerializeField] GameObject content; // horizontal content group
-    [SerializeField] Button back;
+    [SerializeField] GameObject content, instructionContainer; // horizontal content group
+    [SerializeField] Button back, instructionBtn;
+    [SerializeField] Instructions instruction;
 
     [SerializeField] User user; // User Data Asset
 
@@ -41,6 +42,12 @@ public class UserCollection : MonoBehaviour
         back.onClick.AddListener(() =>
         {
             SceneManager.LoadScene("MainPage");
+        });
+        instructionBtn.onClick.AddListener(() =>
+        {
+            instructionContainer.SetActive(true);
+            instruction.Open();
+            instructionBtn.gameObject.SetActive(false);
         });
 
         _items = new List<Item>();

@@ -30,15 +30,15 @@ public class SingleNote : MonoBehaviour
         if (manager.IsPlaying && !manager.Replay)
         {
             transform.Translate(Vector3.right * Time.deltaTime * speed);
-            if (transform.localPosition.x >= 494.0f && transform.localPosition.x < 833.0f || transform.localPosition.x >= 1220.0f && transform.localPosition.x < 1369.0f)
+            if (transform.localPosition.x >= 494.0f && transform.localPosition.x < 833.0f || transform.localPosition.x >= 1263.0f && transform.localPosition.x < 1369.0f)
             {
                 manager.NoteDetails[index].Data.setAccuracyType("good");
             }
-            else if (transform.localPosition.x >= 833.0f && transform.localPosition.x < 1141.0f || transform.localPosition.x >= 1161.0f && transform.localPosition.x < 1220.0f)
+            else if (transform.localPosition.x >= 833.0f && transform.localPosition.x < 1141.0f || transform.localPosition.x >= 1184.0f && transform.localPosition.x < 1263.0f)
             {
                 manager.NoteDetails[index].Data.setAccuracyType("great");
             }
-            else if (transform.localPosition.x >= 1121.0f && transform.localPosition.x < 1161.0f)
+            else if (transform.localPosition.x >= 1131.0f && transform.localPosition.x < 1184.0f)
             {
                 manager.NoteDetails[index].Data.setAccuracyType("perfect");
                 manager.NoteDetails[index].Data.setExpectedEndTime(Time.time - manager.PauseDuration);
@@ -57,7 +57,7 @@ public class SingleNote : MonoBehaviour
                 removed = true;
             }
             // if the note is no longer visible
-            if (transform.localPosition.x >= 1573.0f)
+            if (transform.localPosition.x >= 1490.0f)
             {
                 //manager.NoteDetails[index].Data.setEndTime(Time.time - manager.PauseDuration);
                 Debug.Log("consumed: start at " + manager.NoteDetails[index].Data.getStartTime() + " end at " + manager.NoteDetails[index].Data.getEndTime() + " expected: "+ manager.NoteDetails[index].Data.getExpectedEndTime());
@@ -76,7 +76,7 @@ public class SingleNote : MonoBehaviour
         else if(manager.Replay)
         {
             transform.Translate(Vector3.right * Time.deltaTime * speed);
-            if (transform.localPosition.x >= 1573.0f)
+            if (transform.localPosition.x >= 1490.0f)
             {
                 //manager.DestroyedNotes += 1;
                 //Destroy(gameObject);
@@ -100,7 +100,7 @@ public class SingleNote : MonoBehaviour
         {
             manager.NoteDetails[index].Data.setEndTime(Time.time - manager.PauseDuration);
             manager.NoteDetails[index].Data.ActualEndPos = transform.localPosition.x;
-            manager.NoteDetails[index].Data.setExpectedEndPos(1145.0f);
+            manager.NoteDetails[index].Data.setExpectedEndPos(1156.0f);
             manager.InstantiatedNotes.RemoveAt(0);
             //Debug.Log("consumed: start at " + manager.NoteDetails[index].Data.getStartTime() + " end at " + manager.NoteDetails[index].Data.getEndTime());
             //manager.DestroyedNotes += 1;
@@ -115,7 +115,7 @@ public class SingleNote : MonoBehaviour
         manager.DestroyedNotes += 1;
         Debug.Log("destroyed: " + manager.DestroyedNotes);
         manager.UpdateProgressBar();
-        if ((manager.Replay&&manager.DestroyedNotes == manager.NoteDetails.Count * 2) || manager.DestroyedNotes == manager.NoteDetails.Count)
+        if ((manager.Replay&&manager.DestroyedNotes == manager.NoteDetails.Count * 2) || (!manager.Replay&&manager.DestroyedNotes == manager.NoteDetails.Count))
         {
             //Debug.Log("went here");
             manager.GoToScore();
