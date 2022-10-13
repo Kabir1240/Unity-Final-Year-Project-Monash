@@ -49,7 +49,14 @@ public class LevelsManager : MonoBehaviour
             QuerySnapshot allLevelsQuerySnapshot = task.Result;
             Debug.Log("LevelsManager: task: " + task.IsCompletedSuccessfully);
             Debug.Log("LevelsManager: task count: " + allLevelsQuerySnapshot.Count);
+            int count = allLevelsQuerySnapshot.Count;
+            DocumentSnapshot[] snapshot = new DocumentSnapshot[count];
             foreach (DocumentSnapshot documentSnapshot in allLevelsQuerySnapshot.Documents)
+            {
+                int currentId = Convert.ToInt32(documentSnapshot.Id);
+                snapshot[currentId - 1] = documentSnapshot;
+            }
+            foreach (DocumentSnapshot documentSnapshot in snapshot)
             {
                 if (documentSnapshot.Exists)
                 {

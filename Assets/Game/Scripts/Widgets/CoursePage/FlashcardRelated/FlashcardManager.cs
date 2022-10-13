@@ -208,16 +208,23 @@ public class FlashcardManager : MonoBehaviour
             foreach (DocumentSnapshot documentSnapshot in allFlashcardsQuerySnapshot.Documents)
             {
                 //Debug.Log(String.Format("Document data for {0} document:", documentSnapshot.Id));
-                Dictionary<string, object> flashcard = documentSnapshot.ToDictionary();
-                // adding the collection of flashcards to an arraylist so we can have random access
-                string type = Convert.ToString(flashcard["Type"]);
-                if(type== "quiz-text" || type == "quiz-text-img" || type == "quiz-radio" || type == "quiz-radio-img")
+                try
                 {
-                    Debug.Log("quiz");
-                }
-                else
+                    Dictionary<string, object> flashcard = documentSnapshot.ToDictionary();
+                    // adding the collection of flashcards to an arraylist so we can have random access
+                    string type = Convert.ToString(flashcard["Type"]);
+                    if (type == "quiz-text" || type == "quiz-text-img" || type == "quiz-radio" || type == "quiz-radio-img")
+                    {
+                        Debug.Log("quiz");
+                    }
+                    else
+                    {
+                        _flashcardsArray.Add(flashcard);
+                        _flashcardObjectsArray.Add(null);
+                    }
+                }catch(Exception e)
                 {
-                    _flashcardsArray.Add(flashcard);
+                    _flashcardsArray.Add(null);
                     _flashcardObjectsArray.Add(null);
                 }
             }

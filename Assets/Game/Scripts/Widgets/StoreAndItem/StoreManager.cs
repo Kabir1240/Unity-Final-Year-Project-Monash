@@ -247,12 +247,17 @@ public class StoreManager : MonoBehaviour
                 {
                     Debug.Log(String.Format("Document data for {0} document:", documentSnapshot.Id));
                     Dictionary<string, object> item = documentSnapshot.ToDictionary();
-
-                    Item currItem = new Item(documentSnapshot.Id, item["Category"].ToString(), item["Image"].ToString(), item["Name"].ToString(), Convert.ToInt32(item["Price"]), item["Description"].ToString());
-                    Debug.Log("Store: id " + documentSnapshot.Id + " item " + currItem.Name + ", price " + currItem.Price);
-                    _items.Add(currItem);
-                    GameObject currItemObj = InstantiateItems(currItem, content.transform);
-                    _allItemsObj.Add(currItem.Id, currItemObj);
+                    try
+                    {
+                        Item currItem = new Item(documentSnapshot.Id, item["Category"].ToString(), item["Image"].ToString(), item["Name"].ToString(), Convert.ToInt32(item["Price"]), item["Description"].ToString());
+                        Debug.Log("Store: id " + documentSnapshot.Id + " item " + currItem.Name + ", price " + currItem.Price);
+                        _items.Add(currItem);
+                        GameObject currItemObj = InstantiateItems(currItem, content.transform);
+                        _allItemsObj.Add(currItem.Id, currItemObj);
+                    }catch(Exception e)
+                    {
+                        Debug.Log("Store: error: something wrong with fetching the document, check the database field name");
+                    }
 
                 }
             }

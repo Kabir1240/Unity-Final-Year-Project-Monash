@@ -100,7 +100,7 @@ public class ListSong : MonoBehaviour
             }catch(Exception e)
             {
                 Debug.Log("ListSong: error " + e);
-                SceneManager.LoadScene("PlanetMainPage");
+                //SceneManager.LoadScene("PlanetMainPage");
             }
         });
     }
@@ -152,11 +152,14 @@ public class ListSong : MonoBehaviour
                 Debug.Log(String.Format("Document data for {0} document:", documentSnapshot.Id));
                 Dictionary<string, object> song = documentSnapshot.ToDictionary();
                 // adding the collection of flashcards to an arraylist so we can have random access
+                GameObject button = (GameObject)Instantiate(_songList, contentList.transform);
+                SongBtn songData = button.GetComponent<SongBtn>();
+                songData.SongId = documentSnapshot.Id;
                 try
                 {
-                    GameObject button = (GameObject)Instantiate(_songList, contentList.transform);
-                    SongBtn songData = button.GetComponent<SongBtn>();
-                    songData.SongId = documentSnapshot.Id;
+                    //GameObject button = (GameObject)Instantiate(_songList, contentList.transform);
+                    //SongBtn songData = button.GetComponent<SongBtn>();
+                    //songData.SongId = documentSnapshot.Id;
                     songData.Title = song["Title"].ToString();
                     Debug.Log("title: " + song["Title"].ToString());
                     songData.MidiLocation = song["Midi"].ToString();
@@ -171,8 +174,11 @@ public class ListSong : MonoBehaviour
                     }
                 }catch(Exception e)
                 {
+                    songData.Title = "ERROR";
+                    songData.Difficulty = 0;
+                    songData.SetUI();
                     Debug.Log("ListSong: error " + e);
-                    SceneManager.LoadScene("PlanetMainPage");
+                    //SceneManager.LoadScene("PlanetMainPage");
                 }
 
                 //GameObject button = (GameObject)Instantiate(_songList, contentList.transform);
