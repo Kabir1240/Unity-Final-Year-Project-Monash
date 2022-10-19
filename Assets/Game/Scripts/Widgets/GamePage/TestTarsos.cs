@@ -87,15 +87,6 @@ public class TestTarsos : MonoBehaviour
 
     public void Result(string note)
     {
-        //StartCoroutine(delay(note));
         manager.DetectedNote(note);
     }
-
-    //private IEnumerator delay(string note)
-    //{
-    //    //text.text = note;
-    //    manager.DetectedNote(note);
-    //    //yield return new WaitForSeconds(0.1f);
-    //    //Debug.Log("delayed");
-    //}
 }

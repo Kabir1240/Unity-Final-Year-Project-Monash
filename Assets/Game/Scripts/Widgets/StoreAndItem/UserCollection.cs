@@ -13,8 +13,6 @@ using UnityEngine.UI;
 
 public class UserCollection : MonoBehaviour
 {
-    //[SerializeField] GameObject collectionPanel; // the collection panel
-    //[SerializeField] GameObject collectionContent; // horizontal content group
     [SerializeField] GameObject itemPrefab; // the item prefab
     [SerializeField] GameObject content, instructionContainer; // horizontal content group
     [SerializeField] Button back, instructionBtn;

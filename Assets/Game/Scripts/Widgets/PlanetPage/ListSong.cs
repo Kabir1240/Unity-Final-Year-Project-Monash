@@ -44,7 +44,6 @@ public class ListSong : MonoBehaviour
 
     private GameObject _songList; // the song list prefab
     private FirebaseFirestore _db; // the reference to database
-    //private SongBtn songData;
 
     // Start is called before the first frame update
     void Start()
@@ -100,45 +99,15 @@ public class ListSong : MonoBehaviour
             }catch(Exception e)
             {
                 Debug.Log("ListSong: error " + e);
-                //SceneManager.LoadScene("PlanetMainPage");
             }
         });
     }
-
-    //private IEnumerator GetSongInfo(string currSongLevel)
-    //{
-    //    DocumentReference currSong = _db.Collection("Songs").Document(currSongLevel);
-    //    yield return currSong.GetSnapshotAsync().ContinueWithOnMainThread(task =>
-    //    {
-    //        Debug.Log("ListSong: getting song " + currSongLevel);
-    //        DocumentSnapshot documentSnapshot = task.Result;
-    //        Debug.Log("ListSong: getting song status" + task.IsCompletedSuccessfully);
-    //        Debug.Log("ListSong: getting song status" + (task.IsFaulted || task.IsCanceled));
-
-    //        Debug.Log(String.Format("Document data for {0} document:", documentSnapshot.Id));
-    //        Dictionary<string, object> song = documentSnapshot.ToDictionary();
-    //        // adding the collection of flashcards to an arraylist so we can have random access
-
-    //        GameObject button = (GameObject)Instantiate(_songList, contentList.transform);
-    //        SongBtn songData = _songList.GetComponent<SongBtn>();
-    //        songData.SongId = documentSnapshot.Id;
-    //        songData.Title = song["Title"].ToString();
-    //        songData.MidiLocation = song["Midi"].ToString();
-    //        songData.WavLocation = song["Sound"].ToString();
-    //        songData.Difficulty = Convert.ToInt32(song["Difficulty"]);
-    //        songData.SetUI();
-    //        //GameObject button = (GameObject)Instantiate(_songList, contentList.transform);
-
-    //        //button.transform.parent = _songList;
-    //    });
-    //}
 
     // Instantiating the song list prefabs
     private IEnumerator InstantiateSongList()
     {
         //fetch data from database
         // Get the root reference location of the database
-        //GameObject button = (GameObject)Instantiate(_songList, contentList.transform);
         foreach (string currSongLevel in level.SongIds)
         {
             DocumentReference currSong = _db.Collection("Songs").Document(currSongLevel);
@@ -157,9 +126,6 @@ public class ListSong : MonoBehaviour
                 songData.SongId = documentSnapshot.Id;
                 try
                 {
-                    //GameObject button = (GameObject)Instantiate(_songList, contentList.transform);
-                    //SongBtn songData = button.GetComponent<SongBtn>();
-                    //songData.SongId = documentSnapshot.Id;
                     songData.Title = song["Title"].ToString();
                     Debug.Log("title: " + song["Title"].ToString());
                     songData.MidiLocation = song["Midi"].ToString();
@@ -178,27 +144,11 @@ public class ListSong : MonoBehaviour
                     songData.Difficulty = 0;
                     songData.SetUI();
                     Debug.Log("ListSong: error " + e);
-                    //SceneManager.LoadScene("PlanetMainPage");
                 }
 
-                //GameObject button = (GameObject)Instantiate(_songList, contentList.transform);
-
-                //button.transform.parent = _songList;
             });
         }
     }
-
-    //// directly put the filename without .prefab to the parameter
-    //public static UnityEngine.Object LoadPrefabFromFile(string filename)
-    //{
-    //    Debug.Log("Trying to load LevelPrefab from file (" + filename + ")...");
-    //    var loadedObject = Resources.Load("Materials/Prefabs/" + filename);
-    //    if (loadedObject == null)
-    //    {
-    //        throw new FileNotFoundException("...no file found - please check the configuration");
-    //    }
-    //    return loadedObject;
-    //}
 
     //helper function to change page
     void LoadScene(string sceneName)
